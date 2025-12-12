@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Study Phase Navigation</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .result { margin: 10px 0; padding: 10px; background: #f0f0f0; }
+        .success { background: #c8e6c9; }
+        .error { background: #ffcdd2; }
+    </style>
+</head>
+<body>
+    <h1>Study Phase Navigation Test</h1>
+    <div id="results"></div>
+
+    <script type="module">
+        import { initLua, loadLuaCode, callLuaFunction } from './src/lib/lua-bridge.js';
+
+        const results = document.getElementById('results');
+
+        function log(message, isSuccess = true) {
+            const div = document.createElement('div');
+            div.className = isSuccess ? 'result success' : 'result error';
+            div.textContent = message;
+            results.appendChild(div);
+        }
+
+        async function runTests() {
+            try {
+                // Initialize Lua
+                log('Initializing Lua...');
+                await initLua();
+
+                // Load Lua files
+                const gameStateLua = await fetch('/src/lua/game-state.lua').then(r => r.text());
+                const initLua = await fetch('/src/lua/init.lua').then(r => r.text());
+
+                loadLuaCode(gameStateLua);
+                loadLuaCode(initLua);
+                log('Lua initialized successfully');
+
+                // Create test moves
+                const testMoves = [
+                    { x: 9, y: 9, color: 'B', moveNumber: 1 },
+                    { x: 15, y: 15, color: 'W', moveNumber: 2 },
+                    { x: 3, y: 3, color: 'B', moveNumber: 3 },
+                    { x: 15, y: 3, color: 'W', moveNumber: 4 }
+                ];
+
+                // Initialize game
+                log('Loading game with ' + testMoves.length + ' moves...');
+                const initResult = callLuaFunction('initGame', testMoves);
+                log('Game initialized: ' + JSON.stringify(initResult));
+
+                // Test nextMove
+                log('Testing nextMove...');
+                const next1 = callLuaFunction('studyNext');
+                if (next1.success && next1.position === 1) {
+                    log('nextMove works: position = ' + next1.position + ', move = ' + JSON.stringify(next1.move));
+                } else {
+                    log('nextMove failed: ' + JSON.stringify(next1), false);
+                }
+
+                // Test another nextMove
+                const next2 = callLuaFunction('studyNext');
+                if (next2.success && next2.position === 2) {
+                    log('nextMove 2 works: position = ' + next2.position);
+                } else {
+                    log('nextMove 2 failed: ' + JSON.stringify(next2), false);
+                }
+
+                // Test prevMove
+                log('Testing prevMove...');
+                const prev1 = callLuaFunction('studyPrev');
+                if (prev1.success && prev1.position === 1) {
+                    log('prevMove works: position = ' + prev1.position);
+                } else {
+                    log('prevMove failed: ' + JSON.stringify(prev1), false);
+                }
+
+                // Test prevMove to start
+                const prev2 = callLuaFunction('studyPrev');
+                if (prev2.success && prev2.position === 0) {
+                    log('prevMove to start works: position = ' + prev2.position);
+                } else {
+                    log('prevMove to start failed: ' + JSON.stringify(prev2), false);
+                }
+
+                // Test prevMove at boundary
+                const prev3 = callLuaFunction('studyPrev');
+                if (prev3.atStart && prev3.position === 0) {
+                    log('prevMove at boundary works (atStart)');
+                } else {
+                    log('prevMove at boundary failed: ' + JSON.stringify(prev3), false);
+                }
+
+                // Go to end
+                log('Testing navigation to end...');
+                callLuaFunction('studyNext');
+                callLuaFunction('studyNext');
+                callLuaFunction('studyNext');
+                callLuaFunction('studyNext');
+
+                const state = callLuaFunction('getGameState');
+                if (state.studyPosition === 4) {
+                    log('Navigated to end: position = ' + state.studyPosition);
+                } else {
+                    log('Navigation to end failed: position = ' + state.studyPosition, false);
+                }
+
+                // Test nextMove at boundary
+                const next_boundary = callLuaFunction('studyNext');
+                if (next_boundary.atEnd) {
+                    log('nextMove at boundary works (atEnd)');
+                } else {
+                    log('nextMove at boundary failed: ' + JSON.stringify(next_boundary), false);
+                }
+
+                // Test startReplay
+                log('Testing startReplay...');
+                const replayResult = callLuaFunction('beginReplay');
+                if (replayResult.success && replayResult.phase === 'replay') {
+                    log('startReplay works: phase = ' + replayResult.phase);
+                    const finalState = callLuaFunction('getGameState');
+                    log('Final state: phase = ' + finalState.phase + ', currentMoveIndex = ' + finalState.currentMoveIndex);
+                } else {
+                    log('startReplay failed: ' + JSON.stringify(replayResult), false);
+                }
+
+                log('All tests completed!');
+
+            } catch (error) {
+                log('Error: ' + error.message, false);
+                console.error(error);
+            }
+        }
+
+        runTests();
+    </script>
+</body>
+</html>
