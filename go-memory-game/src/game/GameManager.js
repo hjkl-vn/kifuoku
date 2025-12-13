@@ -38,4 +38,36 @@ export default class GameManager {
       stats: { ...this.stats }
     }
   }
+
+  studyNext() {
+    if (this.studyPosition >= this.moves.length) {
+      return { atEnd: true, position: this.studyPosition }
+    }
+
+    const move = this.moves[this.studyPosition]
+    const sign = colorToSign(move.color)
+    const newBoard = this.getCurrentBoard().makeMove(sign, [move.x, move.y])
+
+    this.boardHistory.push(newBoard)
+    this.studyPosition++
+
+    return {
+      success: true,
+      position: this.studyPosition,
+      move: move
+    }
+  }
+
+  studyPrev() {
+    if (this.studyPosition === 0) {
+      return { atStart: true, position: 0 }
+    }
+
+    this.studyPosition--
+
+    return {
+      success: true,
+      position: this.studyPosition
+    }
+  }
 }

@@ -50,4 +50,51 @@ describe('GameManager', () => {
       expect(manager.moves).not.toBe(originalMoves)
     })
   })
+
+  describe('Study Phase', () => {
+    it('studyNext advances position and updates board', () => {
+      const manager = new GameManager(mockMoves)
+
+      const result = manager.studyNext()
+
+      expect(result.success).toBe(true)
+      expect(manager.studyPosition).toBe(1)
+      expect(manager.boardHistory).toHaveLength(2)
+      expect(manager.getCurrentBoard().get([3, 3])).toBe(1)
+    })
+
+    it('studyNext returns atEnd when at last move', () => {
+      const manager = new GameManager(mockMoves)
+      manager.studyNext()
+      manager.studyNext()
+      manager.studyNext()
+
+      const result = manager.studyNext()
+
+      expect(result.atEnd).toBe(true)
+      expect(manager.studyPosition).toBe(3)
+    })
+
+    it('studyPrev decrements position', () => {
+      const manager = new GameManager(mockMoves)
+      manager.studyNext()
+      manager.studyNext()
+
+      const result = manager.studyPrev()
+
+      expect(result.success).toBe(true)
+      expect(manager.studyPosition).toBe(1)
+      expect(manager.getCurrentBoard().get([3, 3])).toBe(1)
+      expect(manager.getCurrentBoard().get([15, 15])).toBe(0)
+    })
+
+    it('studyPrev returns atStart when at beginning', () => {
+      const manager = new GameManager(mockMoves)
+
+      const result = manager.studyPrev()
+
+      expect(result.atStart).toBe(true)
+      expect(manager.studyPosition).toBe(0)
+    })
+  })
 })
