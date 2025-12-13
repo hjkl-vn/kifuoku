@@ -1,58 +1,65 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Goban } from '@sabaki/shudan'
-import { callLuaFunction } from '../lib/lua-bridge.js'
+import ProgressBar from './ProgressBar'
 
-export default function StudyPhase({ gameState: initialState }) {
-  const [state, setState] = useState(initialState)
-  const [currentMove, setCurrentMove] = useState(null)
-
-  const handleNext = () => {
-    const result = callLuaFunction('studyNext')
-    if (result.success) {
-      setState(callLuaFunction('getGameState'))
-      setCurrentMove(result.move)
-    }
-  }
-
-  const handlePrev = () => {
-    const result = callLuaFunction('studyPrev')
-    if (result.success) {
-      setState(callLuaFunction('getGameState'))
-      setCurrentMove(null)
-    }
-  }
-
-  const handleStartReplay = () => {
-    const result = callLuaFunction('beginReplay')
-    if (result.success) {
-      setState(callLuaFunction('getGameState'))
-    }
-  }
+export default function StudyPhase({ gameManager }) {
+  const state = gameManager.getState()
+  const board = gameManager.getCurrentBoard()
+  const lastMove = state.studyPosition > 0
+    ? gameManager.moves[state.studyPosition - 1]
+    : null
 
   const canGoNext = state.studyPosition < state.totalMoves
   const canGoPrev = state.studyPosition > 0
-  const hasStudied = state.studyPosition > 0
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        if (canGoNext) gameManager.studyNext()
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        if (canGoPrev) gameManager.studyPrev()
+      }
+    }
+
+    const handleWheel = (e) => {
+      if (e.deltaY > 0 && canGoNext) {
+        gameManager.studyNext()
+      } else if (e.deltaY < 0 && canGoPrev) {
+        gameManager.studyPrev()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('wheel', handleWheel)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      window.removeEventListener('wheel', handleWheel)
+    }
+  }, [canGoNext, canGoPrev, gameManager])
+
+  const markerMap = lastMove
+    ? Array(19).fill(null).map(() => Array(19).fill(null))
+    : null
+
+  if (markerMap && lastMove) {
+    markerMap[lastMove.y][lastMove.x] = { type: 'circle' }
+  }
 
   return (
     <div style={styles.container}>
       <h2 style={styles.title}>Study Phase</h2>
 
-      <div style={styles.info}>
-        <p>Move {state.studyPosition} of {state.totalMoves}</p>
-        {currentMove && (
-          <p style={styles.moveInfo}>
-            Last move: {currentMove.color} at ({currentMove.x}, {currentMove.y})
-          </p>
-        )}
-      </div>
+      <ProgressBar current={state.studyPosition} total={state.totalMoves} />
 
       <div style={styles.boardContainer}>
         <Goban
           animateStonePlacement={true}
-          busy={false}
+          busy={true}
           fuzzyStonePlacement={true}
           showCoordinates={true}
-          signMap={state.boardState}
+          signMap={board.signMap}
+          markerMap={markerMap}
           vertexSize={34}
         />
       </div>
@@ -63,7 +70,7 @@ export default function StudyPhase({ gameState: initialState }) {
             ...styles.button,
             ...(canGoPrev ? {} : styles.buttonDisabled)
           }}
-          onClick={handlePrev}
+          onClick={() => gameManager.studyPrev()}
           disabled={!canGoPrev}
         >
           ← Previous
@@ -74,21 +81,21 @@ export default function StudyPhase({ gameState: initialState }) {
             ...styles.button,
             ...(canGoNext ? {} : styles.buttonDisabled)
           }}
-          onClick={handleNext}
+          onClick={() => gameManager.studyNext()}
           disabled={!canGoNext}
         >
           Next →
         </button>
       </div>
 
-      {!canGoNext && hasStudied && (
+      {!canGoNext && state.studyPosition > 0 && (
         <div style={styles.readySection}>
           <p style={styles.readyText}>
             You've reviewed all {state.totalMoves} moves.
           </p>
           <button
             style={styles.startButton}
-            onClick={handleStartReplay}
+            onClick={() => gameManager.startReplay()}
           >
             Start Replay Challenge
           </button>
@@ -109,15 +116,6 @@ const styles = {
     textAlign: 'center',
     fontSize: '28px',
     marginBottom: '10px'
-  },
-  info: {
-    textAlign: 'center',
-    marginBottom: '20px',
-    fontSize: '16px'
-  },
-  moveInfo: {
-    color: '#666',
-    fontStyle: 'italic'
   },
   boardContainer: {
     display: 'flex',
