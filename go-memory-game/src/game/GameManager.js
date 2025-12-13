@@ -3,7 +3,10 @@ import { PHASES, colorToSign } from './constants'
 
 export default class GameManager {
   constructor(moves) {
-    this.moves = moves
+    if (!Array.isArray(moves)) {
+      throw new Error('moves must be an array')
+    }
+    this.moves = [...moves]
     this.phase = PHASES.STUDY
     this.studyPosition = 0
     this.replayPosition = 0

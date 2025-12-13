@@ -51,10 +51,12 @@ export default function ReplayPhase({ gameState: initialState, onComplete }) {
 
       <div style={styles.boardContainer}>
         <Goban
-          vertexSize={28}
-          signMap={state.boardState}
+          animateStonePlacement={true}
+          busy={true}
+          fuzzyStonePlacement={true}
           showCoordinates={true}
-          onVertexMouseUp={handleVertexClick}
+          signMap={state.boardState}
+          vertexSize={34}
         />
       </div>
 

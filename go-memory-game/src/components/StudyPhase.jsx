@@ -48,10 +48,12 @@ export default function StudyPhase({ gameState: initialState }) {
 
       <div style={styles.boardContainer}>
         <Goban
-          vertexSize={28}
-          signMap={state.boardState}
+          animateStonePlacement={true}
+          busy={false}
+          fuzzyStonePlacement={true}
           showCoordinates={true}
-          busy={true}
+          signMap={state.boardState}
+          vertexSize={34}
         />
       </div>
 

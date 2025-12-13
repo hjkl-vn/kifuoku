@@ -29,5 +29,25 @@ describe('GameManager', () => {
       expect(initialBoard.height).toBe(19)
       expect(initialBoard.isEmpty()).toBe(true)
     })
+
+    it('throws error if moves is not an array', () => {
+      expect(() => new GameManager(null)).toThrow('moves must be an array')
+      expect(() => new GameManager(undefined)).toThrow('moves must be an array')
+      expect(() => new GameManager({ moves: [] })).toThrow('moves must be an array')
+      expect(() => new GameManager('moves')).toThrow('moves must be an array')
+    })
+
+    it('creates a defensive copy of the moves array', () => {
+      const originalMoves = [
+        { x: 3, y: 3, color: 'B' },
+        { x: 15, y: 15, color: 'W' }
+      ]
+      const manager = new GameManager(originalMoves)
+
+      originalMoves.push({ x: 5, y: 5, color: 'B' })
+
+      expect(manager.moves).toHaveLength(2)
+      expect(manager.moves).not.toBe(originalMoves)
+    })
   })
 })

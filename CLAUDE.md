@@ -1,0 +1,1 @@
+- DO NOT use any in line comment to describe the code. Only use comments IF they explain WHY we need the code.
