@@ -4,6 +4,8 @@ import { parseSGFToMoves, getBoardSize } from './lib/sgf-parser.js'
 import UploadPhase from './components/UploadPhase.jsx'
 import StudyPhase from './components/StudyPhase.jsx'
 import ReplayPhase from './components/ReplayPhase.jsx'
+import initLuaCode from './lua/init.lua?raw'
+import gameStateLuaCode from './lua/game-state.lua?raw'
 
 export default function App() {
   const [luaReady, setLuaReady] = useState(false)
@@ -16,12 +18,9 @@ export default function App() {
       try {
         await initLua()
 
-        // Load Lua files
-        const initLua = await fetch('/src/lua/init.lua').then(r => r.text())
-        const gameStateLua = await fetch('/src/lua/game-state.lua').then(r => r.text())
-
-        loadLuaCode(gameStateLua)
-        loadLuaCode(initLua)
+        // Load Lua files (imported as raw strings)
+        loadLuaCode(gameStateLuaCode)
+        loadLuaCode(initLuaCode)
 
         setLuaReady(true)
       } catch (err) {
@@ -47,14 +46,22 @@ export default function App() {
         return
       }
 
+      console.log('Parsed moves:', moves.length)
+
       // Initialize game in Lua
+      console.log('Calling initGame...')
       const result = callLuaFunction('initGame', moves)
+      console.log('initGame result:', result)
+
+      console.log('Calling getGameState...')
       const state = callLuaFunction('getGameState')
+      console.log('getGameState result:', state)
 
       setGameState(state)
       setError(null)
 
     } catch (err) {
+      console.error('Error in handleFileLoaded:', err)
       setError(`Failed to load game: ${err.message}`)
     }
   }
@@ -85,6 +92,9 @@ export default function App() {
   if (!gameState || gameState.phase === 'upload') {
     return <UploadPhase onFileLoaded={handleFileLoaded} />
   }
+
+  // Debug: Log current game state
+  console.log('Current gameState:', gameState)
 
   if (gameState.phase === 'study') {
     return <StudyPhase gameState={gameState} />
