@@ -225,4 +225,37 @@ describe('GameManager', () => {
       expect(manager.phase).toBe('complete')
     })
   })
+
+  describe('Ghost Stone Interaction', () => {
+    it('eliminates wrong ghost and returns remaining', () => {
+      const manager = new GameManager(mockMoves)
+      manager.startReplay()
+
+      manager.validateMove(10, 10)
+      const ghostResult = manager.validateMove(10, 11)
+      const ghosts = ghostResult.ghostStones
+      const wrongGhost = ghosts.find(g => !g.isCorrect)
+
+      const result = manager.handleGhostClick(wrongGhost.x, wrongGhost.y)
+
+      expect(result.correct).toBe(false)
+      expect(result.eliminated).toBe(true)
+      expect(result.remainingGhosts).toHaveLength(3)
+    })
+
+    it('places stone when correct ghost clicked', () => {
+      const manager = new GameManager(mockMoves)
+      manager.startReplay()
+
+      manager.validateMove(10, 10)
+      const ghostResult = manager.validateMove(10, 11)
+      const correctGhost = ghostResult.ghostStones.find(g => g.isCorrect)
+
+      const result = manager.handleGhostClick(correctGhost.x, correctGhost.y)
+
+      expect(result.correct).toBe(true)
+      expect(manager.replayPosition).toBe(1)
+      expect(manager.getCurrentBoard().get([3, 3])).toBe(1)
+    })
+  })
 })

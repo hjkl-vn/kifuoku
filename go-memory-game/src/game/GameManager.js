@@ -12,6 +12,7 @@ export default class GameManager {
     this.replayPosition = 0
     this.boardHistory = [Board.fromDimensions(19, 19)]
     this.wrongAttemptsCurrentMove = 0
+    this.currentGhostStones = []
 
     this.stats = {
       wrongMoveCount: 0,
@@ -213,11 +214,12 @@ export default class GameManager {
 
     if (this.wrongAttemptsCurrentMove === 2) {
       this.stats.ghostHintsUsed++
+      this.currentGhostStones = this.generateGhostStones()
       return {
         correct: false,
         needHint: true,
         hintType: HINT_TYPES.GHOST,
-        ghostStones: this.generateGhostStones(),
+        ghostStones: this.currentGhostStones,
         nextColor: correctMove.color
       }
     }
@@ -229,6 +231,39 @@ export default class GameManager {
       hintType: HINT_TYPES.TRIANGLE,
       correctPosition: { x: correctMove.x, y: correctMove.y },
       nextColor: correctMove.color
+    }
+  }
+
+  handleGhostClick(x, y) {
+    const clickedGhost = this.currentGhostStones.find(g => g.x === x && g.y === y)
+
+    if (!clickedGhost) {
+      return { error: 'Invalid ghost position' }
+    }
+
+    if (clickedGhost.isCorrect) {
+      const correctMove = this.moves[this.replayPosition]
+      const sign = colorToSign(correctMove.color)
+      const newBoard = this.getCurrentBoard().makeMove(sign, [x, y])
+      this.boardHistory.push(newBoard)
+      this.studyPosition++
+
+      this.replayPosition++
+      this.wrongAttemptsCurrentMove = 0
+      this.currentGhostStones = []
+
+      return {
+        correct: true,
+        currentMove: this.replayPosition
+      }
+    }
+
+    this.currentGhostStones = this.currentGhostStones.filter(g => g.x !== x || g.y !== y)
+
+    return {
+      correct: false,
+      eliminated: true,
+      remainingGhosts: this.currentGhostStones
     }
   }
 }
