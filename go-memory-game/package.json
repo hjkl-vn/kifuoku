@@ -8,11 +8,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "@sabaki/shudan": "^1.7.1",
+    "@sabaki/go-board": "^1.4.3",
     "@sabaki/sgf": "^3.4.7",
-    "fengari-web": "^0.1.4"
+    "@sabaki/shudan": "^1.7.1",
+    "fengari-web": "^0.1.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.1",
