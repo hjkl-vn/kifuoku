@@ -97,4 +97,20 @@ describe('GameManager', () => {
       expect(manager.studyPosition).toBe(0)
     })
   })
+
+  describe('Phase Transitions', () => {
+    it('startReplay transitions to replay phase and resets board', () => {
+      const manager = new GameManager(mockMoves)
+      manager.studyNext()
+      manager.studyNext()
+
+      const result = manager.startReplay()
+
+      expect(result.success).toBe(true)
+      expect(manager.phase).toBe('replay')
+      expect(manager.replayPosition).toBe(0)
+      expect(manager.getCurrentBoard().isEmpty()).toBe(true)
+      expect(manager.stats.startTime).not.toBeNull()
+    })
+  })
 })

@@ -70,4 +70,20 @@ export default class GameManager {
       position: this.studyPosition
     }
   }
+
+  startReplay() {
+    this.phase = PHASES.REPLAY
+    this.replayPosition = 0
+    this.studyPosition = 0
+    this.wrongAttemptsCurrentMove = 0
+    this.stats.startTime = Date.now()
+    this.stats.wrongMoveCount = 0
+    this.stats.correctFirstTry = 0
+    this.stats.moveTimes = []
+
+    return {
+      success: true,
+      phase: this.phase
+    }
+  }
 }
