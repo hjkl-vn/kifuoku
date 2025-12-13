@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import GameManager from '../GameManager'
+import { getQuadrant } from '../constants'
 
 describe('GameManager', () => {
   const mockMoves = [
@@ -111,6 +112,50 @@ describe('GameManager', () => {
       expect(manager.replayPosition).toBe(0)
       expect(manager.getCurrentBoard().isEmpty()).toBe(true)
       expect(manager.stats.startTime).not.toBeNull()
+    })
+  })
+
+  describe('Hint Generation', () => {
+    it('generateGhostStones returns 4 positions with 1 correct', () => {
+      const manager = new GameManager(mockMoves)
+      manager.startReplay()
+
+      const ghosts = manager.generateGhostStones()
+
+      expect(ghosts).toHaveLength(4)
+      expect(ghosts.filter(g => g.isCorrect)).toHaveLength(1)
+
+      const correctGhost = ghosts.find(g => g.isCorrect)
+      expect(correctGhost.x).toBe(mockMoves[0].x)
+      expect(correctGhost.y).toBe(mockMoves[0].y)
+    })
+
+    it('ghost positions are valid and unique', () => {
+      const manager = new GameManager(mockMoves)
+      manager.startReplay()
+
+      const ghosts = manager.generateGhostStones()
+
+      ghosts.forEach(ghost => {
+        expect(ghost.x).toBeGreaterThanOrEqual(0)
+        expect(ghost.x).toBeLessThan(19)
+        expect(ghost.y).toBeGreaterThanOrEqual(0)
+        expect(ghost.y).toBeLessThan(19)
+      })
+
+      const positions = ghosts.map(g => `${g.x},${g.y}`)
+      const uniquePositions = new Set(positions)
+      expect(uniquePositions.size).toBe(4)
+    })
+
+    it('getQuadrantHint returns correct quadrant', () => {
+      const manager = new GameManager(mockMoves)
+      manager.startReplay()
+
+      const hint = manager.getQuadrantHint()
+
+      expect(hint.quadrant).toBe(getQuadrant(mockMoves[0].x, mockMoves[0].y))
+      expect(hint.vertices).toBeDefined()
     })
   })
 })

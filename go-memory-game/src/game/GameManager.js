@@ -1,5 +1,5 @@
 import Board from '@sabaki/go-board'
-import { PHASES, colorToSign } from './constants'
+import { PHASES, colorToSign, getQuadrant, getQuadrantVertices, randomInt } from './constants'
 
 export default class GameManager {
   constructor(moves) {
@@ -84,6 +84,72 @@ export default class GameManager {
     return {
       success: true,
       phase: this.phase
+    }
+  }
+
+  generateGhostStones() {
+    if (this.replayPosition >= this.moves.length) {
+      return []
+    }
+
+    const correctMove = this.moves[this.replayPosition]
+    const options = [{
+      x: correctMove.x,
+      y: correctMove.y,
+      isCorrect: true
+    }]
+
+    let attempts = 0
+    while (options.length < 4 && attempts < 100) {
+      const dx = randomInt(-4, 4)
+      const dy = randomInt(-4, 4)
+
+      if (dx === 0 && dy === 0) {
+        attempts++
+        continue
+      }
+
+      const newX = correctMove.x + dx
+      const newY = correctMove.y + dy
+
+      if (this.isValidHintPosition(newX, newY, options)) {
+        options.push({
+          x: newX,
+          y: newY,
+          isCorrect: false
+        })
+      }
+
+      attempts++
+    }
+
+    return options
+  }
+
+  isValidHintPosition(x, y, existingOptions) {
+    if (x < 0 || x > 18 || y < 0 || y > 18) {
+      return false
+    }
+
+    if (this.getCurrentBoard().get([x, y]) !== 0) {
+      return false
+    }
+
+    if (existingOptions.some(opt => opt.x === x && opt.y === y)) {
+      return false
+    }
+
+    return true
+  }
+
+  getQuadrantHint() {
+    const correctMove = this.moves[this.replayPosition]
+    const quadrant = getQuadrant(correctMove.x, correctMove.y)
+    const vertices = getQuadrantVertices(quadrant)
+
+    return {
+      quadrant,
+      vertices
     }
   }
 }
