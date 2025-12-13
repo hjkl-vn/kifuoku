@@ -1,5 +1,5 @@
 import Board from '@sabaki/go-board'
-import { PHASES, colorToSign, getQuadrant, getQuadrantVertices, randomInt } from './constants'
+import { PHASES, HINT_TYPES, colorToSign, getQuadrant, getQuadrantVertices, randomInt } from './constants'
 
 export default class GameManager {
   constructor(moves) {
@@ -150,6 +150,85 @@ export default class GameManager {
     return {
       quadrant,
       vertices
+    }
+  }
+
+  validateMove(x, y) {
+    if (this.phase !== PHASES.REPLAY) {
+      return { error: 'Not in replay phase' }
+    }
+
+    if (this.replayPosition >= this.moves.length) {
+      return { error: 'All moves completed' }
+    }
+
+    const correctMove = this.moves[this.replayPosition]
+    const isCorrect = correctMove.x === x && correctMove.y === y
+
+    if (isCorrect) {
+      const sign = colorToSign(correctMove.color)
+      const newBoard = this.getCurrentBoard().makeMove(sign, [x, y])
+      this.boardHistory.push(newBoard)
+      this.studyPosition++
+
+      if (this.wrongAttemptsCurrentMove === 0) {
+        this.stats.correctFirstTry++
+      }
+
+      const moveTime = this.stats.startTime ? Date.now() - this.stats.startTime : 0
+      this.stats.moveTimes.push(moveTime)
+
+      this.replayPosition++
+      this.wrongAttemptsCurrentMove = 0
+
+      if (this.replayPosition >= this.moves.length) {
+        this.phase = PHASES.COMPLETE
+        return {
+          correct: true,
+          gameComplete: true
+        }
+      }
+
+      return {
+        correct: true,
+        needHint: false,
+        currentMove: this.replayPosition
+      }
+    }
+
+    this.wrongAttemptsCurrentMove++
+    this.stats.wrongMoveCount++
+
+    if (this.wrongAttemptsCurrentMove === 1) {
+      this.stats.quadrantHintsUsed++
+      const hint = this.getQuadrantHint()
+      return {
+        correct: false,
+        needHint: true,
+        hintType: HINT_TYPES.QUADRANT,
+        quadrant: hint.quadrant,
+        vertices: hint.vertices
+      }
+    }
+
+    if (this.wrongAttemptsCurrentMove === 2) {
+      this.stats.ghostHintsUsed++
+      return {
+        correct: false,
+        needHint: true,
+        hintType: HINT_TYPES.GHOST,
+        ghostStones: this.generateGhostStones(),
+        nextColor: correctMove.color
+      }
+    }
+
+    this.stats.triangleHintsUsed++
+    return {
+      correct: false,
+      needHint: true,
+      hintType: HINT_TYPES.TRIANGLE,
+      correctPosition: { x: correctMove.x, y: correctMove.y },
+      nextColor: correctMove.color
     }
   }
 }

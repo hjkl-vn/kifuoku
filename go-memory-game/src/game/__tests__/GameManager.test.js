@@ -158,4 +158,71 @@ describe('GameManager', () => {
       expect(hint.vertices).toBeDefined()
     })
   })
+
+  describe('Move Validation', () => {
+    it('validates correct move on first try', () => {
+      const manager = new GameManager(mockMoves)
+      manager.startReplay()
+
+      const result = manager.validateMove(3, 3)
+
+      expect(result.correct).toBe(true)
+      expect(result.needHint).toBe(false)
+      expect(manager.replayPosition).toBe(1)
+      expect(manager.stats.correctFirstTry).toBe(1)
+      expect(manager.getCurrentBoard().get([3, 3])).toBe(1)
+    })
+
+    it('returns quadrant hint on first wrong attempt', () => {
+      const manager = new GameManager(mockMoves)
+      manager.startReplay()
+
+      const result = manager.validateMove(10, 10)
+
+      expect(result.correct).toBe(false)
+      expect(result.needHint).toBe(true)
+      expect(result.hintType).toBe('quadrant')
+      expect(result.quadrant).toBeDefined()
+      expect(manager.stats.quadrantHintsUsed).toBe(1)
+      expect(manager.wrongAttemptsCurrentMove).toBe(1)
+    })
+
+    it('returns ghost stones on second wrong attempt', () => {
+      const manager = new GameManager(mockMoves)
+      manager.startReplay()
+
+      manager.validateMove(10, 10)
+      const result = manager.validateMove(10, 11)
+
+      expect(result.correct).toBe(false)
+      expect(result.hintType).toBe('ghost')
+      expect(result.ghostStones).toHaveLength(4)
+      expect(manager.stats.ghostHintsUsed).toBe(1)
+    })
+
+    it('returns triangle hint on third wrong attempt', () => {
+      const manager = new GameManager(mockMoves)
+      manager.startReplay()
+
+      manager.validateMove(10, 10)
+      manager.validateMove(10, 11)
+      const result = manager.validateMove(10, 12)
+
+      expect(result.correct).toBe(false)
+      expect(result.hintType).toBe('triangle')
+      expect(result.correctPosition).toEqual({ x: 3, y: 3 })
+      expect(manager.stats.triangleHintsUsed).toBe(1)
+    })
+
+    it('transitions to complete when all moves done', () => {
+      const manager = new GameManager([{ x: 3, y: 3, color: 'B' }])
+      manager.startReplay()
+
+      const result = manager.validateMove(3, 3)
+
+      expect(result.correct).toBe(true)
+      expect(result.gameComplete).toBe(true)
+      expect(manager.phase).toBe('complete')
+    })
+  })
 })
