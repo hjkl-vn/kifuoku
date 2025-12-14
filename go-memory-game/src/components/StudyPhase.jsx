@@ -21,20 +21,10 @@ export default function StudyPhase({ gameManager }) {
       }
     }
 
-    const handleWheel = (e) => {
-      if (e.deltaY > 0 && canGoNext) {
-        gameManager.studyNext()
-      } else if (e.deltaY < 0 && canGoPrev) {
-        gameManager.studyPrev()
-      }
-    }
-
     window.addEventListener('keydown', handleKeyDown)
-    window.addEventListener('wheel', handleWheel)
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
-      window.removeEventListener('wheel', handleWheel)
     }
   }, [canGoNext, canGoPrev, gameManager])
 
