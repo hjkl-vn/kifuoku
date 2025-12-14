@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react'
 import { Goban } from '@sabaki/shudan'
 import ProgressBar from './ProgressBar'
+import GameInfo from './GameInfo'
 
-export default function StudyPhase({ gameManager }) {
+export default function StudyPhase({ gameManager, gameInfo }) {
   const state = gameManager.getState()
   const board = gameManager.getCurrentBoard()
   const lastMove = state.studyPosition > 0
@@ -38,114 +39,149 @@ export default function StudyPhase({ gameManager }) {
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.title}>Study Phase</h2>
-
-      <ProgressBar current={state.studyPosition} total={state.totalMoves} />
-
-      <div style={styles.boardContainer}>
-        <Goban
-          animateStonePlacement={true}
-          busy={true}
-          fuzzyStonePlacement={true}
-          showCoordinates={true}
-          signMap={board.signMap}
-          markerMap={markerMap}
-          vertexSize={34}
-        />
-      </div>
-
-      <div style={styles.controls}>
-        <button
-          style={{
-            ...styles.button,
-            ...(canGoPrev ? {} : styles.buttonDisabled)
-          }}
-          onClick={() => gameManager.studyPrev()}
-          disabled={!canGoPrev}
-        >
-          ← Previous
-        </button>
-
-        <button
-          style={{
-            ...styles.button,
-            ...(canGoNext ? {} : styles.buttonDisabled)
-          }}
-          onClick={() => gameManager.studyNext()}
-          disabled={!canGoNext}
-        >
-          Next →
-        </button>
-      </div>
-
-      {!canGoNext && state.studyPosition > 0 && (
-        <div style={styles.readySection}>
-          <p style={styles.readyText}>
-            You've reviewed all {state.totalMoves} moves.
-          </p>
+      <div style={styles.leftPanel}>
+        <h2 style={styles.phaseName}>Study Phase</h2>
+        <GameInfo gameInfo={gameInfo} />
+        <div style={styles.controls}>
           <button
-            style={styles.startButton}
+            style={{
+              ...styles.button,
+              ...(canGoPrev ? {} : styles.buttonDisabled)
+            }}
+            onClick={() => gameManager.studyPrev()}
+            disabled={!canGoPrev}
+          >
+            Previous
+          </button>
+
+          <button
+            style={{
+              ...styles.button,
+              ...(canGoNext ? {} : styles.buttonDisabled)
+            }}
+            onClick={() => gameManager.studyNext()}
+            disabled={!canGoNext}
+          >
+            Next
+          </button>
+        </div>
+
+        {!canGoNext && state.studyPosition > 0 && (
+          <button
+            style={styles.readyButton}
             onClick={() => gameManager.startReplay()}
           >
             Start Replay Challenge
           </button>
+        )}
+
+        <div style={styles.statusArea}>
+          {!canGoNext && state.studyPosition > 0 && (
+            <p style={styles.statusText}>
+              You've reviewed all {state.totalMoves} moves.
+            </p>
+          )}
         </div>
-      )}
+      </div>
+
+      <div style={styles.centerPanel}>
+        <ProgressBar current={state.studyPosition} total={state.totalMoves} />
+        <div style={styles.boardContainer}>
+          <Goban
+            animateStonePlacement={true}
+            busy={true}
+            fuzzyStonePlacement={true}
+            showCoordinates={true}
+            signMap={board.signMap}
+            markerMap={markerMap}
+            vertexSize={34}
+          />
+        </div>
+      </div>
+
+      <div style={styles.rightPanel}>
+        <div style={styles.statsBox}>
+          <h3 style={styles.statsTitle}>Current Move</h3>
+          <div style={styles.statRow}>
+            <span>Position</span>
+            <span>{state.studyPosition} / {state.totalMoves}</span>
+          </div>
+          {lastMove && (
+            <>
+              <div style={styles.statRow}>
+                <span>Color</span>
+                <span>{lastMove.color === 'B' ? 'Black' : 'White'}</span>
+              </div>
+              <div style={styles.statRow}>
+                <span>Coordinate</span>
+                <span>{String.fromCharCode(65 + lastMove.x)}{19 - lastMove.y}</span>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
     </div>
   )
 }
 
 const styles = {
   container: {
-    maxWidth: '800px',
-    margin: '20px auto',
+    display: 'flex',
+    justifyContent: 'center',
+    gap: '40px',
     padding: '20px',
-    fontFamily: 'sans-serif'
+    fontFamily: 'sans-serif',
+    minHeight: '100vh',
+    boxSizing: 'border-box'
   },
-  title: {
-    textAlign: 'center',
-    fontSize: '28px',
-    marginBottom: '10px'
+  leftPanel: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '20px',
+    minWidth: '250px',
+    maxWidth: '280px'
+  },
+  centerPanel: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px'
+  },
+  rightPanel: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '20px',
+    minWidth: '200px'
   },
   boardContainer: {
     display: 'flex',
-    justifyContent: 'center',
-    marginBottom: '20px'
+    justifyContent: 'center'
+  },
+  phaseName: {
+    fontSize: '24px',
+    fontWeight: 'bold',
+    margin: 0
   },
   controls: {
     display: 'flex',
-    justifyContent: 'center',
-    gap: '20px',
-    marginBottom: '30px'
+    gap: '10px'
   },
   button: {
-    padding: '12px 30px',
+    flex: 1,
+    padding: '12px 20px',
     fontSize: '16px',
     fontWeight: 'bold',
     backgroundColor: '#2196F3',
     color: 'white',
     border: 'none',
     borderRadius: '5px',
-    cursor: 'pointer',
-    transition: 'background-color 0.2s'
+    cursor: 'pointer'
   },
   buttonDisabled: {
     backgroundColor: '#ccc',
     cursor: 'not-allowed'
   },
-  readySection: {
-    textAlign: 'center',
-    padding: '20px',
-    backgroundColor: '#e8f5e9',
-    borderRadius: '10px'
-  },
-  readyText: {
-    fontSize: '18px',
-    marginBottom: '15px',
-    fontWeight: 'bold'
-  },
-  startButton: {
-    padding: '15px 40px',
+  readyButton: {
+    padding: '15px 30px',
     fontSize: '18px',
     fontWeight: 'bold',
     backgroundColor: '#4CAF50',
@@ -153,5 +189,28 @@ const styles = {
     border: 'none',
     borderRadius: '5px',
     cursor: 'pointer'
+  },
+  statusArea: {
+    marginTop: 'auto'
+  },
+  statusText: {
+    fontSize: '16px',
+    color: '#666',
+    margin: 0
+  },
+  statsBox: {
+    backgroundColor: '#f5f5f5',
+    borderRadius: '8px',
+    padding: '15px'
+  },
+  statsTitle: {
+    margin: '0 0 15px 0',
+    fontSize: '18px'
+  },
+  statRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    padding: '8px 0',
+    borderBottom: '1px solid #ddd'
   }
 }

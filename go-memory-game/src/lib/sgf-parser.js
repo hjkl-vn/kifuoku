@@ -71,9 +71,6 @@ function parseSGFCoordinate(coord) {
   return [x, y]
 }
 
-/**
- * Get board size from SGF
- */
 export function getBoardSize(sgfContent) {
   try {
     const gameTree = parse(sgfContent)
@@ -83,8 +80,29 @@ export function getBoardSize(sgfContent) {
       return parseInt(rootNode.data.SZ[0])
     }
 
-    return 19 // Default
+    return 19
   } catch (error) {
     return 19
+  }
+}
+
+export function getGameInfo(sgfContent) {
+  try {
+    const gameTree = parse(sgfContent)
+    const rootNode = gameTree[0]
+    const data = rootNode.data
+
+    return {
+      blackPlayer: data.PB?.[0] || null,
+      whitePlayer: data.PW?.[0] || null,
+      blackRank: data.BR?.[0] || null,
+      whiteRank: data.WR?.[0] || null,
+      date: data.DT?.[0] || null,
+      gameName: data.GN?.[0] || null,
+      result: data.RE?.[0] || null,
+      rules: data.RU?.[0] || null
+    }
+  } catch (error) {
+    return {}
   }
 }

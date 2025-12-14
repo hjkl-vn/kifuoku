@@ -1,20 +1,20 @@
 import React, { useState } from 'react'
-import { parseSGFToMoves, getBoardSize } from './lib/sgf-parser.js'
+import { parseSGFToMoves, getBoardSize, getGameInfo } from './lib/sgf-parser.js'
 import useGameManager from './game/useGameManager'
 import UploadPhase from './components/UploadPhase.jsx'
 import StudyPhase from './components/StudyPhase.jsx'
 import ReplayPhase from './components/ReplayPhase.jsx'
 
-function GameWrapper({ moves }) {
+function GameWrapper({ moves, gameInfo }) {
   const gameManager = useGameManager(moves)
   const state = gameManager.getState()
 
   if (state.phase === 'study') {
-    return <StudyPhase gameManager={gameManager} />
+    return <StudyPhase gameManager={gameManager} gameInfo={gameInfo} />
   }
 
   if (state.phase === 'replay') {
-    return <ReplayPhase gameManager={gameManager} />
+    return <ReplayPhase gameManager={gameManager} gameInfo={gameInfo} />
   }
 
   if (state.phase === 'complete') {
@@ -38,6 +38,7 @@ function GameWrapper({ moves }) {
 
 export default function App() {
   const [moves, setMoves] = useState(null)
+  const [gameInfo, setGameInfo] = useState(null)
   const [error, setError] = useState(null)
 
   const handleFileLoaded = (sgfContent) => {
@@ -55,6 +56,7 @@ export default function App() {
       }
 
       setMoves(parsedMoves)
+      setGameInfo(getGameInfo(sgfContent))
       setError(null)
     } catch (err) {
       setError(`Failed to load game: ${err.message}`)
@@ -80,7 +82,7 @@ export default function App() {
     return <UploadPhase onFileLoaded={handleFileLoaded} />
   }
 
-  return <GameWrapper moves={moves} />
+  return <GameWrapper moves={moves} gameInfo={gameInfo} />
 }
 
 const styles = {
