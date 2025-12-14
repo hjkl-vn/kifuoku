@@ -45,17 +45,19 @@ export default class GameManager {
       return { atEnd: true, position: this.studyPosition }
     }
 
-    const move = this.moves[this.studyPosition]
-    const sign = colorToSign(move.color)
-    const newBoard = this.getCurrentBoard().makeMove(sign, [move.x, move.y])
+    if (this.studyPosition === this.boardHistory.length - 1) {
+      const move = this.moves[this.studyPosition]
+      const sign = colorToSign(move.color)
+      const newBoard = this.getCurrentBoard().makeMove(sign, [move.x, move.y])
+      this.boardHistory.push(newBoard)
+    }
 
-    this.boardHistory.push(newBoard)
     this.studyPosition++
 
     return {
       success: true,
       position: this.studyPosition,
-      move: move
+      move: this.moves[this.studyPosition - 1]
     }
   }
 

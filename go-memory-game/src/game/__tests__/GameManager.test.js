@@ -97,6 +97,25 @@ describe('GameManager', () => {
       expect(result.atStart).toBe(true)
       expect(manager.studyPosition).toBe(0)
     })
+
+    it('navigating back and forward maintains correct board state', () => {
+      const manager = new GameManager(mockMoves)
+
+      manager.studyNext()
+      manager.studyNext()
+      expect(manager.getCurrentBoard().get([3, 3])).toBe(1)
+      expect(manager.getCurrentBoard().get([15, 15])).toBe(-1)
+
+      manager.studyPrev()
+      expect(manager.getCurrentBoard().get([3, 3])).toBe(1)
+      expect(manager.getCurrentBoard().get([15, 15])).toBe(0)
+
+      manager.studyNext()
+      expect(manager.getCurrentBoard().get([3, 3])).toBe(1)
+      expect(manager.getCurrentBoard().get([15, 15])).toBe(-1)
+
+      expect(manager.boardHistory).toHaveLength(3)
+    })
   })
 
   describe('Phase Transitions', () => {
