@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Goban } from '@sabaki/shudan'
+import Board from './Board'
 import ProgressBar from './ProgressBar'
 import GameInfo from './GameInfo'
 import { createEmptyBoardMap } from '../game/board-utils'
@@ -93,15 +93,10 @@ export default function ReplayPhase({ gameManager, gameInfo }) {
       <div className={layout.centerPanel}>
         <ProgressBar current={state.replayPosition} total={state.totalMoves} />
         <div className={boardContainerClass}>
-          <Goban
-            animateStonePlacement={true}
-            busy={false}
-            fuzzyStonePlacement={true}
-            showCoordinates={true}
+          <Board
             signMap={board.signMap}
             markerMap={markerMap}
             paintMap={paintMap}
-            vertexSize={34}
             onVertexClick={handleVertexClick}
           />
         </div>

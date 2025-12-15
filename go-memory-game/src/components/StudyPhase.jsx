@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Goban } from '@sabaki/shudan'
+import Board from './Board'
 import ProgressBar from './ProgressBar'
 import GameInfo from './GameInfo'
 import { createEmptyBoardMap } from '../game/board-utils'
@@ -80,15 +80,7 @@ export default function StudyPhase({ gameManager, gameInfo }) {
       <div className={layout.centerPanel}>
         <ProgressBar current={state.studyPosition} total={state.totalMoves} />
         <div className={layout.boardContainer}>
-          <Goban
-            animateStonePlacement={true}
-            busy={false}
-            fuzzyStonePlacement={true}
-            showCoordinates={true}
-            signMap={board.signMap}
-            markerMap={markerMap}
-            vertexSize={34}
-          />
+          <Board signMap={board.signMap} markerMap={markerMap} />
         </div>
       </div>
 
