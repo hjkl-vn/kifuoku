@@ -6,16 +6,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - DO NOT use inline comments to describe code. Only use comments to explain WHY code exists.
 
-## Go Memory Game (`go-memory-game/`)
-
-### Commands
+## Commands
 
 ```bash
-cd go-memory-game
-
-npm run dev      # Start development server (Vite)
-npm run build    # Production build
-npm test         # Run tests in watch mode
+npm install         # Install dependencies
+npm run dev         # Start development server (Vite)
+npm run build       # Production build
+npm test            # Run tests in watch mode
 npm test -- --run   # Run tests once
 ```
 
@@ -49,7 +46,7 @@ npm test -- --run   # Run tests once
 
 **SGF Parser (`src/lib/sgf-parser.js`):**
 - `parseSGFToMoves(sgfContent)` - extracts moves array
-- `getBoardSize(sgfContent)` - returns board size (only 19x19 supported)
+- `getBoardSize(sgfContent)` - returns board size (supports 9x9, 13x13, 19x19, etc.)
 - `getGameInfo(sgfContent)` - extracts metadata (PB, PW, BR, WR, DT, GN, RE, RU)
 
 **CSS Modules:**
