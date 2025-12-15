@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { Goban } from '@sabaki/shudan'
 import ProgressBar from './ProgressBar'
 import GameInfo from './GameInfo'
+import { createEmptyBoardMap } from '../game/board-utils'
 import layout from '../styles/layout.module.css'
 import buttons from '../styles/buttons.module.css'
 
@@ -29,9 +30,7 @@ export default function StudyPhase({ gameManager, gameInfo }) {
     }
   }, [canGoNext, canGoPrev, gameManager])
 
-  const markerMap = lastMove
-    ? Array(19).fill(null).map(() => Array(19).fill(null))
-    : null
+  const markerMap = lastMove ? createEmptyBoardMap() : null
 
   if (markerMap && lastMove) {
     markerMap[lastMove.y][lastMove.x] = { type: 'circle' }

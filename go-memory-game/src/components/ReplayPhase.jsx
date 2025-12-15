@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Goban } from '@sabaki/shudan'
 import ProgressBar from './ProgressBar'
 import GameInfo from './GameInfo'
-import { colorToSign } from '../game/constants'
+import { createEmptyBoardMap } from '../game/board-utils'
 import layout from '../styles/layout.module.css'
 import styles from './ReplayPhase.module.css'
 
@@ -50,8 +50,8 @@ export default function ReplayPhase({ gameManager, gameInfo }) {
     }
   }
 
-  const markerMap = Array(19).fill(null).map(() => Array(19).fill(null))
-  const paintMap = Array(19).fill(null).map(() => Array(19).fill(null))
+  const markerMap = createEmptyBoardMap()
+  const paintMap = createEmptyBoardMap()
 
   if (lastMove) {
     markerMap[lastMove.y][lastMove.x] = { type: 'circle' }
