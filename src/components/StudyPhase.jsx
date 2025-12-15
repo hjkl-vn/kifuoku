@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import Board from './Board'
 import ProgressBar from './ProgressBar'
 import GameInfo from './GameInfo'

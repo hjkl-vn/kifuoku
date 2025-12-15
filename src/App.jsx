@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { parseSGFToMoves, getBoardSize, getGameInfo } from './lib/sgf-parser.js'
 import GameController from './game/GameController'
 import UploadPhase from './components/UploadPhase.jsx'

@@ -1,3 +1,4 @@
+import React from 'react'
 import { Goban } from '@sabaki/shudan'
 
 export default function Board({ signMap, markerMap, paintMap, onVertexClick }) {

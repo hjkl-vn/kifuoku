@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import Board from './Board'
 import ProgressBar from './ProgressBar'
 import GameInfo from './GameInfo'
