@@ -8,9 +8,7 @@ import buttons from '../styles/buttons.module.css'
 export default function StudyPhase({ gameManager, gameInfo }) {
   const state = gameManager.getState()
   const board = gameManager.getCurrentBoard()
-  const lastMove = state.studyPosition > 0
-    ? gameManager.moves[state.studyPosition - 1]
-    : null
+  const lastMove = gameManager.getLastMove()
 
   const canGoNext = state.studyPosition < state.totalMoves
   const canGoPrev = state.studyPosition > 0

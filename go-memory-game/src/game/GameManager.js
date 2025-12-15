@@ -29,6 +29,10 @@ export default class GameManager {
     return this.boardHistory[this.studyPosition]
   }
 
+  getLastMove() {
+    return this.studyPosition > 0 ? this.moves[this.studyPosition - 1] : null
+  }
+
   getState() {
     return {
       phase: this.phase,

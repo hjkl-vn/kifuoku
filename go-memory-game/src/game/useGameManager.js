@@ -48,6 +48,10 @@ export default function useGameManager(sgfMoves) {
       return manager.getCurrentBoard()
     },
 
+    getLastMove() {
+      return manager.getLastMove()
+    },
+
     getState() {
       return manager.getState()
     },
