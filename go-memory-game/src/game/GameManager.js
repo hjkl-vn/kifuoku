@@ -40,6 +40,23 @@ export default class GameManager {
     }
   }
 
+  getCompletionStats() {
+    const totalTime = this.stats.startTime ? Date.now() - this.stats.startTime : 0
+    const totalMoves = this.moves.length
+    const avgTime = totalMoves > 0 ? totalTime / totalMoves : 0
+
+    return {
+      totalMoves,
+      totalTimeMs: totalTime,
+      totalTimeFormatted: (totalTime / 1000).toFixed(1),
+      avgTimeMs: avgTime,
+      avgTimeFormatted: (avgTime / 1000).toFixed(2),
+      wrongMoveCount: this.stats.wrongMoveCount,
+      correctFirstTry: this.stats.correctFirstTry,
+      accuracy: totalMoves > 0 ? Math.round((this.stats.correctFirstTry / totalMoves) * 100) : 0
+    }
+  }
+
   studyNext() {
     if (this.studyPosition >= this.moves.length) {
       return { atEnd: true, position: this.studyPosition }

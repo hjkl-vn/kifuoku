@@ -50,6 +50,10 @@ export default function useGameManager(sgfMoves) {
 
     getState() {
       return manager.getState()
+    },
+
+    getCompletionStats() {
+      return manager.getCompletionStats()
     }
   }), [manager])
 

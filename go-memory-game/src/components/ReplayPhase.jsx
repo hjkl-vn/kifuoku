@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Goban } from '@sabaki/shudan'
 import ProgressBar from './ProgressBar'
 import GameInfo from './GameInfo'
@@ -18,12 +18,6 @@ export default function ReplayPhase({ gameManager, gameInfo }) {
   const lastMove = state.studyPosition > 0
     ? gameManager.moves[state.studyPosition - 1]
     : null
-
-  useEffect(() => {
-    if (state.phase === 'complete') {
-      onComplete()
-    }
-  }, [state.phase])
 
   const handleVertexClick = (evt, [x, y]) => {
     if (evt.button !== 0) return
@@ -50,22 +44,12 @@ export default function ReplayPhase({ gameManager, gameInfo }) {
       setHintState(null)
       setBorderFlash('success')
       setTimeout(() => setBorderFlash(null), 500)
-
-      if (result.gameComplete) {
-        setTimeout(() => onComplete(), 1000)
-      }
     } else if (result.needHint) {
       setHintState(result)
       setEliminatedLetters([])
       setBorderFlash('error')
       setTimeout(() => setBorderFlash(null), 500)
     }
-  }
-
-  const onComplete = () => {
-    const totalTime = Date.now() - state.stats.startTime
-    const avgTime = state.totalMoves > 0 ? totalTime / state.totalMoves : 0
-    alert(`Game Complete!\n\nTotal time: ${(totalTime / 1000).toFixed(1)}s\nAvg per move: ${(avgTime / 1000).toFixed(2)}s\nWrong moves: ${state.stats.wrongMoveCount}`)
   }
 
   const markerMap = Array(19).fill(null).map(() => Array(19).fill(null))

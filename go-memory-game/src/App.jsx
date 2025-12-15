@@ -19,16 +19,15 @@ function GameWrapper({ moves, gameInfo }) {
   }
 
   if (state.phase === 'complete') {
-    const totalTime = Date.now() - state.stats.startTime
-    const avgTime = state.totalMoves > 0 ? totalTime / state.totalMoves : 0
+    const stats = gameManager.getCompletionStats()
 
     return (
       <div className={styles.completeContainer}>
         <h1>Game Complete!</h1>
         <div className={styles.statsSection}>
-          <p>Total Time: {(totalTime / 1000).toFixed(1)}s</p>
-          <p>Average Time per Move: {(avgTime / 1000).toFixed(2)}s</p>
-          <p>Wrong Moves: {state.stats.wrongMoveCount}</p>
+          <p>Total Time: {stats.totalTimeFormatted}s</p>
+          <p>Average Time per Move: {stats.avgTimeFormatted}s</p>
+          <p>Wrong Moves: {stats.wrongMoveCount}</p>
         </div>
       </div>
     )
