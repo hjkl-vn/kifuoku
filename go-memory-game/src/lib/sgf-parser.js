@@ -1,10 +1,5 @@
 import { parse } from '@sabaki/sgf'
 
-/**
- * Parse SGF file content to move list
- * @param {string} sgfContent - Raw SGF file content
- * @returns {Array} Array of moves: [{x, y, color, moveNumber}, ...]
- */
 export function parseSGFToMoves(sgfContent) {
   try {
     const gameTree = parse(sgfContent)
@@ -17,11 +12,9 @@ export function parseSGFToMoves(sgfContent) {
     const moves = []
     let moveNumber = 0
 
-    // Traverse game tree depth-first
     function traverseNode(node) {
       if (!node) return
 
-      // Check for move (B or W property)
       const blackMove = node.data.B
       const whiteMove = node.data.W
 
@@ -41,7 +34,6 @@ export function parseSGFToMoves(sgfContent) {
         }
       }
 
-      // Continue with first child
       if (node.children && node.children.length > 0) {
         traverseNode(node.children[0])
       }
@@ -55,12 +47,8 @@ export function parseSGFToMoves(sgfContent) {
   }
 }
 
-/**
- * Convert SGF coordinate string to [x, y]
- * SGF uses lowercase letters: 'a' = 0, 'b' = 1, etc.
- * Empty string or 'tt' means pass, return [null, null]
- */
 function parseSGFCoordinate(coord) {
+  // 'tt' and empty strings represent pass moves in SGF format
   if (!coord || coord === '' || coord === 'tt') {
     return [null, null]
   }
