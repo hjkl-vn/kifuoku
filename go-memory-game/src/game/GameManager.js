@@ -1,5 +1,16 @@
 import Board from '@sabaki/go-board'
-import { PHASES, HINT_TYPES, colorToSign, getQuadrant, getQuadrantVertices, randomInt } from './constants'
+import {
+  BOARD_SIZE,
+  GHOST_HINT_COUNT,
+  MAX_GHOST_GENERATION_ATTEMPTS,
+  GHOST_HINT_RADIUS,
+  PHASES,
+  HINT_TYPES,
+  colorToSign,
+  getQuadrant,
+  getQuadrantVertices,
+  randomInt
+} from './constants'
 
 export default class GameManager {
   constructor(moves) {
@@ -10,7 +21,7 @@ export default class GameManager {
     this.phase = PHASES.STUDY
     this.studyPosition = 0
     this.replayPosition = 0
-    this.boardHistory = [Board.fromDimensions(19, 19)]
+    this.boardHistory = [Board.fromDimensions(BOARD_SIZE, BOARD_SIZE)]
     this.wrongAttemptsCurrentMove = 0
     this.currentGhostStones = []
 
@@ -124,9 +135,9 @@ export default class GameManager {
     }]
 
     let attempts = 0
-    while (options.length < 4 && attempts < 100) {
-      const dx = randomInt(-4, 4)
-      const dy = randomInt(-4, 4)
+    while (options.length < GHOST_HINT_COUNT && attempts < MAX_GHOST_GENERATION_ATTEMPTS) {
+      const dx = randomInt(-GHOST_HINT_RADIUS, GHOST_HINT_RADIUS)
+      const dy = randomInt(-GHOST_HINT_RADIUS, GHOST_HINT_RADIUS)
 
       if (dx === 0 && dy === 0) {
         attempts++
@@ -151,7 +162,7 @@ export default class GameManager {
   }
 
   isValidHintPosition(x, y, existingOptions) {
-    if (x < 0 || x > 18 || y < 0 || y > 18) {
+    if (x < 0 || x >= BOARD_SIZE || y < 0 || y >= BOARD_SIZE) {
       return false
     }
 

@@ -1,3 +1,10 @@
+export const BOARD_SIZE = 19
+export const GHOST_HINT_COUNT = 4
+export const MAX_GHOST_GENERATION_ATTEMPTS = 100
+export const GHOST_HINT_RADIUS = 4
+export const HINT_LETTERS = ['A', 'B', 'C', 'D']
+export const BORDER_FLASH_DURATION_MS = 500
+
 export const PHASES = {
   UPLOAD: 'upload',
   STUDY: 'study',

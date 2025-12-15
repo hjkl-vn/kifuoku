@@ -3,10 +3,9 @@ import Board from './Board'
 import ProgressBar from './ProgressBar'
 import GameInfo from './GameInfo'
 import { createEmptyBoardMap } from '../game/board-utils'
+import { HINT_LETTERS, BORDER_FLASH_DURATION_MS } from '../game/constants'
 import layout from '../styles/layout.module.css'
 import styles from './ReplayPhase.module.css'
-
-const HINT_LETTERS = ['A', 'B', 'C', 'D']
 
 export default function ReplayPhase({ gameManager, gameInfo }) {
   const [hintState, setHintState] = useState(null)
@@ -29,7 +28,7 @@ export default function ReplayPhase({ gameManager, gameInfo }) {
         setHintState(null)
         setEliminatedLetters([])
         setBorderFlash('success')
-        setTimeout(() => setBorderFlash(null), 500)
+        setTimeout(() => setBorderFlash(null), BORDER_FLASH_DURATION_MS)
       } else {
         setEliminatedLetters(prev => [...prev, { x, y }])
       }
@@ -41,12 +40,12 @@ export default function ReplayPhase({ gameManager, gameInfo }) {
     if (result.correct) {
       setHintState(null)
       setBorderFlash('success')
-      setTimeout(() => setBorderFlash(null), 500)
+      setTimeout(() => setBorderFlash(null), BORDER_FLASH_DURATION_MS)
     } else if (result.needHint) {
       setHintState(result)
       setEliminatedLetters([])
       setBorderFlash('error')
-      setTimeout(() => setBorderFlash(null), 500)
+      setTimeout(() => setBorderFlash(null), BORDER_FLASH_DURATION_MS)
     }
   }
 
