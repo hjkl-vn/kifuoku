@@ -67,14 +67,6 @@ export default function StudyPhase({ gameManager, gameInfo }) {
             Start Replay Challenge
           </button>
         )}
-
-        <div className={layout.statusArea}>
-          {!canGoNext && state.studyPosition > 0 && (
-            <p className={layout.statusText}>
-              You've reviewed all {state.totalMoves} moves.
-            </p>
-          )}
-        </div>
       </div>
 
       <div className={layout.centerPanel}>
