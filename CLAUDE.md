@@ -14,9 +14,10 @@ npm run dev         # Start development server (Vite)
 npm run build       # Production build
 npm test            # Run tests in watch mode
 npm test -- --run   # Run tests once
+npm test -- --run src/game/__tests__/GameManager.test.js  # Run single test file
 ```
 
-### Architecture
+## Architecture
 
 **MVC Pattern:**
 - **Model:** `GameManager` class (`src/game/GameManager.js`) - pure JavaScript, no React dependencies
@@ -48,6 +49,11 @@ npm test -- --run   # Run tests once
 - `parseSGFToMoves(sgfContent)` - extracts moves array
 - `getBoardSize(sgfContent)` - returns board size (supports 9x9, 13x13, 19x19, etc.)
 - `getGameInfo(sgfContent)` - extracts metadata (PB, PW, BR, WR, DT, GN, RE, RU)
+
+**Constants (`src/game/constants.js`):**
+- `DEFAULT_BOARD_SIZE`, `GHOST_HINT_COUNT`, `GHOST_HINT_RADIUS` - game configuration
+- `PHASES`, `HINT_TYPES` - enums for game state
+- `getQuadrant()`, `getQuadrantVertices()` - hint system helpers (accept boardSize parameter)
 
 **CSS Modules:**
 - `src/styles/layout.module.css` - shared layout (container, panels, statsBox)
