@@ -1,6 +1,6 @@
 import Board from '@sabaki/go-board'
 import {
-  BOARD_SIZE,
+  DEFAULT_BOARD_SIZE,
   GHOST_HINT_COUNT,
   MAX_GHOST_GENERATION_ATTEMPTS,
   GHOST_HINT_RADIUS,
@@ -13,15 +13,16 @@ import {
 } from './constants'
 
 export default class GameManager {
-  constructor(moves) {
+  constructor(moves, boardSize = DEFAULT_BOARD_SIZE) {
     if (!Array.isArray(moves)) {
       throw new Error('moves must be an array')
     }
     this.moves = [...moves]
+    this.boardSize = boardSize
     this.phase = PHASES.STUDY
     this.studyPosition = 0
     this.replayPosition = 0
-    this.boardHistory = [Board.fromDimensions(BOARD_SIZE, BOARD_SIZE)]
+    this.boardHistory = [Board.fromDimensions(boardSize, boardSize)]
     this.wrongAttemptsCurrentMove = 0
     this.currentGhostStones = []
 
@@ -50,6 +51,7 @@ export default class GameManager {
       studyPosition: this.studyPosition,
       replayPosition: this.replayPosition,
       totalMoves: this.moves.length,
+      boardSize: this.boardSize,
       boardState: this.getCurrentBoard().signMap,
       stats: { ...this.stats }
     }
@@ -162,7 +164,7 @@ export default class GameManager {
   }
 
   isValidHintPosition(x, y, existingOptions) {
-    if (x < 0 || x >= BOARD_SIZE || y < 0 || y >= BOARD_SIZE) {
+    if (x < 0 || x >= this.boardSize || y < 0 || y >= this.boardSize) {
       return false
     }
 
@@ -179,8 +181,8 @@ export default class GameManager {
 
   getQuadrantHint() {
     const correctMove = this.moves[this.replayPosition]
-    const quadrant = getQuadrant(correctMove.x, correctMove.y)
-    const vertices = getQuadrantVertices(quadrant)
+    const quadrant = getQuadrant(correctMove.x, correctMove.y, this.boardSize)
+    const vertices = getQuadrantVertices(quadrant, this.boardSize)
 
     return {
       quadrant,

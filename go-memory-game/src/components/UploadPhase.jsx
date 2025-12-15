@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import styles from './UploadPhase.module.css'
 
 export default function UploadPhase({ onFileLoaded }) {
@@ -71,7 +71,7 @@ export default function UploadPhase({ onFileLoaded }) {
       <div className={styles.info}>
         <p><strong>How to play:</strong></p>
         <ol>
-          <li>Upload a game (SGF format, 19×19 only)</li>
+          <li>Upload a Go game (SGF format)</li>
           <li>Study the game using prev/next buttons (or arrow keys)</li>
           <li>Replay the game from memory</li>
           <li>You'll get hints when you make mistakes</li>

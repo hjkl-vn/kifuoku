@@ -30,7 +30,7 @@ export default function StudyPhase({ gameManager, gameInfo }) {
     }
   }, [canGoNext, canGoPrev, gameManager])
 
-  const markerMap = lastMove ? createEmptyBoardMap() : null
+  const markerMap = lastMove ? createEmptyBoardMap(state.boardSize) : null
 
   if (markerMap && lastMove) {
     markerMap[lastMove.y][lastMove.x] = { type: 'circle' }
@@ -95,7 +95,7 @@ export default function StudyPhase({ gameManager, gameInfo }) {
               </div>
               <div className={layout.statRow}>
                 <span>Coordinate</span>
-                <span>{String.fromCharCode(65 + lastMove.x)}{19 - lastMove.y}</span>
+                <span>{String.fromCharCode(65 + lastMove.x)}{state.boardSize - lastMove.y}</span>
               </div>
             </>
           )}

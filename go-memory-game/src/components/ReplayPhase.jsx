@@ -49,8 +49,8 @@ export default function ReplayPhase({ gameManager, gameInfo }) {
     }
   }
 
-  const markerMap = createEmptyBoardMap()
-  const paintMap = createEmptyBoardMap()
+  const markerMap = createEmptyBoardMap(state.boardSize)
+  const paintMap = createEmptyBoardMap(state.boardSize)
 
   if (lastMove) {
     markerMap[lastMove.y][lastMove.x] = { type: 'circle' }

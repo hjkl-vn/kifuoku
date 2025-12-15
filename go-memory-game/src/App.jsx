@@ -6,8 +6,8 @@ import StudyPhase from './components/StudyPhase.jsx'
 import ReplayPhase from './components/ReplayPhase.jsx'
 import styles from './App.module.css'
 
-function GameWrapper({ moves, gameInfo }) {
-  const gameManager = useGameManager(moves)
+function GameWrapper({ moves, boardSize, gameInfo }) {
+  const gameManager = useGameManager(moves, boardSize)
   const state = gameManager.getState()
 
   if (state.phase === 'study') {
@@ -38,24 +38,22 @@ function GameWrapper({ moves, gameInfo }) {
 
 export default function App() {
   const [moves, setMoves] = useState(null)
+  const [boardSize, setBoardSize] = useState(null)
   const [gameInfo, setGameInfo] = useState(null)
   const [error, setError] = useState(null)
 
   const handleFileLoaded = (sgfContent) => {
     try {
-      const boardSize = getBoardSize(sgfContent)
-      if (boardSize !== 19) {
-        setError('Only 19×19 boards are supported')
-        return
-      }
-
+      const size = getBoardSize(sgfContent)
       const parsedMoves = parseSGFToMoves(sgfContent)
+
       if (parsedMoves.length === 0) {
         setError('No moves found in SGF file')
         return
       }
 
       setMoves(parsedMoves)
+      setBoardSize(size)
       setGameInfo(getGameInfo(sgfContent))
       setError(null)
     } catch (err) {
@@ -82,5 +80,5 @@ export default function App() {
     return <UploadPhase onFileLoaded={handleFileLoaded} />
   }
 
-  return <GameWrapper moves={moves} gameInfo={gameInfo} />
+  return <GameWrapper moves={moves} boardSize={boardSize} gameInfo={gameInfo} />
 }

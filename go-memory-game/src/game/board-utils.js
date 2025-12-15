@@ -1,5 +1,5 @@
-import { BOARD_SIZE } from './constants'
+import { DEFAULT_BOARD_SIZE } from './constants'
 
-export function createEmptyBoardMap() {
-  return Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null))
+export function createEmptyBoardMap(boardSize = DEFAULT_BOARD_SIZE) {
+  return Array(boardSize).fill(null).map(() => Array(boardSize).fill(null))
 }

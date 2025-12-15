@@ -1,4 +1,4 @@
-export const BOARD_SIZE = 19
+export const DEFAULT_BOARD_SIZE = 19
 export const GHOST_HINT_COUNT = 4
 export const MAX_GHOST_GENERATION_ATTEMPTS = 100
 export const GHOST_HINT_RADIUS = 4
@@ -18,18 +18,20 @@ export const HINT_TYPES = {
   TRIANGLE: 'triangle'
 }
 
-export function getQuadrant(x, y) {
-  const horizontal = x < 9.5 ? 'left' : 'right'
-  const vertical = y < 9.5 ? 'upper' : 'lower'
+export function getQuadrant(x, y, boardSize = DEFAULT_BOARD_SIZE) {
+  const midpoint = boardSize / 2
+  const horizontal = x < midpoint ? 'left' : 'right'
+  const vertical = y < midpoint ? 'upper' : 'lower'
   return `${vertical} ${horizontal}`
 }
 
-export function getQuadrantVertices(quadrant) {
+export function getQuadrantVertices(quadrant, boardSize = DEFAULT_BOARD_SIZE) {
   const vertices = []
+  const midpoint = Math.floor(boardSize / 2)
 
   const [vertical, horizontal] = quadrant.split(' ')
-  const xRange = horizontal === 'left' ? [0, 9] : [10, 18]
-  const yRange = vertical === 'upper' ? [0, 9] : [10, 18]
+  const xRange = horizontal === 'left' ? [0, midpoint - 1] : [midpoint, boardSize - 1]
+  const yRange = vertical === 'upper' ? [0, midpoint - 1] : [midpoint, boardSize - 1]
 
   for (let y = yRange[0]; y <= yRange[1]; y++) {
     for (let x = xRange[0]; x <= xRange[1]; x++) {
