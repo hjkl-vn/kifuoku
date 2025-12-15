@@ -89,7 +89,7 @@ export default function StudyPhase({ gameManager, gameInfo }) {
         <div style={styles.boardContainer}>
           <Goban
             animateStonePlacement={true}
-            busy={true}
+            busy={false}
             fuzzyStonePlacement={true}
             showCoordinates={true}
             signMap={board.signMap}

@@ -60,7 +60,7 @@ Implemented the Study Phase navigation logic as specified in Task 6 of the imple
 **UI Elements:**
 - Title: "Study Phase"
 - Move counter with current position
-- Goban board (28px vertex size, coordinates enabled, busy mode)
+- Goban board (34 vertex size, coordinates enabled, busy mode)
 - Navigation buttons (disabled when at boundaries)
 - Ready section with start button (shown at end)
 
@@ -93,7 +93,7 @@ Uses Shudan's Goban component with:
 - `signMap`: 2D array from Lua (0 = empty, 1 = black, -1 = white)
 - `showCoordinates`: true
 - `busy`: true (prevents click interactions during study)
-- `vertexSize`: 28px
+- `vertexSize`: 34px
 
 ## Expected Behavior
 
