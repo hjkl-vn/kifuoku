@@ -42,7 +42,7 @@ export default function StudyPhase({ gameManager, gameInfo }) {
   return (
     <div className={layout.container}>
       <div className={layout.leftPanel}>
-        <h2 className={layout.phaseName}>Study Phase</h2>
+        {/* <h2 className={layout.phaseName}>Study Phase</h2> */}
         <GameInfo gameInfo={gameInfo} />
         <div className={buttons.controls}>
           <button
@@ -97,11 +97,7 @@ export default function StudyPhase({ gameManager, gameInfo }) {
 
       <div className={layout.rightPanel}>
         <div className={layout.statsBox}>
-          <h3 className={layout.statsTitle}>Current Move</h3>
-          <div className={layout.statRow}>
-            <span>Position</span>
-            <span>{state.studyPosition} / {state.totalMoves}</span>
-          </div>
+          <h3 className={layout.phaseName}>Study phase</h3>
           {lastMove && (
             <>
               <div className={layout.statRow}>

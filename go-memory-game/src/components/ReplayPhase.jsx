@@ -104,7 +104,7 @@ export default function ReplayPhase({ gameManager, gameInfo }) {
   return (
     <div className={layout.container}>
       <div className={layout.leftPanel}>
-        <h2 className={layout.phaseName}>Replay Challenge</h2>
+        {/* <h2 className={layout.phaseName}>Replay Challenge</h2> */}
         <GameInfo gameInfo={gameInfo} />
       </div>
 
@@ -127,11 +127,7 @@ export default function ReplayPhase({ gameManager, gameInfo }) {
 
       <div className={layout.rightPanel}>
         <div className={layout.statsBox}>
-          <h3 className={layout.statsTitle}>Progress</h3>
-          <div className={layout.statRow}>
-            <span>Move</span>
-            <span>{state.replayPosition} / {state.totalMoves}</span>
-          </div>
+          <h3 className={layout.phaseName}>Replay</h3>
           <div className={layout.statRow}>
             <span>Correct (1st try)</span>
             <span>{state.stats.correctFirstTry}</span>

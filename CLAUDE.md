@@ -51,3 +51,9 @@ npm test -- --run   # Run tests once
 - `parseSGFToMoves(sgfContent)` - extracts moves array
 - `getBoardSize(sgfContent)` - returns board size (only 19x19 supported)
 - `getGameInfo(sgfContent)` - extracts metadata (PB, PW, BR, WR, DT, GN, RE, RU)
+
+**CSS Modules:**
+- `src/styles/layout.module.css` - shared layout (container, panels, statsBox)
+- `src/styles/buttons.module.css` - shared button styles with `composes`
+- Component-specific styles in `src/components/*.module.css`
+- Dynamic classes use array join pattern: `[styles.a, condition ? styles.b : ''].filter(Boolean).join(' ')`
