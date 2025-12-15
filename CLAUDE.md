@@ -22,7 +22,7 @@ npm test -- --run src/game/__tests__/GameManager.test.js  # Run single test file
 **MVC Pattern:**
 - **Model:** `GameManager` class (`src/game/GameManager.js`) - pure JavaScript, no React dependencies
 - **View:** React components in `src/components/`
-- **Controller:** `useGameManager` hook (`src/game/useGameManager.js`) - wraps GameManager and triggers React re-renders
+- **Controller:** `GameController` hook (`src/game/GameController.js`) - wraps GameManager and triggers React re-renders
 
 **Game Flow:**
 1. Upload Phase → user uploads SGF file

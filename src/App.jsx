@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { parseSGFToMoves, getBoardSize, getGameInfo } from './lib/sgf-parser.js'
-import useGameManager from './game/useGameManager'
+import GameController from './game/GameController'
 import UploadPhase from './components/UploadPhase.jsx'
 import StudyPhase from './components/StudyPhase.jsx'
 import ReplayPhase from './components/ReplayPhase.jsx'
 import styles from './App.module.css'
 
 function GameWrapper({ moves, boardSize, gameInfo }) {
-  const gameManager = useGameManager(moves, boardSize)
+  const gameManager = GameController(moves, boardSize)
   const state = gameManager.getState()
 
   if (state.phase === 'study') {

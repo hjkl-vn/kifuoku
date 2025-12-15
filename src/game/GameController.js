@@ -1,7 +1,7 @@
 import { useState, useMemo, useReducer } from 'react'
 import GameManager from './GameManager'
 
-export default function useGameManager(sgfMoves, boardSize) {
+export default function GameController(sgfMoves, boardSize) {
   const [manager] = useState(() => new GameManager(sgfMoves, boardSize))
   const [, forceUpdate] = useReducer(x => x + 1, 0)
 
