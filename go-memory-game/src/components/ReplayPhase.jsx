@@ -3,6 +3,8 @@ import { Goban } from '@sabaki/shudan'
 import ProgressBar from './ProgressBar'
 import GameInfo from './GameInfo'
 import { colorToSign } from '../game/constants'
+import layout from '../styles/layout.module.css'
+import styles from './ReplayPhase.module.css'
 
 const HINT_LETTERS = ['A', 'B', 'C', 'D']
 
@@ -90,24 +92,25 @@ export default function ReplayPhase({ gameManager, gameInfo }) {
 
   if (hintState?.hintType === 'triangle' && hintState.correctPosition) {
     const { x, y } = hintState.correctPosition
-    const sign = colorToSign(hintState.nextColor)
     markerMap[y][x] = { type: 'point' }
   }
 
+  const boardContainerClass = [
+    layout.boardContainer,
+    borderFlash === 'success' ? styles.borderSuccess : '',
+    borderFlash === 'error' ? styles.borderError : ''
+  ].filter(Boolean).join(' ')
+
   return (
-    <div style={styles.container}>
-      <div style={styles.leftPanel}>
-        <h2 style={styles.phaseName}>Replay Challenge</h2>
+    <div className={layout.container}>
+      <div className={layout.leftPanel}>
+        <h2 className={layout.phaseName}>Replay Challenge</h2>
         <GameInfo gameInfo={gameInfo} />
       </div>
 
-      <div style={styles.centerPanel}>
+      <div className={layout.centerPanel}>
         <ProgressBar current={state.replayPosition} total={state.totalMoves} />
-        <div style={{
-          ...styles.boardContainer,
-          ...(borderFlash === 'success' ? styles.borderSuccess : {}),
-          ...(borderFlash === 'error' ? styles.borderError : {})
-        }}>
+        <div className={boardContainerClass}>
           <Goban
             animateStonePlacement={true}
             busy={false}
@@ -122,18 +125,18 @@ export default function ReplayPhase({ gameManager, gameInfo }) {
         </div>
       </div>
 
-      <div style={styles.rightPanel}>
-        <div style={styles.statsBox}>
-          <h3 style={styles.statsTitle}>Progress</h3>
-          <div style={styles.statRow}>
+      <div className={layout.rightPanel}>
+        <div className={layout.statsBox}>
+          <h3 className={layout.statsTitle}>Progress</h3>
+          <div className={layout.statRow}>
             <span>Move</span>
             <span>{state.replayPosition} / {state.totalMoves}</span>
           </div>
-          <div style={styles.statRow}>
+          <div className={layout.statRow}>
             <span>Correct (1st try)</span>
             <span>{state.stats.correctFirstTry}</span>
           </div>
-          <div style={styles.statRow}>
+          <div className={layout.statRow}>
             <span>Wrong attempts</span>
             <span>{state.stats.wrongMoveCount}</span>
           </div>
@@ -141,66 +144,4 @@ export default function ReplayPhase({ gameManager, gameInfo }) {
       </div>
     </div>
   )
-}
-
-const styles = {
-  container: {
-    display: 'flex',
-    justifyContent: 'center',
-    gap: '40px',
-    padding: '20px',
-    fontFamily: 'sans-serif',
-    minHeight: '100vh',
-    boxSizing: 'border-box'
-  },
-  leftPanel: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '20px',
-    minWidth: '250px',
-    maxWidth: '280px'
-  },
-  centerPanel: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '10px'
-  },
-  rightPanel: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '20px',
-    minWidth: '200px'
-  },
-  boardContainer: {
-    display: 'flex',
-    justifyContent: 'center'
-  },
-  phaseName: {
-    fontSize: '24px',
-    fontWeight: 'bold',
-    margin: 0
-  },
-  borderSuccess: {
-    boxShadow: '0 0 0 4px #4CAF50',
-    borderRadius: '4px'
-  },
-  borderError: {
-    boxShadow: '0 0 0 4px #f44336',
-    borderRadius: '4px'
-  },
-  statsBox: {
-    backgroundColor: '#f5f5f5',
-    borderRadius: '8px',
-    padding: '15px'
-  },
-  statsTitle: {
-    margin: '0 0 15px 0',
-    fontSize: '18px'
-  },
-  statRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: '8px 0',
-    borderBottom: '1px solid #ddd'
-  }
 }

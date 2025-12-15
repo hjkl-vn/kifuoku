@@ -1,0 +1,9 @@
+.borderSuccess {
+  box-shadow: 0 0 0 4px #4CAF50;
+  border-radius: 4px;
+}
+
+.borderError {
+  box-shadow: 0 0 0 4px #f44336;
+  border-radius: 4px;
+}

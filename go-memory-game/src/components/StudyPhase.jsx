@@ -2,6 +2,8 @@ import React, { useEffect } from 'react'
 import { Goban } from '@sabaki/shudan'
 import ProgressBar from './ProgressBar'
 import GameInfo from './GameInfo'
+import layout from '../styles/layout.module.css'
+import buttons from '../styles/buttons.module.css'
 
 export default function StudyPhase({ gameManager, gameInfo }) {
   const state = gameManager.getState()
@@ -38,16 +40,13 @@ export default function StudyPhase({ gameManager, gameInfo }) {
   }
 
   return (
-    <div style={styles.container}>
-      <div style={styles.leftPanel}>
-        <h2 style={styles.phaseName}>Study Phase</h2>
+    <div className={layout.container}>
+      <div className={layout.leftPanel}>
+        <h2 className={layout.phaseName}>Study Phase</h2>
         <GameInfo gameInfo={gameInfo} />
-        <div style={styles.controls}>
+        <div className={buttons.controls}>
           <button
-            style={{
-              ...styles.button,
-              ...(canGoPrev ? {} : styles.buttonDisabled)
-            }}
+            className={buttons.buttonFlex}
             onClick={() => gameManager.studyPrev()}
             disabled={!canGoPrev}
           >
@@ -55,10 +54,7 @@ export default function StudyPhase({ gameManager, gameInfo }) {
           </button>
 
           <button
-            style={{
-              ...styles.button,
-              ...(canGoNext ? {} : styles.buttonDisabled)
-            }}
+            className={buttons.buttonFlex}
             onClick={() => gameManager.studyNext()}
             disabled={!canGoNext}
           >
@@ -68,25 +64,25 @@ export default function StudyPhase({ gameManager, gameInfo }) {
 
         {!canGoNext && state.studyPosition > 0 && (
           <button
-            style={styles.readyButton}
+            className={buttons.primaryButton}
             onClick={() => gameManager.startReplay()}
           >
             Start Replay Challenge
           </button>
         )}
 
-        <div style={styles.statusArea}>
+        <div className={layout.statusArea}>
           {!canGoNext && state.studyPosition > 0 && (
-            <p style={styles.statusText}>
+            <p className={layout.statusText}>
               You've reviewed all {state.totalMoves} moves.
             </p>
           )}
         </div>
       </div>
 
-      <div style={styles.centerPanel}>
+      <div className={layout.centerPanel}>
         <ProgressBar current={state.studyPosition} total={state.totalMoves} />
-        <div style={styles.boardContainer}>
+        <div className={layout.boardContainer}>
           <Goban
             animateStonePlacement={true}
             busy={false}
@@ -99,20 +95,20 @@ export default function StudyPhase({ gameManager, gameInfo }) {
         </div>
       </div>
 
-      <div style={styles.rightPanel}>
-        <div style={styles.statsBox}>
-          <h3 style={styles.statsTitle}>Current Move</h3>
-          <div style={styles.statRow}>
+      <div className={layout.rightPanel}>
+        <div className={layout.statsBox}>
+          <h3 className={layout.statsTitle}>Current Move</h3>
+          <div className={layout.statRow}>
             <span>Position</span>
             <span>{state.studyPosition} / {state.totalMoves}</span>
           </div>
           {lastMove && (
             <>
-              <div style={styles.statRow}>
+              <div className={layout.statRow}>
                 <span>Color</span>
                 <span>{lastMove.color === 'B' ? 'Black' : 'White'}</span>
               </div>
-              <div style={styles.statRow}>
+              <div className={layout.statRow}>
                 <span>Coordinate</span>
                 <span>{String.fromCharCode(65 + lastMove.x)}{19 - lastMove.y}</span>
               </div>
@@ -122,95 +118,4 @@ export default function StudyPhase({ gameManager, gameInfo }) {
       </div>
     </div>
   )
-}
-
-const styles = {
-  container: {
-    display: 'flex',
-    justifyContent: 'center',
-    gap: '40px',
-    padding: '20px',
-    fontFamily: 'sans-serif',
-    minHeight: '100vh',
-    boxSizing: 'border-box'
-  },
-  leftPanel: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '20px',
-    minWidth: '250px',
-    maxWidth: '280px'
-  },
-  centerPanel: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '10px'
-  },
-  rightPanel: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '20px',
-    minWidth: '200px'
-  },
-  boardContainer: {
-    display: 'flex',
-    justifyContent: 'center'
-  },
-  phaseName: {
-    fontSize: '24px',
-    fontWeight: 'bold',
-    margin: 0
-  },
-  controls: {
-    display: 'flex',
-    gap: '10px'
-  },
-  button: {
-    flex: 1,
-    padding: '12px 20px',
-    fontSize: '16px',
-    fontWeight: 'bold',
-    backgroundColor: '#2196F3',
-    color: 'white',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer'
-  },
-  buttonDisabled: {
-    backgroundColor: '#ccc',
-    cursor: 'not-allowed'
-  },
-  readyButton: {
-    padding: '15px 30px',
-    fontSize: '18px',
-    fontWeight: 'bold',
-    backgroundColor: '#4CAF50',
-    color: 'white',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer'
-  },
-  statusArea: {
-    marginTop: 'auto'
-  },
-  statusText: {
-    fontSize: '16px',
-    color: '#666',
-    margin: 0
-  },
-  statsBox: {
-    backgroundColor: '#f5f5f5',
-    borderRadius: '8px',
-    padding: '15px'
-  },
-  statsTitle: {
-    margin: '0 0 15px 0',
-    fontSize: '18px'
-  },
-  statRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: '8px 0',
-    borderBottom: '1px solid #ddd'
-  }
 }

@@ -1,0 +1,53 @@
+.container {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 15px;
+  font-size: 14px;
+}
+
+.gameName {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.players {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.player {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stoneBlack,
+.stoneWhite {
+  font-size: 18px;
+}
+
+.rank {
+  color: #666;
+  font-size: 13px;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+}
+
+.detailRow {
+  display: flex;
+  gap: 8px;
+}
+
+.label {
+  color: #666;
+  min-width: 50px;
+}
