@@ -27,8 +27,8 @@ export default function GameController(sgfMoves, boardSize) {
       return result
     },
 
-    startReplay() {
-      const result = manager.startReplay()
+    startReplay(startMove, endMove) {
+      const result = manager.startReplay(startMove, endMove)
       forceUpdate()
       return result
     },

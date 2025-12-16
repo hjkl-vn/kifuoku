@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Board from './Board'
 import ProgressBar from './ProgressBar'
 import GameInfo from './GameInfo'
+import RangeSlider from './RangeSlider'
 import { createEmptyBoardMap } from '../game/board-utils'
 import layout from '../styles/layout.module.css'
 import buttons from '../styles/buttons.module.css'
@@ -10,6 +11,9 @@ export default function StudyPhase({ gameManager, gameInfo }) {
   const state = gameManager.getState()
   const board = gameManager.getCurrentBoard()
   const lastMove = gameManager.getLastMove()
+
+  const [rangeStart, setRangeStart] = useState(0)
+  const [rangeEnd, setRangeEnd] = useState(state.totalMoves - 1)
 
   const canGoNext = state.studyPosition < state.totalMoves
   const canGoPrev = state.studyPosition > 0
@@ -60,12 +64,24 @@ export default function StudyPhase({ gameManager, gameInfo }) {
         </div>
 
         {!canGoNext && state.studyPosition > 0 && (
-          <button
-            className={buttons.primaryButton}
-            onClick={() => gameManager.startReplay()}
-          >
-            Start Replay Challenge
-          </button>
+          <>
+            <RangeSlider
+              min={0}
+              max={state.totalMoves - 1}
+              start={rangeStart}
+              end={rangeEnd}
+              onChange={(start, end) => {
+                setRangeStart(start)
+                setRangeEnd(end)
+              }}
+            />
+            <button
+              className={buttons.primaryButton}
+              onClick={() => gameManager.startReplay(rangeStart, rangeEnd)}
+            >
+              Start Replay Challenge
+            </button>
+          </>
         )}
       </div>
 

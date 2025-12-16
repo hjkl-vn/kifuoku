@@ -25,6 +25,8 @@ export default class GameManager {
     this.boardHistory = [Board.fromDimensions(boardSize, boardSize)]
     this.wrongAttemptsCurrentMove = 0
     this.currentGhostStones = []
+    this.replayStartMove = 0
+    this.replayEndMove = this.moves.length - 1
 
     this.stats = {
       wrongMoveCount: 0,
@@ -59,18 +61,18 @@ export default class GameManager {
 
   getCompletionStats() {
     const totalTime = this.stats.startTime ? Date.now() - this.stats.startTime : 0
-    const totalMoves = this.moves.length
-    const avgTime = totalMoves > 0 ? totalTime / totalMoves : 0
+    const replayedMoves = this.replayEndMove - this.replayStartMove + 1
+    const avgTime = replayedMoves > 0 ? totalTime / replayedMoves : 0
 
     return {
-      totalMoves,
+      totalMoves: replayedMoves,
       totalTimeMs: totalTime,
       totalTimeFormatted: (totalTime / 1000).toFixed(1),
       avgTimeMs: avgTime,
       avgTimeFormatted: (avgTime / 1000).toFixed(2),
       wrongMoveCount: this.stats.wrongMoveCount,
       correctFirstTry: this.stats.correctFirstTry,
-      accuracy: totalMoves > 0 ? Math.round((this.stats.correctFirstTry / totalMoves) * 100) : 0
+      accuracy: replayedMoves > 0 ? Math.round((this.stats.correctFirstTry / replayedMoves) * 100) : 0
     }
   }
 
@@ -108,10 +110,12 @@ export default class GameManager {
     }
   }
 
-  startReplay() {
+  startReplay(startMove = 0, endMove = this.moves.length - 1) {
     this.phase = PHASES.REPLAY
-    this.replayPosition = 0
-    this.studyPosition = 0
+    this.replayStartMove = startMove
+    this.replayEndMove = endMove
+    this.replayPosition = startMove
+    this.studyPosition = startMove
     this.wrongAttemptsCurrentMove = 0
     this.stats.startTime = Date.now()
     this.stats.wrongMoveCount = 0
@@ -218,7 +222,7 @@ export default class GameManager {
       this.replayPosition++
       this.wrongAttemptsCurrentMove = 0
 
-      if (this.replayPosition >= this.moves.length) {
+      if (this.replayPosition > this.replayEndMove) {
         this.phase = PHASES.COMPLETE
         return {
           correct: true,
