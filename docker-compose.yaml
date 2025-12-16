@@ -1,0 +1,27 @@
+services:
+  dev:
+    build:
+      context: .
+      target: dev
+    container_name: covay
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    profiles:
+      - dev
+
+  prod:
+    build:
+      context: .
+      target: prod
+    container_name: covay
+    ports:
+      - "8080:80"
+    environment:
+      - NODE_ENV=production
+    profiles:
+      - prod
