@@ -14,14 +14,3 @@
   border-radius: 5px;
   cursor: pointer;
 }
-
-.completeContainer {
-  padding: 40px;
-  text-align: center;
-  font-family: sans-serif;
-}
-
-.statsSection {
-  font-size: 18px;
-  margin-top: 30px;
-}

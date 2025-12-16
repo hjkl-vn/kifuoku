@@ -128,6 +128,31 @@ export default class GameManager {
     }
   }
 
+  resetGame() {
+    this.phase = PHASES.STUDY
+    this.studyPosition = 0
+    this.replayPosition = 0
+    this.wrongAttemptsCurrentMove = 0
+    this.currentGhostStones = []
+    this.replayStartMove = 0
+    this.replayEndMove = this.moves.length - 1
+
+    this.stats = {
+      wrongMoveCount: 0,
+      correctFirstTry: 0,
+      quadrantHintsUsed: 0,
+      ghostHintsUsed: 0,
+      triangleHintsUsed: 0,
+      startTime: null,
+      moveTimes: []
+    }
+
+    return {
+      success: true,
+      phase: this.phase
+    }
+  }
+
   generateGhostStones() {
     if (this.replayPosition >= this.moves.length) {
       return []

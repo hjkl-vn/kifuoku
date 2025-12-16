@@ -6,7 +6,7 @@ import StudyPhase from './components/StudyPhase.jsx'
 import ReplayPhase from './components/ReplayPhase.jsx'
 import styles from './App.module.css'
 
-function GameWrapper({ moves, boardSize, gameInfo }) {
+function GameWrapper({ moves, boardSize, gameInfo, onGoHome }) {
   const gameManager = GameController(moves, boardSize)
   const state = gameManager.getState()
 
@@ -14,23 +14,8 @@ function GameWrapper({ moves, boardSize, gameInfo }) {
     return <StudyPhase gameManager={gameManager} gameInfo={gameInfo} />
   }
 
-  if (state.phase === 'replay') {
-    return <ReplayPhase gameManager={gameManager} gameInfo={gameInfo} />
-  }
-
-  if (state.phase === 'complete') {
-    const stats = gameManager.getCompletionStats()
-
-    return (
-      <div className={styles.completeContainer}>
-        <h1>Game Complete!</h1>
-        <div className={styles.statsSection}>
-          <p>Total Time: {stats.totalTimeFormatted}s</p>
-          <p>Average Time per Move: {stats.avgTimeFormatted}s</p>
-          <p>Wrong Moves: {stats.wrongMoveCount}</p>
-        </div>
-      </div>
-    )
+  if (state.phase === 'replay' || state.phase === 'complete') {
+    return <ReplayPhase gameManager={gameManager} gameInfo={gameInfo} onGoHome={onGoHome} />
   }
 
   return null
@@ -76,9 +61,15 @@ export default function App() {
     )
   }
 
+  const handleGoHome = () => {
+    setMoves(null)
+    setBoardSize(null)
+    setGameInfo(null)
+  }
+
   if (!moves) {
     return <UploadPhase onFileLoaded={handleFileLoaded} />
   }
 
-  return <GameWrapper moves={moves} boardSize={boardSize} gameInfo={gameInfo} />
+  return <GameWrapper moves={moves} boardSize={boardSize} gameInfo={gameInfo} onGoHome={handleGoHome} />
 }

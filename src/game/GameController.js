@@ -33,6 +33,12 @@ export default function GameController(sgfMoves, boardSize) {
       return result
     },
 
+    resetGame() {
+      const result = manager.resetGame()
+      forceUpdate()
+      return result
+    },
+
     validateMove(x, y) {
       const result = manager.validateMove(x, y)
       forceUpdate()

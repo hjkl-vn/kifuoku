@@ -2,12 +2,13 @@ import React, { useState } from 'react'
 import Board from './Board'
 import ProgressBar from './ProgressBar'
 import GameInfo from './GameInfo'
+import CompletionModal from './CompletionModal'
 import { createEmptyBoardMap } from '../game/board-utils'
-import { HINT_LETTERS, BORDER_FLASH_DURATION_MS } from '../game/constants'
+import { HINT_LETTERS, BORDER_FLASH_DURATION_MS, PHASES } from '../game/constants'
 import layout from '../styles/layout.module.css'
 import styles from './ReplayPhase.module.css'
 
-export default function ReplayPhase({ gameManager, gameInfo }) {
+export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
   const [hintState, setHintState] = useState(null)
   const [eliminatedLetters, setEliminatedLetters] = useState([])
   const [borderFlash, setBorderFlash] = useState(null)
@@ -114,6 +115,14 @@ export default function ReplayPhase({ gameManager, gameInfo }) {
           </div>
         </div>
       </div>
+
+      {state.phase === PHASES.COMPLETE && (
+        <CompletionModal
+          stats={gameManager.getCompletionStats()}
+          onRestart={() => gameManager.resetGame()}
+          onGoHome={onGoHome}
+        />
+      )}
     </div>
   )
 }
