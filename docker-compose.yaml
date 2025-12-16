@@ -5,7 +5,7 @@ services:
       target: dev
     container_name: covay
     ports:
-      - "3000:3000"
+      - "8181:3000"
     volumes:
       - .:/app
       - /app/node_modules
@@ -20,7 +20,7 @@ services:
       target: prod
     container_name: covay
     ports:
-      - "8080:80"
+      - "9090:80"
     environment:
       - NODE_ENV=production
     profiles:
