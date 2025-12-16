@@ -1,1 +1,1 @@
-# memgo
+CLAUDE.md

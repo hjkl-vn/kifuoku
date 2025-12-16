@@ -17,6 +17,12 @@ npm test -- --run   # Run tests once
 npm test -- --run src/game/__tests__/GameManager.test.js  # Run single test file
 ```
 
+**Docker:**
+```bash
+docker compose --profile dev up    # Development with hot reload (port 3000)
+docker compose --profile prod up   # Production with nginx (port 8080)
+```
+
 ## Architecture
 
 **MVC Pattern:**
@@ -26,14 +32,15 @@ npm test -- --run src/game/__tests__/GameManager.test.js  # Run single test file
 
 **Game Flow:**
 1. Upload Phase → user uploads SGF file
-2. Study Phase → navigate through moves with Previous/Next
+2. Study Phase → navigate through moves, select replay range at the end
 3. Replay Phase → recreate moves from memory with progressive hints
-4. Complete Phase → show statistics
+4. Complete → modal overlay showing statistics with Play Again/New Game options
 
 **Board State Management:**
 - Uses `@sabaki/go-board` for immutable board state and capture detection
 - `boardHistory` array stores all board states for O(1) navigation
 - `studyPosition` indexes into `boardHistory`
+- `replayStartMove`/`replayEndMove` define the replay range (0-indexed)
 
 **Progressive Hint System (Replay Phase):**
 1. First wrong attempt → quadrant highlight (paintMap)
