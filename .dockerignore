@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.git/
+
+*.md
+LICENSE
+.gitignore
+.dockerignore
+Dockerfile
+docker-compose.yaml
+
+docs/
+sgf/
+**/__tests__/
+**/*.test.js
