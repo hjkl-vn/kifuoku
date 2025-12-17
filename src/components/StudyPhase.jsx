@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import Board from './Board'
 import ProgressBar from './ProgressBar'
-import GameInfo from './GameInfo'
-import RangeSlider from './RangeSlider'
+import Sidebar from './Sidebar'
+import CollapsibleHeader from './CollapsibleHeader'
+import BottomBar from './BottomBar'
 import { createEmptyBoardMap } from '../game/board-utils'
-import layout from '../styles/layout.module.css'
-import buttons from '../styles/buttons.module.css'
+import layout from '../styles/gameLayout.module.css'
 
 export default function StudyPhase({ gameManager, gameInfo }) {
   const state = gameManager.getState()
@@ -28,87 +28,66 @@ export default function StudyPhase({ gameManager, gameInfo }) {
     }
 
     window.addEventListener('keydown', handleKeyDown)
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown)
-    }
+    return () => window.removeEventListener('keydown', handleKeyDown)
   }, [canGoNext, canGoPrev, gameManager])
 
   const markerMap = lastMove ? createEmptyBoardMap(state.boardSize) : null
-
   if (markerMap && lastMove) {
     markerMap[lastMove.y][lastMove.x] = { type: 'circle' }
   }
 
+  const handleRangeChange = (start, end) => {
+    setRangeStart(start)
+    setRangeEnd(end)
+  }
+
+  const handleStartReplay = () => {
+    gameManager.startReplay(rangeStart, rangeEnd)
+  }
+
   return (
     <div className={layout.container}>
-      <div className={layout.leftPanel}>
-        {/* <h2 className={layout.phaseName}>Study Phase</h2> */}
-        <GameInfo gameInfo={gameInfo} />
-        <div className={buttons.controls}>
-          <button
-            className={buttons.buttonFlex}
-            onClick={() => gameManager.studyPrev()}
-            disabled={!canGoPrev}
-          >
-            Previous
-          </button>
+      <CollapsibleHeader
+        gameInfo={gameInfo}
+        phase="study"
+        current={state.studyPosition}
+        total={state.totalMoves}
+        totalMoves={state.totalMoves}
+        rangeStart={rangeStart}
+        rangeEnd={rangeEnd}
+        onRangeChange={handleRangeChange}
+        onStartReplay={handleStartReplay}
+      />
 
-          <button
-            className={buttons.buttonFlex}
-            onClick={() => gameManager.studyNext()}
-            disabled={!canGoNext}
-          >
-            Next
-          </button>
+      <Sidebar
+        gameInfo={gameInfo}
+        phase="study"
+        canGoPrev={canGoPrev}
+        canGoNext={canGoNext}
+        onPrev={() => gameManager.studyPrev()}
+        onNext={() => gameManager.studyNext()}
+        totalMoves={state.totalMoves}
+        rangeStart={rangeStart}
+        rangeEnd={rangeEnd}
+        onRangeChange={handleRangeChange}
+        onStartReplay={handleStartReplay}
+      />
+
+      <div className={layout.boardArea}>
+        <div className={layout.progressBarWrapper}>
+          <ProgressBar current={state.studyPosition} total={state.totalMoves} />
         </div>
-
-        {!canGoNext && state.studyPosition > 0 && (
-          <>
-            <RangeSlider
-              min={0}
-              max={state.totalMoves - 1}
-              start={rangeStart}
-              end={rangeEnd}
-              onChange={(start, end) => {
-                setRangeStart(start)
-                setRangeEnd(end)
-              }}
-            />
-            <button
-              className={buttons.primaryButton}
-              onClick={() => gameManager.startReplay(rangeStart, rangeEnd)}
-            >
-              Start Replay Challenge
-            </button>
-          </>
-        )}
-      </div>
-
-      <div className={layout.centerPanel}>
-        <ProgressBar current={state.studyPosition} total={state.totalMoves} />
         <div className={layout.boardContainer}>
           <Board signMap={board.signMap} markerMap={markerMap} />
         </div>
       </div>
 
-      <div className={layout.rightPanel}>
-        <div className={layout.statsBox}>
-          <h3 className={layout.phaseName}>Study phase</h3>
-          {lastMove && (
-            <>
-              <div className={layout.statRow}>
-                <span>Color</span>
-                <span>{lastMove.color === 'B' ? 'Black' : 'White'}</span>
-              </div>
-              <div className={layout.statRow}>
-                <span>Coordinate</span>
-                <span>{String.fromCharCode(65 + lastMove.x)}{state.boardSize - lastMove.y}</span>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
+      <BottomBar
+        canGoPrev={canGoPrev}
+        canGoNext={canGoNext}
+        onPrev={() => gameManager.studyPrev()}
+        onNext={() => gameManager.studyNext()}
+      />
     </div>
   )
 }
