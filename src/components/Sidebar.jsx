@@ -22,24 +22,26 @@ export default function Sidebar({
     <aside className={styles.sidebar}>
       <GameInfo gameInfo={gameInfo} />
 
-      <div className={styles.section}>
-        <div className={buttons.controls}>
-          <button
-            className={buttons.buttonFlex}
-            onClick={onPrev}
-            disabled={!canGoPrev}
-          >
-            Prev
-          </button>
-          <button
-            className={buttons.buttonFlex}
-            onClick={onNext}
-            disabled={!canGoNext}
-          >
-            Next
-          </button>
+      {phase === 'study' && (
+        <div className={styles.section}>
+          <div className={buttons.controls}>
+            <button
+              className={buttons.buttonFlex}
+              onClick={onPrev}
+              disabled={!canGoPrev}
+            >
+              Prev
+            </button>
+            <button
+              className={buttons.buttonFlex}
+              onClick={onNext}
+              disabled={!canGoNext}
+            >
+              Next
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       {phase === 'study' && (
         <div className={styles.section}>
