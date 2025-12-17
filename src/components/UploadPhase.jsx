@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
-import styles from './UploadPhase.module.css'
+import { isValidOgsUrl, extractGameId, fetchOgsSgf } from '../lib/ogs.js'
+import styles from '../styles/UploadPhase.module.css'
 
 export default function UploadPhase({ onFileLoaded }) {
   const [dragOver, setDragOver] = useState(false)
   const [error, setError] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [urlValue, setUrlValue] = useState('')
 
   const handleFile = async (file) => {
     setError(null)
@@ -34,9 +37,35 @@ export default function UploadPhase({ onFileLoaded }) {
     if (file) handleFile(file)
   }
 
+  const handleUrlPaste = async (e) => {
+    const text = e.clipboardData.getData('text')
+    if (!text) return
+
+    setError(null)
+
+    if (!isValidOgsUrl(text)) {
+      setError('Please enter a valid online-go.com game URL')
+      return
+    }
+
+    const gameId = extractGameId(text)
+    setIsLoading(true)
+
+    try {
+      const sgf = await fetchOgsSgf(gameId)
+      setUrlValue('')
+      onFileLoaded(sgf)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   const dropZoneClass = [
     styles.dropZone,
-    dragOver ? styles.dropZoneActive : ''
+    dragOver ? styles.dropZoneActive : '',
+    isLoading ? styles.disabled : ''
   ].filter(Boolean).join(' ')
 
   return (
@@ -47,7 +76,7 @@ export default function UploadPhase({ onFileLoaded }) {
         className={dropZoneClass}
         onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
         onDragLeave={() => setDragOver(false)}
-        onDrop={handleDrop}
+        onDrop={isLoading ? undefined : handleDrop}
       >
         <p className={styles.dropText}>
           Drop SGF file here
@@ -60,9 +89,26 @@ export default function UploadPhase({ onFileLoaded }) {
             accept=".sgf"
             onChange={handleFileInput}
             className={styles.fileInput}
+            disabled={isLoading}
           />
         </label>
       </div>
+
+      <p className={styles.divider}>─── or ───</p>
+
+      <input
+        type="text"
+        className={styles.urlInput}
+        placeholder="Paste online-go.com link here"
+        value={urlValue}
+        onChange={(e) => setUrlValue(e.target.value)}
+        onPaste={handleUrlPaste}
+        disabled={isLoading}
+      />
+
+      {isLoading && (
+        <p className={styles.loading}>Loading game from OGS...</p>
+      )}
 
       {error && (
         <p className={styles.error}>{error}</p>

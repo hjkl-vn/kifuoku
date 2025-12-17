@@ -22,3 +22,9 @@
   width: 24px;
   height: 24px;
 }
+
+.version {
+  color: #999;
+  font-size: 12px;
+  align-self: center;
+}

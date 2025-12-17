@@ -1,8 +1,10 @@
-import styles from './Footer.module.css'
+import { version } from '../../package.json'
+import styles from '../styles/Footer.module.css'
 
 export default function Footer() {
   return (
     <footer className={styles.footer}>
+      <span className={styles.version}>v{version}</span>
       <a
         href="https://github.com/csessh"
         target="_blank"

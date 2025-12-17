@@ -5,7 +5,7 @@ import Sidebar from './Sidebar'
 import CollapsibleHeader from './CollapsibleHeader'
 import BottomBar from './BottomBar'
 import { createEmptyBoardMap } from '../game/board-utils'
-import layout from '../styles/gameLayout.module.css'
+import layout from '../styles/GameLayout.module.css'
 
 export default function StudyPhase({ gameManager, gameInfo }) {
   const state = gameManager.getState()

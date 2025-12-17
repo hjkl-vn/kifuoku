@@ -4,7 +4,7 @@ import GameController from '../game/GameController'
 import UploadPhase from '../components/UploadPhase.jsx'
 import StudyPhase from '../components/StudyPhase.jsx'
 import ReplayPhase from '../components/ReplayPhase.jsx'
-import styles from './HomePage.module.css'
+import styles from '../styles/HomePage.module.css'
 
 const STONE_SOUNDS = [0, 1, 2, 3, 4].map(i => `/sounds/stone${i}.mp3`)
 

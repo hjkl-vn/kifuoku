@@ -1,8 +1,8 @@
 import React from 'react'
 import GameInfo from './GameInfo'
 import RangeSlider from './RangeSlider'
-import styles from './Sidebar.module.css'
-import buttons from '../styles/buttons.module.css'
+import styles from '../styles/Sidebar.module.css'
+import buttons from '../styles/Buttons.module.css'
 
 export default function Sidebar({
   gameInfo,

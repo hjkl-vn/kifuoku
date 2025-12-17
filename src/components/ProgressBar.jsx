@@ -1,5 +1,5 @@
 import React from 'react'
-import styles from './ProgressBar.module.css'
+import styles from '../styles/ProgressBar.module.css'
 
 export default function ProgressBar({ current, total }) {
   const percentage = total > 0 ? (current / total) * 100 : 0
