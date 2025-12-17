@@ -6,6 +6,7 @@ export default function UploadPhase({ onFileLoaded }) {
   const [dragOver, setDragOver] = useState(false)
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [urlValue, setUrlValue] = useState('')
 
   const handleFile = async (file) => {
     setError(null)
@@ -37,7 +38,7 @@ export default function UploadPhase({ onFileLoaded }) {
   }
 
   const handleUrlPaste = async (e) => {
-    const text = e.target.value
+    const text = e.clipboardData.getData('text')
     if (!text) return
 
     setError(null)
@@ -52,6 +53,7 @@ export default function UploadPhase({ onFileLoaded }) {
 
     try {
       const sgf = await fetchOgsSgf(gameId)
+      setUrlValue('')
       onFileLoaded(sgf)
     } catch (err) {
       setError(err.message)
@@ -98,7 +100,9 @@ export default function UploadPhase({ onFileLoaded }) {
         type="text"
         className={styles.urlInput}
         placeholder="Paste online-go.com link here"
-        onChange={handleUrlPaste}
+        value={urlValue}
+        onChange={(e) => setUrlValue(e.target.value)}
+        onPaste={handleUrlPaste}
         disabled={isLoading}
       />
 
