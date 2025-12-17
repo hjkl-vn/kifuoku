@@ -1,0 +1,16 @@
+.errorContainer {
+  padding: 20px;
+  text-align: center;
+  font-family: sans-serif;
+}
+
+.retryButton {
+  margin-top: 20px;
+  padding: 10px 30px;
+  font-size: 16px;
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
