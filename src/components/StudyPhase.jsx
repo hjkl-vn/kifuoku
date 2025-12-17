@@ -50,8 +50,6 @@ export default function StudyPhase({ gameManager, gameInfo }) {
       <CollapsibleHeader
         gameInfo={gameInfo}
         phase="study"
-        current={state.studyPosition}
-        total={state.totalMoves}
         totalMoves={state.totalMoves}
         rangeStart={rangeStart}
         rangeEnd={rangeEnd}

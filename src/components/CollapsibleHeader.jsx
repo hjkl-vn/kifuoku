@@ -7,8 +7,6 @@ import buttons from '../styles/buttons.module.css'
 export default function CollapsibleHeader({
   gameInfo,
   phase,
-  current,
-  total,
   totalMoves,
   rangeStart,
   rangeEnd,
@@ -31,7 +29,6 @@ export default function CollapsibleHeader({
       >
         <span className={styles.arrow}>{isExpanded ? '▲' : '▼'}</span>
         <span className={styles.summary}>{playerSummary}</span>
-        <span className={styles.moveCount}>{current}/{total}</span>
       </button>
 
       {isExpanded && (
