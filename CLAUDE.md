@@ -31,7 +31,7 @@ docker compose --profile prod up   # Production with nginx (port 8080)
 - **Controller:** `GameController` hook (`src/game/GameController.js`) - wraps GameManager and triggers React re-renders
 
 **Game Flow:**
-1. Upload Phase → user uploads SGF file
+1. Upload Phase → user uploads SGF file or pastes online-go.com URL
 2. Study Phase → navigate through moves, select replay range at the end
 3. Replay Phase → recreate moves from memory with progressive hints
 4. Complete → modal overlay showing statistics with Play Again/New Game options
@@ -57,15 +57,20 @@ docker compose --profile prod up   # Production with nginx (port 8080)
 - `getBoardSize(sgfContent)` - returns board size (supports 9x9, 13x13, 19x19, etc.)
 - `getGameInfo(sgfContent)` - extracts metadata (PB, PW, BR, WR, DT, GN, RE, RU)
 
+**OGS Import (`src/lib/ogs.js`):**
+- `extractGameId(url)` - extracts game ID from online-go.com URLs
+- `isValidOgsUrl(url)` - validates OGS URL format
+- `fetchOgsSgf(gameId)` - fetches SGF from OGS API
+
 **Constants (`src/game/constants.js`):**
 - `DEFAULT_BOARD_SIZE`, `GHOST_HINT_COUNT`, `GHOST_HINT_RADIUS` - game configuration
 - `PHASES`, `HINT_TYPES` - enums for game state
 - `getQuadrant()`, `getQuadrantVertices()` - hint system helpers (accept boardSize parameter)
 
-**CSS Modules:**
-- `src/styles/GameLayout.module.css` - responsive game layout (2-column desktop, collapsible mobile)
-- `src/styles/Buttons.module.css` - shared button styles with `composes`
-- Component-specific styles in `src/components/*.module.css`
+**CSS Modules (all in `src/styles/`):**
+- `GameLayout.module.css` - responsive game layout (2-column desktop, collapsible mobile)
+- `Buttons.module.css` - shared button styles with `composes`
+- Component-specific styles named after their component (e.g., `Sidebar.module.css`)
 - Dynamic classes use array join pattern: `[styles.a, condition ? styles.b : ''].filter(Boolean).join(' ')`
 
 **Responsive Layout (768px breakpoint):**
