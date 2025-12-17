@@ -1,6 +1,10 @@
 .container {
+  --sidebar-width: 280px;
+  --layout-gap: 40px;
+  --board-offset: calc((var(--sidebar-width) + var(--layout-gap)) / -2);
+
   display: flex;
-  gap: 40px;
+  gap: var(--layout-gap);
   min-height: 100vh;
   box-sizing: border-box;
   padding: 20px;
@@ -18,7 +22,12 @@
   flex-direction: column;
   align-items: stretch;
   gap: 16px;
-  transform: translateX(-160px);
+}
+
+@media (min-width: 1024px) {
+  .boardWrapper {
+    transform: translateX(var(--board-offset));
+  }
 }
 
 .progressBarWrapper {
