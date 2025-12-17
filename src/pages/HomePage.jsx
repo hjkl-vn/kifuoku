@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { parseSGFToMoves, getBoardSize, getGameInfo } from '../lib/sgf-parser.js'
 import GameController from '../game/GameController'
 import UploadPhase from '../components/UploadPhase.jsx'
@@ -6,8 +6,38 @@ import StudyPhase from '../components/StudyPhase.jsx'
 import ReplayPhase from '../components/ReplayPhase.jsx'
 import styles from './HomePage.module.css'
 
+const STONE_SOUNDS = [0, 1, 2, 3, 4].map(i => `/sounds/stone${i}.mp3`)
+
 function GameWrapper({ moves, boardSize, gameInfo, onGoHome }) {
-  const gameManager = GameController(moves, boardSize)
+  const audioRefs = useRef([])
+  const lastIndexRef = useRef(-1)
+
+  useEffect(() => {
+    audioRefs.current = STONE_SOUNDS.map(src => {
+      const audio = new Audio(src)
+      audio.preload = 'auto'
+      return audio
+    })
+  }, [])
+
+  const playStoneSound = useCallback(() => {
+    const sounds = audioRefs.current
+    if (sounds.length === 0) return
+
+    let index = 0
+    if (sounds.length > 1) {
+      index = lastIndexRef.current
+      while (index === lastIndexRef.current) {
+        index = Math.floor(Math.random() * sounds.length)
+      }
+      lastIndexRef.current = index
+    }
+
+    sounds[index].currentTime = 0
+    sounds[index].play().catch(() => {})
+  }, [])
+
+  const gameManager = GameController(moves, boardSize, { onStonePlace: playStoneSound })
   const state = gameManager.getState()
 
   if (state.phase === 'study') {
