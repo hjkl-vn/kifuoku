@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import GameInfo from './GameInfo'
 import RangeSlider from './RangeSlider'
-import styles from './CollapsibleHeader.module.css'
+import styles from '../styles/CollapsibleHeader.module.css'
 import buttons from '../styles/buttons.module.css'
 
 export default function CollapsibleHeader({

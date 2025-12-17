@@ -1,5 +1,5 @@
 import React from 'react'
-import styles from './BottomBar.module.css'
+import styles from '../styles/BottomBar.module.css'
 
 export default function BottomBar({ canGoPrev, canGoNext, onPrev, onNext }) {
   return (

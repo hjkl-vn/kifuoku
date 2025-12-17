@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { isValidOgsUrl, extractGameId, fetchOgsSgf } from '../lib/ogs.js'
-import styles from './UploadPhase.module.css'
+import styles from '../styles/UploadPhase.module.css'
 
 export default function UploadPhase({ onFileLoaded }) {
   const [dragOver, setDragOver] = useState(false)

@@ -1,5 +1,5 @@
 import React, { useRef, useCallback } from 'react'
-import styles from './RangeSlider.module.css'
+import styles from '../styles/RangeSlider.module.css'
 
 export default function RangeSlider({ min, max, start, end, onChange }) {
   const trackRef = useRef(null)

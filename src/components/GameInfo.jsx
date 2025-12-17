@@ -1,5 +1,5 @@
 import React from 'react'
-import styles from './GameInfo.module.css'
+import styles from '../styles/GameInfo.module.css'
 
 export default function GameInfo({ gameInfo }) {
   if (!gameInfo) return null

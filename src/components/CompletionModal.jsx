@@ -1,5 +1,5 @@
 import React from 'react'
-import styles from './CompletionModal.module.css'
+import styles from '../styles/CompletionModal.module.css'
 import buttons from '../styles/buttons.module.css'
 
 function getAccuracyClass(accuracy) {

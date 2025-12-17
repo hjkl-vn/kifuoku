@@ -1,4 +1,4 @@
-import styles from './UnderConstruction.module.css'
+import styles from '../styles/UnderConstruction.module.css'
 
 export default function UnderConstruction({ title }) {
   return (
