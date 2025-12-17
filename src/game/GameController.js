@@ -1,7 +1,7 @@
 import { useState, useMemo, useReducer } from 'react'
 import GameManager from './GameManager'
 
-export default function GameController(sgfMoves, boardSize) {
+export default function GameController(sgfMoves, boardSize, { onStonePlace } = {}) {
   const [manager] = useState(() => new GameManager(sgfMoves, boardSize))
   const [, forceUpdate] = useReducer(x => x + 1, 0)
 
@@ -18,6 +18,7 @@ export default function GameController(sgfMoves, boardSize) {
     studyNext() {
       const result = manager.studyNext()
       forceUpdate()
+      if (result.success) onStonePlace?.()
       return result
     },
 
@@ -42,12 +43,14 @@ export default function GameController(sgfMoves, boardSize) {
     validateMove(x, y) {
       const result = manager.validateMove(x, y)
       forceUpdate()
+      if (result.correct) onStonePlace?.()
       return result
     },
 
     handleGhostClick(x, y) {
       const result = manager.handleGhostClick(x, y)
       forceUpdate()
+      if (result.correct) onStonePlace?.()
       return result
     },
 
@@ -66,7 +69,7 @@ export default function GameController(sgfMoves, boardSize) {
     getCompletionStats() {
       return manager.getCompletionStats()
     }
-  }), [manager])
+  }), [manager, onStonePlace])
 
   return wrappedManager
 }
