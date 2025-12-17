@@ -1,9 +1,9 @@
 .container {
   display: flex;
   gap: 40px;
-  padding: 20px;
   min-height: 100vh;
   box-sizing: border-box;
+  padding: 20px;
 }
 
 .boardArea {
@@ -11,12 +11,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.boardWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
   gap: 16px;
+  transform: translateX(-160px);
 }
 
 .progressBarWrapper {
   width: 100%;
-  max-width: 600px;
 }
 
 .boardContainer {
@@ -36,7 +42,8 @@
     padding: 16px;
   }
 
-  .progressBarWrapper {
-    max-width: none;
+  .boardWrapper {
+    width: 100%;
+    transform: none;
   }
 }

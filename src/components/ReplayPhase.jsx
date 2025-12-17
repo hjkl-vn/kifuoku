@@ -3,7 +3,6 @@ import Board from './Board'
 import ProgressBar from './ProgressBar'
 import Sidebar from './Sidebar'
 import CollapsibleHeader from './CollapsibleHeader'
-import BottomBar from './BottomBar'
 import CompletionModal from './CompletionModal'
 import { createEmptyBoardMap } from '../game/board-utils'
 import { HINT_LETTERS, BORDER_FLASH_DURATION_MS, PHASES } from '../game/constants'
@@ -91,7 +90,7 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
   }
 
   return (
-    <div className={layout.container}>
+    <div className={styles.replayContainer}>
       <CollapsibleHeader
         gameInfo={gameInfo}
         phase="replay"
@@ -109,23 +108,20 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
       />
 
       <div className={layout.boardArea}>
-        <div className={layout.progressBarWrapper}>
-          <ProgressBar current={state.replayPosition} total={state.totalMoves} />
-        </div>
-        <div className={boardContainerClass}>
-          <Board
-            signMap={board.signMap}
-            markerMap={markerMap}
-            paintMap={paintMap}
-            onVertexClick={handleVertexClick}
-          />
+        <div className={layout.boardWrapper}>
+          <div className={layout.progressBarWrapper}>
+            <ProgressBar current={state.replayPosition} total={state.totalMoves} />
+          </div>
+          <div className={boardContainerClass}>
+            <Board
+              signMap={board.signMap}
+              markerMap={markerMap}
+              paintMap={paintMap}
+              onVertexClick={handleVertexClick}
+            />
+          </div>
         </div>
       </div>
-
-      <BottomBar
-        canGoPrev={false}
-        canGoNext={false}
-      />
 
       {state.phase === PHASES.COMPLETE && (
         <CompletionModal

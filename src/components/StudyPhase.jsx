@@ -74,11 +74,13 @@ export default function StudyPhase({ gameManager, gameInfo }) {
       />
 
       <div className={layout.boardArea}>
-        <div className={layout.progressBarWrapper}>
-          <ProgressBar current={state.studyPosition} total={state.totalMoves} />
-        </div>
-        <div className={layout.boardContainer}>
-          <Board signMap={board.signMap} markerMap={markerMap} />
+        <div className={layout.boardWrapper}>
+          <div className={layout.progressBarWrapper}>
+            <ProgressBar current={state.studyPosition} total={state.totalMoves} />
+          </div>
+          <div className={layout.boardContainer}>
+            <Board signMap={board.signMap} markerMap={markerMap} />
+          </div>
         </div>
       </div>
 
