@@ -1,14 +1,14 @@
 .container {
-  margin-bottom: 20px;
+  width: 100%;
 }
 
 .barBackground {
+  position: relative;
   width: 100%;
-  height: 24px;
+  height: 28px;
   background-color: #e0e0e0;
-  border-radius: 12px;
+  border-radius: 14px;
   overflow: hidden;
-  margin-bottom: 8px;
 }
 
 .barFill {
@@ -18,8 +18,12 @@
 }
 
 .text {
-  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   font-size: 14px;
   font-weight: bold;
-  color: #666;
+  color: #333;
+  text-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
 }
