@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest'
-import { extractGameId, isValidOgsUrl } from '../ogs.js'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { extractGameId, isValidOgsUrl, fetchOgsSgf } from '../ogs.js'
 
 describe('OGS URL parsing', () => {
   describe('extractGameId', () => {
@@ -36,5 +36,43 @@ describe('OGS URL parsing', () => {
     it('returns false for random text', () => {
       expect(isValidOgsUrl('hello world')).toBe(false)
     })
+  })
+})
+
+describe('fetchOgsSgf', () => {
+  beforeEach(() => {
+    vi.stubGlobal('fetch', vi.fn())
+  })
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it('fetches SGF from API', async () => {
+    const mockSgf = '(;FF[4]GM[1]SZ[19])'
+    fetch.mockResolvedValue({
+      ok: true,
+      text: () => Promise.resolve(mockSgf)
+    })
+
+    const result = await fetchOgsSgf('12345')
+
+    expect(fetch).toHaveBeenCalledWith('https://online-go.com/api/v1/games/12345/sgf')
+    expect(result).toBe(mockSgf)
+  })
+
+  it('throws on 404', async () => {
+    fetch.mockResolvedValue({
+      ok: false,
+      status: 404
+    })
+
+    await expect(fetchOgsSgf('99999')).rejects.toThrow('Game not found')
+  })
+
+  it('throws on network error', async () => {
+    fetch.mockRejectedValue(new Error('Network error'))
+
+    await expect(fetchOgsSgf('12345')).rejects.toThrow('Failed to connect')
   })
 })
