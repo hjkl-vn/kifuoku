@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import Board from './Board'
 import ProgressBar from './ProgressBar'
-import GameInfo from './GameInfo'
+import Sidebar from './Sidebar'
+import CollapsibleHeader from './CollapsibleHeader'
+import BottomBar from './BottomBar'
 import CompletionModal from './CompletionModal'
 import { createEmptyBoardMap } from '../game/board-utils'
 import { HINT_LETTERS, BORDER_FLASH_DURATION_MS, PHASES } from '../game/constants'
-import layout from '../styles/layout.module.css'
+import layout from '../styles/gameLayout.module.css'
 import styles from './ReplayPhase.module.css'
 
 export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
@@ -83,15 +85,33 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
     borderFlash === 'error' ? styles.borderError : ''
   ].filter(Boolean).join(' ')
 
+  const stats = {
+    correctFirstTry: state.stats.correctFirstTry,
+    wrongMoveCount: state.stats.wrongMoveCount
+  }
+
   return (
     <div className={layout.container}>
-      <div className={layout.leftPanel}>
-        {/* <h2 className={layout.phaseName}>Replay Challenge</h2> */}
-        <GameInfo gameInfo={gameInfo} />
-      </div>
+      <CollapsibleHeader
+        gameInfo={gameInfo}
+        phase="replay"
+        current={state.replayPosition}
+        total={state.totalMoves}
+        stats={stats}
+      />
 
-      <div className={layout.centerPanel}>
-        <ProgressBar current={state.replayPosition} total={state.totalMoves} />
+      <Sidebar
+        gameInfo={gameInfo}
+        phase="replay"
+        canGoPrev={false}
+        canGoNext={false}
+        stats={stats}
+      />
+
+      <div className={layout.boardArea}>
+        <div className={layout.progressBarWrapper}>
+          <ProgressBar current={state.replayPosition} total={state.totalMoves} />
+        </div>
         <div className={boardContainerClass}>
           <Board
             signMap={board.signMap}
@@ -102,19 +122,10 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
         </div>
       </div>
 
-      <div className={layout.rightPanel}>
-        <div className={layout.statsBox}>
-          <h3 className={layout.phaseName}>Replay</h3>
-          <div className={layout.statRow}>
-            <span>Correct (1st try)</span>
-            <span>{state.stats.correctFirstTry}</span>
-          </div>
-          <div className={layout.statRow}>
-            <span>Wrong attempts</span>
-            <span>{state.stats.wrongMoveCount}</span>
-          </div>
-        </div>
-      </div>
+      <BottomBar
+        canGoPrev={false}
+        canGoNext={false}
+      />
 
       {state.phase === PHASES.COMPLETE && (
         <CompletionModal
