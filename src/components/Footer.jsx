@@ -17,7 +17,7 @@ export default function Footer() {
       <a
         href="https://social.linux.pizza/@csessh"
         target="_blank"
-        rel="noopener noreferrer"
+        rel="noopener noreferrer me"
         className={styles.link}
         aria-label="Mastodon"
       >
