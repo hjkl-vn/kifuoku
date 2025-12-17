@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from '../styles/CompletionModal.module.css'
-import buttons from '../styles/buttons.module.css'
+import buttons from '../styles/Buttons.module.css'
 
 function getAccuracyClass(accuracy) {
   if (accuracy >= 90) return styles.accuracyExcellent

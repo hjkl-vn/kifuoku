@@ -63,8 +63,8 @@ docker compose --profile prod up   # Production with nginx (port 8080)
 - `getQuadrant()`, `getQuadrantVertices()` - hint system helpers (accept boardSize parameter)
 
 **CSS Modules:**
-- `src/styles/gameLayout.module.css` - responsive game layout (2-column desktop, collapsible mobile)
-- `src/styles/buttons.module.css` - shared button styles with `composes`
+- `src/styles/GameLayout.module.css` - responsive game layout (2-column desktop, collapsible mobile)
+- `src/styles/Buttons.module.css` - shared button styles with `composes`
 - Component-specific styles in `src/components/*.module.css`
 - Dynamic classes use array join pattern: `[styles.a, condition ? styles.b : ''].filter(Boolean).join(' ')`
 

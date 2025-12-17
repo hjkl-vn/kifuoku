@@ -9,7 +9,7 @@
 }
 
 .replayContainer {
-  composes: container from './gameLayout.module.css';
+  composes: container from './GameLayout.module.css';
 }
 
 @media (max-width: 767px) {

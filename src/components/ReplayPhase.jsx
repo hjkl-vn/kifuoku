@@ -6,7 +6,7 @@ import CollapsibleHeader from './CollapsibleHeader'
 import CompletionModal from './CompletionModal'
 import { createEmptyBoardMap } from '../game/board-utils'
 import { HINT_LETTERS, BORDER_FLASH_DURATION_MS, PHASES } from '../game/constants'
-import layout from '../styles/gameLayout.module.css'
+import layout from '../styles/GameLayout.module.css'
 import styles from '../styles/ReplayPhase.module.css'
 
 export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
