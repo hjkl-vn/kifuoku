@@ -1,16 +1,15 @@
 import Board from '@sabaki/go-board'
 import {
   DEFAULT_BOARD_SIZE,
-  GHOST_HINT_COUNT,
-  MAX_GHOST_GENERATION_ATTEMPTS,
-  GHOST_HINT_RADIUS,
   PHASES,
   HINT_TYPES,
-  colorToSign,
-  getQuadrant,
-  getQuadrantVertices,
-  randomInt
+  colorToSign
 } from './constants'
+import {
+  getQuadrantBounds,
+  getSubQuadrant,
+  isRegionSmallEnough
+} from './board-utils'
 
 export default class GameManager {
   constructor(moves, boardSize = DEFAULT_BOARD_SIZE) {
@@ -24,7 +23,7 @@ export default class GameManager {
     this.replayPosition = 0
     this.boardHistory = [Board.fromDimensions(boardSize, boardSize)]
     this.wrongAttemptsCurrentMove = 0
-    this.currentGhostStones = []
+    this.currentHintRegion = null
     this.replayStartMove = 0
     this.replayEndMove = this.moves.length - 1
 
@@ -32,8 +31,8 @@ export default class GameManager {
       wrongMoveCount: 0,
       correctFirstTry: 0,
       quadrantHintsUsed: 0,
-      ghostHintsUsed: 0,
-      triangleHintsUsed: 0,
+      subdivisionHintsUsed: 0,
+      exactHintsUsed: 0,
       startTime: null,
       moveTimes: []
     }
@@ -133,7 +132,7 @@ export default class GameManager {
     this.studyPosition = 0
     this.replayPosition = 0
     this.wrongAttemptsCurrentMove = 0
-    this.currentGhostStones = []
+    this.currentHintRegion = null
     this.replayStartMove = 0
     this.replayEndMove = this.moves.length - 1
 
@@ -141,8 +140,8 @@ export default class GameManager {
       wrongMoveCount: 0,
       correctFirstTry: 0,
       quadrantHintsUsed: 0,
-      ghostHintsUsed: 0,
-      triangleHintsUsed: 0,
+      subdivisionHintsUsed: 0,
+      exactHintsUsed: 0,
       startTime: null,
       moveTimes: []
     }
