@@ -70,8 +70,7 @@ export default function UploadPhase({ onFileLoaded }) {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Go Memory Replay Game</h1>
-
+      <h1 className={styles.title}>Kifu-oku (棋譜憶)</h1>
       <div
         className={dropZoneClass}
         onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
