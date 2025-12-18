@@ -63,17 +63,20 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
     layout.boardContainer,
     borderFlash === 'success' ? replayStyles.borderSuccess : '',
     borderFlash === 'error' ? replayStyles.borderError : ''
-  ].filter(Boolean).join(' ')
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   const stats = {
     correctFirstTry: state.stats.correctFirstTry,
     wrongMoveCount: state.stats.wrongMoveCount
   }
 
-  const containerClass = [
-    layout.container,
-    isMobileLayout ? layout.mobileLayout : ''
-  ].filter(Boolean).join(' ')
+  const currentTurn = gameManager.getCurrentTurn()
+
+  const containerClass = [layout.container, isMobileLayout ? layout.mobileLayout : '']
+    .filter(Boolean)
+    .join(' ')
 
   return (
     <div className={containerClass}>
@@ -84,6 +87,7 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
           current={state.replayPosition}
           total={state.totalMoves}
           stats={stats}
+          currentTurn={currentTurn}
         />
       )}
 
@@ -96,6 +100,7 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
           stats={stats}
           current={state.replayPosition}
           total={state.totalMoves}
+          currentTurn={currentTurn}
         />
       )}
 
@@ -113,12 +118,7 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
         </div>
       </div>
 
-      {isMobileLayout && (
-        <BottomBar
-          current={state.replayPosition}
-          total={state.totalMoves}
-        />
-      )}
+      {isMobileLayout && <BottomBar current={state.replayPosition} total={state.totalMoves} />}
 
       {state.phase === PHASES.COMPLETE && (
         <CompletionModal

@@ -66,21 +66,23 @@ export default function UploadPhase({ onFileLoaded }) {
     styles.dropZone,
     dragOver ? styles.dropZoneActive : '',
     isLoading ? styles.disabled : ''
-  ].filter(Boolean).join(' ')
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Go Memory Replay Game</h1>
-
+      <h1 className={styles.title}>Kifu-oku (棋譜憶)</h1>
       <div
         className={dropZoneClass}
-        onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
+        onDragOver={(e) => {
+          e.preventDefault()
+          setDragOver(true)
+        }}
         onDragLeave={() => setDragOver(false)}
         onDrop={isLoading ? undefined : handleDrop}
       >
-        <p className={styles.dropText}>
-          Drop SGF file here
-        </p>
+        <p className={styles.dropText}>Drop SGF file here</p>
         <p className={styles.orText}>or</p>
         <label className={styles.button}>
           Choose File
@@ -106,16 +108,14 @@ export default function UploadPhase({ onFileLoaded }) {
         disabled={isLoading}
       />
 
-      {isLoading && (
-        <p className={styles.loading}>Loading game from OGS...</p>
-      )}
+      {isLoading && <p className={styles.loading}>Loading game from OGS...</p>}
 
-      {error && (
-        <p className={styles.error}>{error}</p>
-      )}
+      {error && <p className={styles.error}>{error}</p>}
 
       <div className={styles.info}>
-        <p><strong>How to play:</strong></p>
+        <p>
+          <strong>How to play:</strong>
+        </p>
         <ol>
           <li>Upload a Go game (SGF format)</li>
           <li>Study the game using prev/next buttons (or arrow keys)</li>

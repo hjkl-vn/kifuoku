@@ -6,14 +6,14 @@ import StudyPhase from '../components/StudyPhase.jsx'
 import ReplayPhase from '../components/ReplayPhase.jsx'
 import styles from '../styles/HomePage.module.css'
 
-const STONE_SOUNDS = [0, 1, 2, 3, 4].map(i => `/sounds/stone${i}.mp3`)
+const STONE_SOUNDS = [0, 1, 2, 3, 4].map((i) => `/sounds/stone${i}.mp3`)
 
 function GameWrapper({ moves, boardSize, gameInfo, onGoHome }) {
   const audioRefs = useRef([])
   const lastIndexRef = useRef(-1)
 
   useEffect(() => {
-    audioRefs.current = STONE_SOUNDS.map(src => {
+    audioRefs.current = STONE_SOUNDS.map((src) => {
       const audio = new Audio(src)
       audio.preload = 'auto'
       return audio
@@ -81,10 +81,7 @@ export default function HomePage() {
       <div className={styles.errorContainer}>
         <h2>Error</h2>
         <p>{error}</p>
-        <button
-          onClick={() => setError(null)}
-          className={styles.retryButton}
-        >
+        <button onClick={() => setError(null)} className={styles.retryButton}>
           Try Again
         </button>
       </div>
@@ -101,5 +98,7 @@ export default function HomePage() {
     return <UploadPhase onFileLoaded={handleFileLoaded} />
   }
 
-  return <GameWrapper moves={moves} boardSize={boardSize} gameInfo={gameInfo} onGoHome={handleGoHome} />
+  return (
+    <GameWrapper moves={moves} boardSize={boardSize} gameInfo={gameInfo} onGoHome={handleGoHome} />
+  )
 }

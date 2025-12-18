@@ -4,7 +4,9 @@ import styles from '../styles/Header.module.css'
 export default function Header() {
   return (
     <header className={styles.header}>
-      <Link to="/" className={styles.logo}>⚫⚪</Link>
+      <Link to="/" className={styles.logo}>
+        ⚫⚪
+      </Link>
       <nav className={styles.nav}>
         <NavLink
           to="/daily"

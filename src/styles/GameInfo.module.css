@@ -22,11 +22,19 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.activeTurn {
+  background-color: #e3f2ff;
+  font-weight: 500;
 }
 
 .stoneBlack,
 .stoneWhite {
-  font-size: 18px;
+  font-size: 24px;
 }
 
 .rank {
