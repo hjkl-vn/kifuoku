@@ -1,16 +1,15 @@
 import Board from '@sabaki/go-board'
 import {
   DEFAULT_BOARD_SIZE,
-  GHOST_HINT_COUNT,
-  MAX_GHOST_GENERATION_ATTEMPTS,
-  GHOST_HINT_RADIUS,
   PHASES,
   HINT_TYPES,
-  colorToSign,
-  getQuadrant,
-  getQuadrantVertices,
-  randomInt
+  colorToSign
 } from './constants'
+import {
+  getQuadrantBounds,
+  getSubQuadrant,
+  isRegionSmallEnough
+} from './board-utils'
 
 export default class GameManager {
   constructor(moves, boardSize = DEFAULT_BOARD_SIZE) {
@@ -24,7 +23,7 @@ export default class GameManager {
     this.replayPosition = 0
     this.boardHistory = [Board.fromDimensions(boardSize, boardSize)]
     this.wrongAttemptsCurrentMove = 0
-    this.currentGhostStones = []
+    this.currentHintRegion = null
     this.replayStartMove = 0
     this.replayEndMove = this.moves.length - 1
 
@@ -32,8 +31,8 @@ export default class GameManager {
       wrongMoveCount: 0,
       correctFirstTry: 0,
       quadrantHintsUsed: 0,
-      ghostHintsUsed: 0,
-      triangleHintsUsed: 0,
+      subdivisionHintsUsed: 0,
+      exactHintsUsed: 0,
       startTime: null,
       moveTimes: []
     }
@@ -133,7 +132,7 @@ export default class GameManager {
     this.studyPosition = 0
     this.replayPosition = 0
     this.wrongAttemptsCurrentMove = 0
-    this.currentGhostStones = []
+    this.currentHintRegion = null
     this.replayStartMove = 0
     this.replayEndMove = this.moves.length - 1
 
@@ -141,8 +140,8 @@ export default class GameManager {
       wrongMoveCount: 0,
       correctFirstTry: 0,
       quadrantHintsUsed: 0,
-      ghostHintsUsed: 0,
-      triangleHintsUsed: 0,
+      subdivisionHintsUsed: 0,
+      exactHintsUsed: 0,
       startTime: null,
       moveTimes: []
     }
@@ -150,72 +149,6 @@ export default class GameManager {
     return {
       success: true,
       phase: this.phase
-    }
-  }
-
-  generateGhostStones() {
-    if (this.replayPosition >= this.moves.length) {
-      return []
-    }
-
-    const correctMove = this.moves[this.replayPosition]
-    const options = [{
-      x: correctMove.x,
-      y: correctMove.y,
-      isCorrect: true
-    }]
-
-    let attempts = 0
-    while (options.length < GHOST_HINT_COUNT && attempts < MAX_GHOST_GENERATION_ATTEMPTS) {
-      const dx = randomInt(-GHOST_HINT_RADIUS, GHOST_HINT_RADIUS)
-      const dy = randomInt(-GHOST_HINT_RADIUS, GHOST_HINT_RADIUS)
-
-      if (dx === 0 && dy === 0) {
-        attempts++
-        continue
-      }
-
-      const newX = correctMove.x + dx
-      const newY = correctMove.y + dy
-
-      if (this.isValidHintPosition(newX, newY, options)) {
-        options.push({
-          x: newX,
-          y: newY,
-          isCorrect: false
-        })
-      }
-
-      attempts++
-    }
-
-    return options
-  }
-
-  isValidHintPosition(x, y, existingOptions) {
-    if (x < 0 || x >= this.boardSize || y < 0 || y >= this.boardSize) {
-      return false
-    }
-
-    if (this.getCurrentBoard().get([x, y]) !== 0) {
-      return false
-    }
-
-    if (existingOptions.some(opt => opt.x === x && opt.y === y)) {
-      return false
-    }
-
-    return true
-  }
-
-  getQuadrantHint() {
-    const correctMove = this.moves[this.replayPosition]
-    const quadrant = getQuadrant(correctMove.x, correctMove.y, this.boardSize)
-    const vertices = getQuadrantVertices(quadrant, this.boardSize)
-
-    return {
-      quadrant,
-      vertices
     }
   }
 
@@ -246,6 +179,7 @@ export default class GameManager {
 
       this.replayPosition++
       this.wrongAttemptsCurrentMove = 0
+      this.currentHintRegion = null
 
       if (this.replayPosition > this.replayEndMove) {
         this.phase = PHASES.COMPLETE
@@ -267,68 +201,32 @@ export default class GameManager {
 
     if (this.wrongAttemptsCurrentMove === 1) {
       this.stats.quadrantHintsUsed++
-      const hint = this.getQuadrantHint()
+      this.currentHintRegion = getQuadrantBounds(correctMove, this.boardSize)
       return {
         correct: false,
         needHint: true,
         hintType: HINT_TYPES.QUADRANT,
-        quadrant: hint.quadrant,
-        vertices: hint.vertices
+        region: this.currentHintRegion
       }
     }
 
-    if (this.wrongAttemptsCurrentMove === 2) {
-      this.stats.ghostHintsUsed++
-      this.currentGhostStones = this.generateGhostStones()
+    if (isRegionSmallEnough(this.currentHintRegion)) {
+      this.stats.exactHintsUsed++
       return {
         correct: false,
         needHint: true,
-        hintType: HINT_TYPES.GHOST,
-        ghostStones: this.currentGhostStones,
-        nextColor: correctMove.color
+        hintType: HINT_TYPES.EXACT,
+        position: { x: correctMove.x, y: correctMove.y }
       }
     }
 
-    this.stats.triangleHintsUsed++
+    this.stats.subdivisionHintsUsed++
+    this.currentHintRegion = getSubQuadrant(this.currentHintRegion, correctMove)
     return {
       correct: false,
       needHint: true,
-      hintType: HINT_TYPES.TRIANGLE,
-      correctPosition: { x: correctMove.x, y: correctMove.y },
-      nextColor: correctMove.color
-    }
-  }
-
-  handleGhostClick(x, y) {
-    const clickedGhost = this.currentGhostStones.find(g => g.x === x && g.y === y)
-
-    if (!clickedGhost) {
-      return { error: 'Invalid ghost position' }
-    }
-
-    if (clickedGhost.isCorrect) {
-      const correctMove = this.moves[this.replayPosition]
-      const sign = colorToSign(correctMove.color)
-      const newBoard = this.getCurrentBoard().makeMove(sign, [x, y])
-      this.boardHistory.push(newBoard)
-      this.studyPosition++
-
-      this.replayPosition++
-      this.wrongAttemptsCurrentMove = 0
-      this.currentGhostStones = []
-
-      return {
-        correct: true,
-        currentMove: this.replayPosition
-      }
-    }
-
-    this.currentGhostStones = this.currentGhostStones.filter(g => g.x !== x || g.y !== y)
-
-    return {
-      correct: false,
-      eliminated: true,
-      remainingGhosts: this.currentGhostStones
+      hintType: HINT_TYPES.QUADRANT,
+      region: this.currentHintRegion
     }
   }
 }

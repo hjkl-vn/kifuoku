@@ -1,6 +1,10 @@
 import { describe, it, expect } from 'vitest'
 import GameManager from '../GameManager'
-import { getQuadrant } from '../constants'
+import {
+  getQuadrantBounds,
+  getSubQuadrant,
+  isRegionSmallEnough
+} from '../board-utils'
 
 describe('GameManager', () => {
   const mockMoves = [
@@ -134,49 +138,6 @@ describe('GameManager', () => {
     })
   })
 
-  describe('Hint Generation', () => {
-    it('generateGhostStones returns 4 positions with 1 correct', () => {
-      const manager = new GameManager(mockMoves)
-      manager.startReplay()
-
-      const ghosts = manager.generateGhostStones()
-
-      expect(ghosts).toHaveLength(4)
-      expect(ghosts.filter(g => g.isCorrect)).toHaveLength(1)
-
-      const correctGhost = ghosts.find(g => g.isCorrect)
-      expect(correctGhost.x).toBe(mockMoves[0].x)
-      expect(correctGhost.y).toBe(mockMoves[0].y)
-    })
-
-    it('ghost positions are valid and unique', () => {
-      const manager = new GameManager(mockMoves)
-      manager.startReplay()
-
-      const ghosts = manager.generateGhostStones()
-
-      ghosts.forEach(ghost => {
-        expect(ghost.x).toBeGreaterThanOrEqual(0)
-        expect(ghost.x).toBeLessThan(19)
-        expect(ghost.y).toBeGreaterThanOrEqual(0)
-        expect(ghost.y).toBeLessThan(19)
-      })
-
-      const positions = ghosts.map(g => `${g.x},${g.y}`)
-      const uniquePositions = new Set(positions)
-      expect(uniquePositions.size).toBe(4)
-    })
-
-    it('getQuadrantHint returns correct quadrant', () => {
-      const manager = new GameManager(mockMoves)
-      manager.startReplay()
-
-      const hint = manager.getQuadrantHint()
-
-      expect(hint.quadrant).toBe(getQuadrant(mockMoves[0].x, mockMoves[0].y))
-      expect(hint.vertices).toBeDefined()
-    })
-  })
 
   describe('Move Validation', () => {
     it('validates correct move on first try', () => {
@@ -201,36 +162,9 @@ describe('GameManager', () => {
       expect(result.correct).toBe(false)
       expect(result.needHint).toBe(true)
       expect(result.hintType).toBe('quadrant')
-      expect(result.quadrant).toBeDefined()
+      expect(result.region).toBeDefined()
       expect(manager.stats.quadrantHintsUsed).toBe(1)
       expect(manager.wrongAttemptsCurrentMove).toBe(1)
-    })
-
-    it('returns ghost stones on second wrong attempt', () => {
-      const manager = new GameManager(mockMoves)
-      manager.startReplay()
-
-      manager.validateMove(10, 10)
-      const result = manager.validateMove(10, 11)
-
-      expect(result.correct).toBe(false)
-      expect(result.hintType).toBe('ghost')
-      expect(result.ghostStones).toHaveLength(4)
-      expect(manager.stats.ghostHintsUsed).toBe(1)
-    })
-
-    it('returns triangle hint on third wrong attempt', () => {
-      const manager = new GameManager(mockMoves)
-      manager.startReplay()
-
-      manager.validateMove(10, 10)
-      manager.validateMove(10, 11)
-      const result = manager.validateMove(10, 12)
-
-      expect(result.correct).toBe(false)
-      expect(result.hintType).toBe('triangle')
-      expect(result.correctPosition).toEqual({ x: 3, y: 3 })
-      expect(manager.stats.triangleHintsUsed).toBe(1)
     })
 
     it('transitions to complete when all moves done', () => {
@@ -245,36 +179,122 @@ describe('GameManager', () => {
     })
   })
 
-  describe('Ghost Stone Interaction', () => {
-    it('eliminates wrong ghost and returns remaining', () => {
-      const manager = new GameManager(mockMoves)
-      manager.startReplay()
+})
 
-      manager.validateMove(10, 10)
-      const ghostResult = manager.validateMove(10, 11)
-      const ghosts = ghostResult.ghostStones
-      const wrongGhost = ghosts.find(g => !g.isCorrect)
+describe('getQuadrantBounds', () => {
+  it('returns upper-left quadrant for move in upper-left', () => {
+    const bounds = getQuadrantBounds({ x: 3, y: 3 }, 19)
+    expect(bounds).toEqual({ minX: 0, maxX: 8, minY: 0, maxY: 8 })
+  })
 
-      const result = manager.handleGhostClick(wrongGhost.x, wrongGhost.y)
+  it('returns lower-right quadrant for move in lower-right', () => {
+    const bounds = getQuadrantBounds({ x: 15, y: 15 }, 19)
+    expect(bounds).toEqual({ minX: 9, maxX: 18, minY: 9, maxY: 18 })
+  })
 
-      expect(result.correct).toBe(false)
-      expect(result.eliminated).toBe(true)
-      expect(result.remainingGhosts).toHaveLength(3)
-    })
+  it('returns upper-right quadrant for move in upper-right', () => {
+    const bounds = getQuadrantBounds({ x: 12, y: 4 }, 19)
+    expect(bounds).toEqual({ minX: 9, maxX: 18, minY: 0, maxY: 8 })
+  })
 
-    it('places stone when correct ghost clicked', () => {
-      const manager = new GameManager(mockMoves)
-      manager.startReplay()
+  it('returns lower-left quadrant for move in lower-left', () => {
+    const bounds = getQuadrantBounds({ x: 4, y: 12 }, 19)
+    expect(bounds).toEqual({ minX: 0, maxX: 8, minY: 9, maxY: 18 })
+  })
+})
 
-      manager.validateMove(10, 10)
-      const ghostResult = manager.validateMove(10, 11)
-      const correctGhost = ghostResult.ghostStones.find(g => g.isCorrect)
+describe('getSubQuadrant', () => {
+  it('subdivides region to upper-left sub-quadrant', () => {
+    const region = { minX: 0, maxX: 8, minY: 0, maxY: 8 }
+    const subRegion = getSubQuadrant(region, { x: 2, y: 2 })
+    expect(subRegion).toEqual({ minX: 0, maxX: 4, minY: 0, maxY: 4 })
+  })
 
-      const result = manager.handleGhostClick(correctGhost.x, correctGhost.y)
+  it('subdivides region to lower-right sub-quadrant', () => {
+    const region = { minX: 0, maxX: 8, minY: 0, maxY: 8 }
+    const subRegion = getSubQuadrant(region, { x: 7, y: 7 })
+    expect(subRegion).toEqual({ minX: 5, maxX: 8, minY: 5, maxY: 8 })
+  })
 
-      expect(result.correct).toBe(true)
-      expect(manager.replayPosition).toBe(1)
-      expect(manager.getCurrentBoard().get([3, 3])).toBe(1)
-    })
+  it('subdivides small region correctly', () => {
+    const region = { minX: 0, maxX: 4, minY: 0, maxY: 4 }
+    const subRegion = getSubQuadrant(region, { x: 1, y: 3 })
+    expect(subRegion).toEqual({ minX: 0, maxX: 2, minY: 3, maxY: 4 })
+  })
+})
+
+describe('isRegionSmallEnough', () => {
+  it('returns true for 3x3 region', () => {
+    expect(isRegionSmallEnough({ minX: 0, maxX: 2, minY: 0, maxY: 2 })).toBe(true)
+  })
+
+  it('returns true for 2x2 region', () => {
+    expect(isRegionSmallEnough({ minX: 5, maxX: 6, minY: 5, maxY: 6 })).toBe(true)
+  })
+
+  it('returns false for 4x4 region', () => {
+    expect(isRegionSmallEnough({ minX: 0, maxX: 3, minY: 0, maxY: 3 })).toBe(false)
+  })
+
+  it('returns false for 3x4 region', () => {
+    expect(isRegionSmallEnough({ minX: 0, maxX: 2, minY: 0, maxY: 3 })).toBe(false)
+  })
+})
+
+describe('subdivision hints', () => {
+  it('returns quadrant hint on first wrong attempt', () => {
+    const moves = [{ x: 3, y: 3, color: 'B' }]
+    const gm = new GameManager(moves, 19)
+    gm.startReplay()
+
+    const result = gm.validateMove(10, 10)
+
+    expect(result.correct).toBe(false)
+    expect(result.hintType).toBe('quadrant')
+    expect(result.region).toEqual({ minX: 0, maxX: 8, minY: 0, maxY: 8 })
+  })
+
+  it('returns subdivision hint on second wrong attempt', () => {
+    const moves = [{ x: 2, y: 2, color: 'B' }]
+    const gm = new GameManager(moves, 19)
+    gm.startReplay()
+
+    gm.validateMove(10, 10)
+    const result = gm.validateMove(10, 10)
+
+    expect(result.correct).toBe(false)
+    expect(result.hintType).toBe('quadrant')
+    expect(result.region).toEqual({ minX: 0, maxX: 4, minY: 0, maxY: 4 })
+  })
+
+  it('returns exact hint when region is small enough', () => {
+    const moves = [{ x: 1, y: 1, color: 'B' }]
+    const gm = new GameManager(moves, 19)
+    gm.startReplay()
+
+    gm.validateMove(10, 10)
+    gm.validateMove(10, 10)
+    gm.validateMove(10, 10)
+    const result = gm.validateMove(10, 10)
+
+    expect(result.correct).toBe(false)
+    expect(result.hintType).toBe('exact')
+    expect(result.position).toEqual({ x: 1, y: 1 })
+  })
+
+  it('resets hint region after correct move', () => {
+    const moves = [
+      { x: 3, y: 3, color: 'B' },
+      { x: 15, y: 15, color: 'W' }
+    ]
+    const gm = new GameManager(moves, 19)
+    gm.startReplay()
+
+    gm.validateMove(10, 10)
+    gm.validateMove(3, 3)
+
+    const result = gm.validateMove(0, 0)
+    expect(result.hintType).toBe('quadrant')
+    expect(result.region).toEqual({ minX: 9, maxX: 18, minY: 9, maxY: 18 })
   })
 })

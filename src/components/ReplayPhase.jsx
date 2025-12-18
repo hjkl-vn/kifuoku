@@ -5,14 +5,13 @@ import CollapsibleHeader from './CollapsibleHeader'
 import BottomBar from './BottomBar'
 import CompletionModal from './CompletionModal'
 import { createEmptyBoardMap } from '../game/board-utils'
-import { HINT_LETTERS, BORDER_FLASH_DURATION_MS, PHASES } from '../game/constants'
+import { BORDER_FLASH_DURATION_MS, PHASES } from '../game/constants'
 import { useBoardSize } from '../hooks/useBoardSize'
 import layout from '../styles/GameLayout.module.css'
 import replayStyles from '../styles/ReplayPhase.module.css'
 
 export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
   const [hintState, setHintState] = useState(null)
-  const [eliminatedLetters, setEliminatedLetters] = useState([])
   const [borderFlash, setBorderFlash] = useState(null)
 
   const state = gameManager.getState()
@@ -26,22 +25,6 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
   const handleVertexClick = (evt, [x, y]) => {
     if (evt.button !== 0) return
 
-    if (hintState?.hintType === 'ghost') {
-      const clickResult = gameManager.handleGhostClick(x, y)
-
-      if (clickResult.error) return
-
-      if (clickResult.correct) {
-        setHintState(null)
-        setEliminatedLetters([])
-        setBorderFlash('success')
-        setTimeout(() => setBorderFlash(null), BORDER_FLASH_DURATION_MS)
-      } else {
-        setEliminatedLetters(prev => [...prev, { x, y }])
-      }
-      return
-    }
-
     const result = gameManager.validateMove(x, y)
 
     if (result.correct) {
@@ -50,7 +33,6 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
       setTimeout(() => setBorderFlash(null), BORDER_FLASH_DURATION_MS)
     } else if (result.needHint) {
       setHintState(result)
-      setEliminatedLetters([])
       setBorderFlash('error')
       setTimeout(() => setBorderFlash(null), BORDER_FLASH_DURATION_MS)
     }
@@ -63,24 +45,18 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
     markerMap[lastMove.y][lastMove.x] = { type: 'circle' }
   }
 
-  if (hintState?.hintType === 'quadrant' && hintState.vertices) {
-    hintState.vertices.forEach(([x, y]) => {
-      paintMap[y][x] = 1
-    })
-  }
-
-  if (hintState?.hintType === 'ghost' && hintState.ghostStones) {
-    hintState.ghostStones.forEach((ghost, index) => {
-      const isEliminated = eliminatedLetters.some(g => g.x === ghost.x && g.y === ghost.y)
-      if (!isEliminated) {
-        markerMap[ghost.y][ghost.x] = { type: 'label', label: HINT_LETTERS[index] }
+  if (hintState?.hintType === 'quadrant' && hintState.region) {
+    const { minX, maxX, minY, maxY } = hintState.region
+    for (let y = minY; y <= maxY; y++) {
+      for (let x = minX; x <= maxX; x++) {
+        paintMap[y][x] = 1
       }
-    })
+    }
   }
 
-  if (hintState?.hintType === 'triangle' && hintState.correctPosition) {
-    const { x, y } = hintState.correctPosition
-    markerMap[y][x] = { type: 'point' }
+  if (hintState?.hintType === 'exact' && hintState.position) {
+    const { x, y } = hintState.position
+    markerMap[y][x] = { type: 'triangle' }
   }
 
   const boardContainerClass = [
