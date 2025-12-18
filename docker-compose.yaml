@@ -3,6 +3,7 @@ services:
     build:
       context: .
       target: dev
+    image: kifuoku-dev
     container_name: covay
     ports:
       - "8181:3000"
@@ -18,6 +19,7 @@ services:
     build:
       context: .
       target: prod
+    image: kifuoku-prod
     container_name: covay
     ports:
       - "9090:80"
