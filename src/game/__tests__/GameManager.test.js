@@ -343,3 +343,61 @@ describe('isRegionSmallEnough', () => {
     expect(isRegionSmallEnough({ minX: 0, maxX: 2, minY: 0, maxY: 3 })).toBe(false)
   })
 })
+
+describe('subdivision hints', () => {
+  it('returns quadrant hint on first wrong attempt', () => {
+    const moves = [{ x: 3, y: 3, color: 'B' }]
+    const gm = new GameManager(moves, 19)
+    gm.startReplay()
+
+    const result = gm.validateMove(10, 10)
+
+    expect(result.correct).toBe(false)
+    expect(result.hintType).toBe('quadrant')
+    expect(result.region).toEqual({ minX: 0, maxX: 8, minY: 0, maxY: 8 })
+  })
+
+  it('returns subdivision hint on second wrong attempt', () => {
+    const moves = [{ x: 2, y: 2, color: 'B' }]
+    const gm = new GameManager(moves, 19)
+    gm.startReplay()
+
+    gm.validateMove(10, 10)
+    const result = gm.validateMove(10, 10)
+
+    expect(result.correct).toBe(false)
+    expect(result.hintType).toBe('quadrant')
+    expect(result.region).toEqual({ minX: 0, maxX: 4, minY: 0, maxY: 4 })
+  })
+
+  it('returns exact hint when region is small enough', () => {
+    const moves = [{ x: 1, y: 1, color: 'B' }]
+    const gm = new GameManager(moves, 19)
+    gm.startReplay()
+
+    gm.validateMove(10, 10)
+    gm.validateMove(10, 10)
+    gm.validateMove(10, 10)
+    const result = gm.validateMove(10, 10)
+
+    expect(result.correct).toBe(false)
+    expect(result.hintType).toBe('exact')
+    expect(result.position).toEqual({ x: 1, y: 1 })
+  })
+
+  it('resets hint region after correct move', () => {
+    const moves = [
+      { x: 3, y: 3, color: 'B' },
+      { x: 15, y: 15, color: 'W' }
+    ]
+    const gm = new GameManager(moves, 19)
+    gm.startReplay()
+
+    gm.validateMove(10, 10)
+    gm.validateMove(3, 3)
+
+    const result = gm.validateMove(0, 0)
+    expect(result.hintType).toBe('quadrant')
+    expect(result.region).toEqual({ minX: 9, maxX: 18, minY: 9, maxY: 18 })
+  })
+})

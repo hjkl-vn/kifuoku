@@ -245,6 +245,7 @@ export default class GameManager {
 
       this.replayPosition++
       this.wrongAttemptsCurrentMove = 0
+      this.currentHintRegion = null
 
       if (this.replayPosition > this.replayEndMove) {
         this.phase = PHASES.COMPLETE
@@ -266,35 +267,32 @@ export default class GameManager {
 
     if (this.wrongAttemptsCurrentMove === 1) {
       this.stats.quadrantHintsUsed++
-      const hint = this.getQuadrantHint()
+      this.currentHintRegion = getQuadrantBounds(correctMove, this.boardSize)
       return {
         correct: false,
         needHint: true,
         hintType: HINT_TYPES.QUADRANT,
-        quadrant: hint.quadrant,
-        vertices: hint.vertices
+        region: this.currentHintRegion
       }
     }
 
-    if (this.wrongAttemptsCurrentMove === 2) {
-      this.stats.ghostHintsUsed++
-      this.currentGhostStones = this.generateGhostStones()
+    if (isRegionSmallEnough(this.currentHintRegion)) {
+      this.stats.exactHintsUsed++
       return {
         correct: false,
         needHint: true,
-        hintType: HINT_TYPES.GHOST,
-        ghostStones: this.currentGhostStones,
-        nextColor: correctMove.color
+        hintType: HINT_TYPES.EXACT,
+        position: { x: correctMove.x, y: correctMove.y }
       }
     }
 
-    this.stats.triangleHintsUsed++
+    this.stats.subdivisionHintsUsed++
+    this.currentHintRegion = getSubQuadrant(this.currentHintRegion, correctMove)
     return {
       correct: false,
       needHint: true,
-      hintType: HINT_TYPES.TRIANGLE,
-      correctPosition: { x: correctMove.x, y: correctMove.y },
-      nextColor: correctMove.color
+      hintType: HINT_TYPES.QUADRANT,
+      region: this.currentHintRegion
     }
   }
 
