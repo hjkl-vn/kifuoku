@@ -12,7 +12,8 @@ export default function CollapsibleHeader({
   rangeEnd,
   onRangeChange,
   onStartReplay,
-  stats
+  stats,
+  currentTurn
 }) {
   const [isExpanded, setIsExpanded] = useState(false)
 
@@ -33,12 +34,9 @@ export default function CollapsibleHeader({
 
       {isExpanded && (
         <>
-          <div
-            className={styles.overlay}
-            onClick={() => setIsExpanded(false)}
-          />
+          <div className={styles.overlay} onClick={() => setIsExpanded(false)} />
           <div className={styles.dropdown}>
-            <GameInfo gameInfo={gameInfo} />
+            <GameInfo gameInfo={gameInfo} currentTurn={currentTurn} />
 
             {phase === 'study' && (
               <div className={styles.section}>

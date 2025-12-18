@@ -21,6 +21,7 @@ export default function StudyPhase({ gameManager, gameInfo }) {
 
   const canGoNext = state.studyPosition < state.totalMoves
   const canGoPrev = state.studyPosition > 0
+  const currentTurn = gameManager.getCurrentTurn()
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -49,10 +50,9 @@ export default function StudyPhase({ gameManager, gameInfo }) {
     gameManager.startReplay(rangeStart, rangeEnd)
   }
 
-  const containerClass = [
-    layout.container,
-    isMobileLayout ? layout.mobileLayout : ''
-  ].filter(Boolean).join(' ')
+  const containerClass = [layout.container, isMobileLayout ? layout.mobileLayout : '']
+    .filter(Boolean)
+    .join(' ')
 
   return (
     <div className={containerClass}>
@@ -65,6 +65,7 @@ export default function StudyPhase({ gameManager, gameInfo }) {
           rangeEnd={rangeEnd}
           onRangeChange={handleRangeChange}
           onStartReplay={handleStartReplay}
+          currentTurn={currentTurn}
         />
       )}
 
@@ -83,6 +84,7 @@ export default function StudyPhase({ gameManager, gameInfo }) {
           onStartReplay={handleStartReplay}
           current={state.studyPosition}
           total={state.totalMoves}
+          currentTurn={currentTurn}
         />
       )}
 

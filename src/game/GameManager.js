@@ -1,15 +1,6 @@
 import Board from '@sabaki/go-board'
-import {
-  DEFAULT_BOARD_SIZE,
-  PHASES,
-  HINT_TYPES,
-  colorToSign
-} from './constants'
-import {
-  getQuadrantBounds,
-  getSubQuadrant,
-  isRegionSmallEnough
-} from './board-utils'
+import { DEFAULT_BOARD_SIZE, PHASES, HINT_TYPES, colorToSign } from './constants'
+import { getQuadrantBounds, getSubQuadrant, isRegionSmallEnough } from './board-utils'
 
 export default class GameManager {
   constructor(moves, boardSize = DEFAULT_BOARD_SIZE) {
@@ -46,6 +37,11 @@ export default class GameManager {
     return this.studyPosition > 0 ? this.moves[this.studyPosition - 1] : null
   }
 
+  getCurrentTurn() {
+    const position = this.phase === PHASES.REPLAY ? this.replayPosition : this.studyPosition
+    return this.moves[position]?.color || null
+  }
+
   getState() {
     return {
       phase: this.phase,
@@ -71,7 +67,8 @@ export default class GameManager {
       avgTimeFormatted: (avgTime / 1000).toFixed(2),
       wrongMoveCount: this.stats.wrongMoveCount,
       correctFirstTry: this.stats.correctFirstTry,
-      accuracy: replayedMoves > 0 ? Math.round((this.stats.correctFirstTry / replayedMoves) * 100) : 0
+      accuracy:
+        replayedMoves > 0 ? Math.round((this.stats.correctFirstTry / replayedMoves) * 100) : 0
     }
   }
 

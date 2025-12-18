@@ -12,18 +12,10 @@ export default function BottomBar({ canGoPrev, canGoNext, onPrev, onNext, curren
       </div>
       {hasButtons && (
         <div className={styles.buttons}>
-          <button
-            className={styles.button}
-            onClick={onPrev}
-            disabled={!canGoPrev}
-          >
+          <button className={styles.button} onClick={onPrev} disabled={!canGoPrev}>
             ◀ Prev
           </button>
-          <button
-            className={styles.button}
-            onClick={onNext}
-            disabled={!canGoNext}
-          >
+          <button className={styles.button} onClick={onNext} disabled={!canGoNext}>
             Next ▶
           </button>
         </div>

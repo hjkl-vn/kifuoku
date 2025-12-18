@@ -19,7 +19,7 @@ export async function fetchOgsSgf(gameId) {
   let response
   try {
     response = await fetch(url)
-  } catch (err) {
+  } catch (_err) {
     throw new Error('Failed to connect. Check your internet connection.')
   }
 

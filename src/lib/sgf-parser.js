@@ -69,7 +69,7 @@ export function getBoardSize(sgfContent) {
     }
 
     return 19
-  } catch (error) {
+  } catch (_error) {
     return 19
   }
 }
@@ -90,7 +90,7 @@ export function getGameInfo(sgfContent) {
       result: data.RE?.[0] || null,
       rules: data.RU?.[0] || null
     }
-  } catch (error) {
+  } catch (_error) {
     return {}
   }
 }

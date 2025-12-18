@@ -8,7 +8,9 @@ export default function ProgressBar({ current, total }) {
     <div className={styles.container}>
       <div className={styles.barBackground}>
         <div className={styles.barFill} style={{ width: `${percentage}%` }} />
-        <span className={styles.text}>{current} / {total}</span>
+        <span className={styles.text}>
+          {current} / {total}
+        </span>
       </div>
     </div>
   )

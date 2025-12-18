@@ -1,10 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import GameManager from '../GameManager'
-import {
-  getQuadrantBounds,
-  getSubQuadrant,
-  isRegionSmallEnough
-} from '../board-utils'
+import { getQuadrantBounds, getSubQuadrant, isRegionSmallEnough } from '../board-utils'
 
 describe('GameManager', () => {
   const mockMoves = [
@@ -138,7 +134,6 @@ describe('GameManager', () => {
     })
   })
 
-
   describe('Move Validation', () => {
     it('validates correct move on first try', () => {
       const manager = new GameManager(mockMoves)
@@ -178,7 +173,6 @@ describe('GameManager', () => {
       expect(manager.phase).toBe('complete')
     })
   })
-
 })
 
 describe('getQuadrantBounds', () => {

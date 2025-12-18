@@ -19,28 +19,21 @@ export default function Sidebar({
   onStartReplay,
   stats,
   current,
-  total
+  total,
+  currentTurn
 }) {
   return (
     <aside className={styles.sidebar}>
-      <GameInfo gameInfo={gameInfo} />
+      <GameInfo gameInfo={gameInfo} currentTurn={currentTurn} />
 
       <div className={styles.section}>
         <ProgressBar current={current} total={total} />
         {phase === 'study' && (
           <div className={buttons.controls}>
-            <button
-              className={buttons.buttonFlex}
-              onClick={onPrev}
-              disabled={!canGoPrev}
-            >
+            <button className={buttons.buttonFlex} onClick={onPrev} disabled={!canGoPrev}>
               Prev
             </button>
-            <button
-              className={buttons.buttonFlex}
-              onClick={onNext}
-              disabled={!canGoNext}
-            >
+            <button className={buttons.buttonFlex} onClick={onNext} disabled={!canGoNext}>
               Next
             </button>
           </div>
@@ -56,10 +49,7 @@ export default function Sidebar({
             end={rangeEnd}
             onChange={onRangeChange}
           />
-          <button
-            className={buttons.primaryButton}
-            onClick={onStartReplay}
-          >
+          <button className={buttons.primaryButton} onClick={onStartReplay}>
             Start Replay
           </button>
         </div>

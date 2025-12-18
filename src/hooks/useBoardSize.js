@@ -6,7 +6,7 @@ const LAYOUT_GAP = 40
 const CONTAINER_PADDING = 40
 
 function calculateMinDesktopWidth(boardSize, maxVertexSize) {
-  const boardWidth = (boardSize * maxVertexSize) + COORDINATE_LABEL_SPACE
+  const boardWidth = boardSize * maxVertexSize + COORDINATE_LABEL_SPACE
   return SIDEBAR_WIDTH + LAYOUT_GAP + boardWidth + CONTAINER_PADDING
 }
 
@@ -15,10 +15,7 @@ function getInitialMobileLayout(boardSize, maxVertexSize) {
   return window.innerWidth < calculateMinDesktopWidth(boardSize, maxVertexSize)
 }
 
-export function useBoardSize({
-  boardSize,
-  maxVertexSize = 38
-}) {
+export function useBoardSize({ boardSize, maxVertexSize = 38 }) {
   const containerRef = useRef(null)
   const [vertexSize, setVertexSize] = useState(maxVertexSize)
   const [isMobileLayout, setIsMobileLayout] = useState(() =>
