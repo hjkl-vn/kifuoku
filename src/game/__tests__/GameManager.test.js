@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest'
 import GameManager from '../GameManager'
-import { getQuadrant } from '../constants'
 import {
   getQuadrantBounds,
   getSubQuadrant,
@@ -139,49 +138,6 @@ describe('GameManager', () => {
     })
   })
 
-  describe('Hint Generation', () => {
-    it('generateGhostStones returns 4 positions with 1 correct', () => {
-      const manager = new GameManager(mockMoves)
-      manager.startReplay()
-
-      const ghosts = manager.generateGhostStones()
-
-      expect(ghosts).toHaveLength(4)
-      expect(ghosts.filter(g => g.isCorrect)).toHaveLength(1)
-
-      const correctGhost = ghosts.find(g => g.isCorrect)
-      expect(correctGhost.x).toBe(mockMoves[0].x)
-      expect(correctGhost.y).toBe(mockMoves[0].y)
-    })
-
-    it('ghost positions are valid and unique', () => {
-      const manager = new GameManager(mockMoves)
-      manager.startReplay()
-
-      const ghosts = manager.generateGhostStones()
-
-      ghosts.forEach(ghost => {
-        expect(ghost.x).toBeGreaterThanOrEqual(0)
-        expect(ghost.x).toBeLessThan(19)
-        expect(ghost.y).toBeGreaterThanOrEqual(0)
-        expect(ghost.y).toBeLessThan(19)
-      })
-
-      const positions = ghosts.map(g => `${g.x},${g.y}`)
-      const uniquePositions = new Set(positions)
-      expect(uniquePositions.size).toBe(4)
-    })
-
-    it('getQuadrantHint returns correct quadrant', () => {
-      const manager = new GameManager(mockMoves)
-      manager.startReplay()
-
-      const hint = manager.getQuadrantHint()
-
-      expect(hint.quadrant).toBe(getQuadrant(mockMoves[0].x, mockMoves[0].y))
-      expect(hint.vertices).toBeDefined()
-    })
-  })
 
   describe('Move Validation', () => {
     it('validates correct move on first try', () => {
@@ -206,36 +162,9 @@ describe('GameManager', () => {
       expect(result.correct).toBe(false)
       expect(result.needHint).toBe(true)
       expect(result.hintType).toBe('quadrant')
-      expect(result.quadrant).toBeDefined()
+      expect(result.region).toBeDefined()
       expect(manager.stats.quadrantHintsUsed).toBe(1)
       expect(manager.wrongAttemptsCurrentMove).toBe(1)
-    })
-
-    it('returns ghost stones on second wrong attempt', () => {
-      const manager = new GameManager(mockMoves)
-      manager.startReplay()
-
-      manager.validateMove(10, 10)
-      const result = manager.validateMove(10, 11)
-
-      expect(result.correct).toBe(false)
-      expect(result.hintType).toBe('ghost')
-      expect(result.ghostStones).toHaveLength(4)
-      expect(manager.stats.ghostHintsUsed).toBe(1)
-    })
-
-    it('returns triangle hint on third wrong attempt', () => {
-      const manager = new GameManager(mockMoves)
-      manager.startReplay()
-
-      manager.validateMove(10, 10)
-      manager.validateMove(10, 11)
-      const result = manager.validateMove(10, 12)
-
-      expect(result.correct).toBe(false)
-      expect(result.hintType).toBe('triangle')
-      expect(result.correctPosition).toEqual({ x: 3, y: 3 })
-      expect(manager.stats.triangleHintsUsed).toBe(1)
     })
 
     it('transitions to complete when all moves done', () => {
@@ -250,38 +179,6 @@ describe('GameManager', () => {
     })
   })
 
-  describe('Ghost Stone Interaction', () => {
-    it('eliminates wrong ghost and returns remaining', () => {
-      const manager = new GameManager(mockMoves)
-      manager.startReplay()
-
-      manager.validateMove(10, 10)
-      const ghostResult = manager.validateMove(10, 11)
-      const ghosts = ghostResult.ghostStones
-      const wrongGhost = ghosts.find(g => !g.isCorrect)
-
-      const result = manager.handleGhostClick(wrongGhost.x, wrongGhost.y)
-
-      expect(result.correct).toBe(false)
-      expect(result.eliminated).toBe(true)
-      expect(result.remainingGhosts).toHaveLength(3)
-    })
-
-    it('places stone when correct ghost clicked', () => {
-      const manager = new GameManager(mockMoves)
-      manager.startReplay()
-
-      manager.validateMove(10, 10)
-      const ghostResult = manager.validateMove(10, 11)
-      const correctGhost = ghostResult.ghostStones.find(g => g.isCorrect)
-
-      const result = manager.handleGhostClick(correctGhost.x, correctGhost.y)
-
-      expect(result.correct).toBe(true)
-      expect(manager.replayPosition).toBe(1)
-      expect(manager.getCurrentBoard().get([3, 3])).toBe(1)
-    })
-  })
 })
 
 describe('getQuadrantBounds', () => {
