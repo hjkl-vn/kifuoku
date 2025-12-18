@@ -7,13 +7,3 @@
   box-shadow: 0 0 0 4px #f44336;
   border-radius: 4px;
 }
-
-.replayContainer {
-  composes: container from './GameLayout.module.css';
-}
-
-@media (max-width: 767px) {
-  .replayContainer {
-    padding-bottom: 0;
-  }
-}

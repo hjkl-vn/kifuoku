@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import Board from './Board'
-import ProgressBar from './ProgressBar'
 import Sidebar from './Sidebar'
 import CollapsibleHeader from './CollapsibleHeader'
 import BottomBar from './BottomBar'
 import { createEmptyBoardMap } from '../game/board-utils'
+import { useBoardSize } from '../hooks/useBoardSize'
 import layout from '../styles/GameLayout.module.css'
 
 export default function StudyPhase({ gameManager, gameInfo }) {
@@ -14,6 +14,10 @@ export default function StudyPhase({ gameManager, gameInfo }) {
 
   const [rangeStart, setRangeStart] = useState(0)
   const [rangeEnd, setRangeEnd] = useState(state.totalMoves - 1)
+
+  const { containerRef, vertexSize, isMobileLayout } = useBoardSize({
+    boardSize: state.boardSize
+  })
 
   const canGoNext = state.studyPosition < state.totalMoves
   const canGoPrev = state.studyPosition > 0
@@ -45,49 +49,61 @@ export default function StudyPhase({ gameManager, gameInfo }) {
     gameManager.startReplay(rangeStart, rangeEnd)
   }
 
-  return (
-    <div className={layout.container}>
-      <CollapsibleHeader
-        gameInfo={gameInfo}
-        phase="study"
-        totalMoves={state.totalMoves}
-        rangeStart={rangeStart}
-        rangeEnd={rangeEnd}
-        onRangeChange={handleRangeChange}
-        onStartReplay={handleStartReplay}
-      />
+  const containerClass = [
+    layout.container,
+    isMobileLayout ? layout.mobileLayout : ''
+  ].filter(Boolean).join(' ')
 
-      <Sidebar
-        gameInfo={gameInfo}
-        phase="study"
-        canGoPrev={canGoPrev}
-        canGoNext={canGoNext}
-        onPrev={() => gameManager.studyPrev()}
-        onNext={() => gameManager.studyNext()}
-        totalMoves={state.totalMoves}
-        rangeStart={rangeStart}
-        rangeEnd={rangeEnd}
-        onRangeChange={handleRangeChange}
-        onStartReplay={handleStartReplay}
-      />
+  return (
+    <div className={containerClass}>
+      {isMobileLayout && (
+        <CollapsibleHeader
+          gameInfo={gameInfo}
+          phase="study"
+          totalMoves={state.totalMoves}
+          rangeStart={rangeStart}
+          rangeEnd={rangeEnd}
+          onRangeChange={handleRangeChange}
+          onStartReplay={handleStartReplay}
+        />
+      )}
+
+      {!isMobileLayout && (
+        <Sidebar
+          gameInfo={gameInfo}
+          phase="study"
+          canGoPrev={canGoPrev}
+          canGoNext={canGoNext}
+          onPrev={() => gameManager.studyPrev()}
+          onNext={() => gameManager.studyNext()}
+          totalMoves={state.totalMoves}
+          rangeStart={rangeStart}
+          rangeEnd={rangeEnd}
+          onRangeChange={handleRangeChange}
+          onStartReplay={handleStartReplay}
+          current={state.studyPosition}
+          total={state.totalMoves}
+        />
+      )}
 
       <div className={layout.boardArea}>
         <div className={layout.boardWrapper}>
-          <div className={layout.progressBarWrapper}>
-            <ProgressBar current={state.studyPosition} total={state.totalMoves} />
-          </div>
-          <div className={layout.boardContainer}>
-            <Board signMap={board.signMap} markerMap={markerMap} />
+          <div className={layout.boardContainer} ref={containerRef}>
+            <Board signMap={board.signMap} markerMap={markerMap} vertexSize={vertexSize} />
           </div>
         </div>
       </div>
 
-      <BottomBar
-        canGoPrev={canGoPrev}
-        canGoNext={canGoNext}
-        onPrev={() => gameManager.studyPrev()}
-        onNext={() => gameManager.studyNext()}
-      />
+      {isMobileLayout && (
+        <BottomBar
+          canGoPrev={canGoPrev}
+          canGoNext={canGoNext}
+          onPrev={() => gameManager.studyPrev()}
+          onNext={() => gameManager.studyNext()}
+          current={state.studyPosition}
+          total={state.totalMoves}
+        />
+      )}
     </div>
   )
 }
