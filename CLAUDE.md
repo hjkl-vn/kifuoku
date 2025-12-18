@@ -15,6 +15,10 @@ npm run build       # Production build
 npm test            # Run tests in watch mode
 npm test -- --run   # Run tests once
 npm test -- --run src/game/__tests__/GameManager.test.js  # Run single test file
+npm run lint          # Run ESLint
+npm run lint:fix      # Run ESLint with auto-fix
+npm run format:check  # Check Prettier formatting
+npm run format        # Format with Prettier
 ```
 
 **Docker:**
@@ -43,9 +47,9 @@ docker compose --profile prod up   # Production with nginx (port 8080)
 - `replayStartMove`/`replayEndMove` define the replay range (0-indexed)
 
 **Progressive Hint System (Replay Phase):**
-1. First wrong attempt → quadrant highlight (paintMap)
-2. Second wrong attempt → letter markers A/B/C/D (markerMap with type: 'label')
-3. Third wrong attempt → point marker at correct position
+- Wrong attempts trigger progressively smaller region highlights (quadrant → sub-quadrant → smaller)
+- Uses `board-utils.js` functions: `getQuadrantBounds()`, `getSubQuadrant()`, `isRegionSmallEnough()`
+- When region is small enough (≤3x3), shows exact position marker
 
 **Key Libraries:**
 - `@sabaki/go-board` - Board state, move validation, capture detection
