@@ -1,6 +1,11 @@
 import { describe, it, expect } from 'vitest'
 import GameManager from '../GameManager'
 import { getQuadrant } from '../constants'
+import {
+  getQuadrantBounds,
+  getSubQuadrant,
+  isRegionSmallEnough
+} from '../board-utils'
 
 describe('GameManager', () => {
   const mockMoves = [
@@ -276,5 +281,65 @@ describe('GameManager', () => {
       expect(manager.replayPosition).toBe(1)
       expect(manager.getCurrentBoard().get([3, 3])).toBe(1)
     })
+  })
+})
+
+describe('getQuadrantBounds', () => {
+  it('returns upper-left quadrant for move in upper-left', () => {
+    const bounds = getQuadrantBounds({ x: 3, y: 3 }, 19)
+    expect(bounds).toEqual({ minX: 0, maxX: 8, minY: 0, maxY: 8 })
+  })
+
+  it('returns lower-right quadrant for move in lower-right', () => {
+    const bounds = getQuadrantBounds({ x: 15, y: 15 }, 19)
+    expect(bounds).toEqual({ minX: 9, maxX: 18, minY: 9, maxY: 18 })
+  })
+
+  it('returns upper-right quadrant for move in upper-right', () => {
+    const bounds = getQuadrantBounds({ x: 12, y: 4 }, 19)
+    expect(bounds).toEqual({ minX: 9, maxX: 18, minY: 0, maxY: 8 })
+  })
+
+  it('returns lower-left quadrant for move in lower-left', () => {
+    const bounds = getQuadrantBounds({ x: 4, y: 12 }, 19)
+    expect(bounds).toEqual({ minX: 0, maxX: 8, minY: 9, maxY: 18 })
+  })
+})
+
+describe('getSubQuadrant', () => {
+  it('subdivides region to upper-left sub-quadrant', () => {
+    const region = { minX: 0, maxX: 8, minY: 0, maxY: 8 }
+    const subRegion = getSubQuadrant(region, { x: 2, y: 2 })
+    expect(subRegion).toEqual({ minX: 0, maxX: 4, minY: 0, maxY: 4 })
+  })
+
+  it('subdivides region to lower-right sub-quadrant', () => {
+    const region = { minX: 0, maxX: 8, minY: 0, maxY: 8 }
+    const subRegion = getSubQuadrant(region, { x: 7, y: 7 })
+    expect(subRegion).toEqual({ minX: 5, maxX: 8, minY: 5, maxY: 8 })
+  })
+
+  it('subdivides small region correctly', () => {
+    const region = { minX: 0, maxX: 4, minY: 0, maxY: 4 }
+    const subRegion = getSubQuadrant(region, { x: 1, y: 3 })
+    expect(subRegion).toEqual({ minX: 0, maxX: 2, minY: 3, maxY: 4 })
+  })
+})
+
+describe('isRegionSmallEnough', () => {
+  it('returns true for 3x3 region', () => {
+    expect(isRegionSmallEnough({ minX: 0, maxX: 2, minY: 0, maxY: 2 })).toBe(true)
+  })
+
+  it('returns true for 2x2 region', () => {
+    expect(isRegionSmallEnough({ minX: 5, maxX: 6, minY: 5, maxY: 6 })).toBe(true)
+  })
+
+  it('returns false for 4x4 region', () => {
+    expect(isRegionSmallEnough({ minX: 0, maxX: 3, minY: 0, maxY: 3 })).toBe(false)
+  })
+
+  it('returns false for 3x4 region', () => {
+    expect(isRegionSmallEnough({ minX: 0, maxX: 2, minY: 0, maxY: 3 })).toBe(false)
   })
 })
