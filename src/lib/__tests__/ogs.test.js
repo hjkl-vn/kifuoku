@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { extractGameId, isValidOgsUrl, fetchOgsSgf } from '../src/lib/ogs.js'
+import { extractGameId, isValidOgsUrl, fetchOgsSgf } from '../ogs.js'
 
 describe('OGS URL parsing', () => {
   describe('extractGameId', () => {

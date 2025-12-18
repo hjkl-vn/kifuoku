@@ -12,7 +12,7 @@ export default function GameController(sgfMoves, boardSize, { onStonePlace } = {
     get studyPosition() { return manager.studyPosition },
     get replayPosition() { return manager.replayPosition },
     get stats() { return manager.stats },
-    get currentGhostStones() { return manager.currentGhostStones },
+    get currentHintRegion() { return manager.currentHintRegion },
     get wrongAttemptsCurrentMove() { return manager.wrongAttemptsCurrentMove },
 
     studyNext() {
@@ -42,13 +42,6 @@ export default function GameController(sgfMoves, boardSize, { onStonePlace } = {
 
     validateMove(x, y) {
       const result = manager.validateMove(x, y)
-      forceUpdate()
-      if (result.correct) onStonePlace?.()
-      return result
-    },
-
-    handleGhostClick(x, y) {
-      const result = manager.handleGhostClick(x, y)
       forceUpdate()
       if (result.correct) onStonePlace?.()
       return result
