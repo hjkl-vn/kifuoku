@@ -1,12 +1,6 @@
 .container {
-  display: none;
+  display: block;
   position: relative;
-}
-
-@media (max-width: 767px) {
-  .container {
-    display: block;
-  }
 }
 
 .headerBar {

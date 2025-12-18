@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
 import Board from './Board'
-import ProgressBar from './ProgressBar'
 import Sidebar from './Sidebar'
 import CollapsibleHeader from './CollapsibleHeader'
+import BottomBar from './BottomBar'
 import CompletionModal from './CompletionModal'
 import { createEmptyBoardMap } from '../game/board-utils'
 import { HINT_LETTERS, BORDER_FLASH_DURATION_MS, PHASES } from '../game/constants'
+import { useBoardSize } from '../hooks/useBoardSize'
 import layout from '../styles/GameLayout.module.css'
-import styles from '../styles/ReplayPhase.module.css'
+import replayStyles from '../styles/ReplayPhase.module.css'
 
 export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
   const [hintState, setHintState] = useState(null)
@@ -17,6 +18,10 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
   const state = gameManager.getState()
   const board = gameManager.getCurrentBoard()
   const lastMove = gameManager.getLastMove()
+
+  const { containerRef, vertexSize, isMobileLayout } = useBoardSize({
+    boardSize: state.boardSize
+  })
 
   const handleVertexClick = (evt, [x, y]) => {
     if (evt.button !== 0) return
@@ -80,8 +85,8 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
 
   const boardContainerClass = [
     layout.boardContainer,
-    borderFlash === 'success' ? styles.borderSuccess : '',
-    borderFlash === 'error' ? styles.borderError : ''
+    borderFlash === 'success' ? replayStyles.borderSuccess : '',
+    borderFlash === 'error' ? replayStyles.borderError : ''
   ].filter(Boolean).join(' ')
 
   const stats = {
@@ -89,39 +94,55 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
     wrongMoveCount: state.stats.wrongMoveCount
   }
 
-  return (
-    <div className={styles.replayContainer}>
-      <CollapsibleHeader
-        gameInfo={gameInfo}
-        phase="replay"
-        current={state.replayPosition}
-        total={state.totalMoves}
-        stats={stats}
-      />
+  const containerClass = [
+    layout.container,
+    isMobileLayout ? layout.mobileLayout : ''
+  ].filter(Boolean).join(' ')
 
-      <Sidebar
-        gameInfo={gameInfo}
-        phase="replay"
-        canGoPrev={false}
-        canGoNext={false}
-        stats={stats}
-      />
+  return (
+    <div className={containerClass}>
+      {isMobileLayout && (
+        <CollapsibleHeader
+          gameInfo={gameInfo}
+          phase="replay"
+          current={state.replayPosition}
+          total={state.totalMoves}
+          stats={stats}
+        />
+      )}
+
+      {!isMobileLayout && (
+        <Sidebar
+          gameInfo={gameInfo}
+          phase="replay"
+          canGoPrev={false}
+          canGoNext={false}
+          stats={stats}
+          current={state.replayPosition}
+          total={state.totalMoves}
+        />
+      )}
 
       <div className={layout.boardArea}>
         <div className={layout.boardWrapper}>
-          <div className={layout.progressBarWrapper}>
-            <ProgressBar current={state.replayPosition} total={state.totalMoves} />
-          </div>
-          <div className={boardContainerClass}>
+          <div className={boardContainerClass} ref={containerRef}>
             <Board
               signMap={board.signMap}
               markerMap={markerMap}
               paintMap={paintMap}
               onVertexClick={handleVertexClick}
+              vertexSize={vertexSize}
             />
           </div>
         </div>
       </div>
+
+      {isMobileLayout && (
+        <BottomBar
+          current={state.replayPosition}
+          total={state.totalMoves}
+        />
+      )}
 
       {state.phase === PHASES.COMPLETE && (
         <CompletionModal

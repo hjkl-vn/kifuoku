@@ -1,7 +1,7 @@
 import React from 'react'
 import { Goban } from '@sabaki/shudan'
 
-export default function Board({ signMap, markerMap, paintMap, onVertexClick }) {
+export default function Board({ signMap, markerMap, paintMap, onVertexClick, vertexSize = 34 }) {
   return (
     <Goban
       animateStonePlacement={true}
@@ -11,7 +11,7 @@ export default function Board({ signMap, markerMap, paintMap, onVertexClick }) {
       signMap={signMap}
       markerMap={markerMap}
       paintMap={paintMap}
-      vertexSize={34}
+      vertexSize={vertexSize}
       onVertexClick={onVertexClick}
     />
   )

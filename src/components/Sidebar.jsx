@@ -1,5 +1,6 @@
 import React from 'react'
 import GameInfo from './GameInfo'
+import ProgressBar from './ProgressBar'
 import RangeSlider from './RangeSlider'
 import styles from '../styles/Sidebar.module.css'
 import buttons from '../styles/Buttons.module.css'
@@ -16,14 +17,17 @@ export default function Sidebar({
   rangeEnd,
   onRangeChange,
   onStartReplay,
-  stats
+  stats,
+  current,
+  total
 }) {
   return (
     <aside className={styles.sidebar}>
       <GameInfo gameInfo={gameInfo} />
 
-      {phase === 'study' && (
-        <div className={styles.section}>
+      <div className={styles.section}>
+        <ProgressBar current={current} total={total} />
+        {phase === 'study' && (
           <div className={buttons.controls}>
             <button
               className={buttons.buttonFlex}
@@ -40,8 +44,8 @@ export default function Sidebar({
               Next
             </button>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {phase === 'study' && (
         <div className={styles.section}>

@@ -5,9 +5,10 @@
 
   display: flex;
   gap: var(--layout-gap);
-  min-height: 100vh;
+  flex: 1;
+  min-height: 0;
   box-sizing: border-box;
-  padding: 20px;
+  padding: 12px 20px 22px;
 }
 
 .boardArea {
@@ -15,44 +16,45 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-height: 0;
 }
 
 .boardWrapper {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 16px;
+  gap: 5;
+  flex: 1;
+  min-height: 0;
 }
 
 @media (min-width: 1024px) {
-  .boardWrapper {
+  .container:not(.mobileLayout) .boardWrapper {
     transform: translateX(var(--board-offset));
   }
-}
-
-.progressBarWrapper {
-  width: 100%;
 }
 
 .boardContainer {
   display: flex;
   justify-content: center;
+  align-items: center;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
 }
 
-@media (max-width: 767px) {
-  .container {
-    flex-direction: column;
-    gap: 0;
-    padding: 0;
-    padding-bottom: 70px;
-  }
+.mobileLayout {
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+  padding-bottom: 70px;
+}
 
-  .boardArea {
-    padding: 16px;
-  }
+.mobileLayout .boardArea {
+  padding: 1px;
+}
 
-  .boardWrapper {
-    width: 100%;
-    transform: none;
-  }
+.mobileLayout .boardWrapper {
+  width: 100%;
+  transform: none;
 }
