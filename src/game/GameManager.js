@@ -152,72 +152,6 @@ export default class GameManager {
     }
   }
 
-  generateGhostStones() {
-    if (this.replayPosition >= this.moves.length) {
-      return []
-    }
-
-    const correctMove = this.moves[this.replayPosition]
-    const options = [{
-      x: correctMove.x,
-      y: correctMove.y,
-      isCorrect: true
-    }]
-
-    let attempts = 0
-    while (options.length < GHOST_HINT_COUNT && attempts < MAX_GHOST_GENERATION_ATTEMPTS) {
-      const dx = randomInt(-GHOST_HINT_RADIUS, GHOST_HINT_RADIUS)
-      const dy = randomInt(-GHOST_HINT_RADIUS, GHOST_HINT_RADIUS)
-
-      if (dx === 0 && dy === 0) {
-        attempts++
-        continue
-      }
-
-      const newX = correctMove.x + dx
-      const newY = correctMove.y + dy
-
-      if (this.isValidHintPosition(newX, newY, options)) {
-        options.push({
-          x: newX,
-          y: newY,
-          isCorrect: false
-        })
-      }
-
-      attempts++
-    }
-
-    return options
-  }
-
-  isValidHintPosition(x, y, existingOptions) {
-    if (x < 0 || x >= this.boardSize || y < 0 || y >= this.boardSize) {
-      return false
-    }
-
-    if (this.getCurrentBoard().get([x, y]) !== 0) {
-      return false
-    }
-
-    if (existingOptions.some(opt => opt.x === x && opt.y === y)) {
-      return false
-    }
-
-    return true
-  }
-
-  getQuadrantHint() {
-    const correctMove = this.moves[this.replayPosition]
-    const quadrant = getQuadrant(correctMove.x, correctMove.y, this.boardSize)
-    const vertices = getQuadrantVertices(quadrant, this.boardSize)
-
-    return {
-      quadrant,
-      vertices
-    }
-  }
-
   validateMove(x, y) {
     if (this.phase !== PHASES.REPLAY) {
       return { error: 'Not in replay phase' }
@@ -293,39 +227,6 @@ export default class GameManager {
       needHint: true,
       hintType: HINT_TYPES.QUADRANT,
       region: this.currentHintRegion
-    }
-  }
-
-  handleGhostClick(x, y) {
-    const clickedGhost = this.currentGhostStones.find(g => g.x === x && g.y === y)
-
-    if (!clickedGhost) {
-      return { error: 'Invalid ghost position' }
-    }
-
-    if (clickedGhost.isCorrect) {
-      const correctMove = this.moves[this.replayPosition]
-      const sign = colorToSign(correctMove.color)
-      const newBoard = this.getCurrentBoard().makeMove(sign, [x, y])
-      this.boardHistory.push(newBoard)
-      this.studyPosition++
-
-      this.replayPosition++
-      this.wrongAttemptsCurrentMove = 0
-      this.currentGhostStones = []
-
-      return {
-        correct: true,
-        currentMove: this.replayPosition
-      }
-    }
-
-    this.currentGhostStones = this.currentGhostStones.filter(g => g.x !== x || g.y !== y)
-
-    return {
-      correct: false,
-      eliminated: true,
-      remainingGhosts: this.currentGhostStones
     }
   }
 }
