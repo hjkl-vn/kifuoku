@@ -1,7 +1,6 @@
 .container {
-  --sidebar-width: 280px;
+  --panel-width: 280px;
   --layout-gap: 40px;
-  --board-offset: calc((var(--sidebar-width) + var(--layout-gap)) / -2);
 
   display: flex;
   gap: var(--layout-gap);
@@ -28,12 +27,6 @@
   min-height: 0;
 }
 
-@media (min-width: 1024px) {
-  .container:not(.mobileLayout) .boardWrapper {
-    transform: translateX(var(--board-offset));
-  }
-}
-
 .boardContainer {
   display: flex;
   justify-content: center;
@@ -47,11 +40,11 @@
   flex-direction: column;
   gap: 0;
   padding: 0;
-  padding-bottom: 70px;
 }
 
 .mobileLayout .boardArea {
   padding: 1px;
+  flex: 1;
 }
 
 .mobileLayout .boardWrapper {
