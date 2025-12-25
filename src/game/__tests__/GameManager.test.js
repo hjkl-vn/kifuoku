@@ -292,3 +292,62 @@ describe('subdivision hints', () => {
     expect(result.region).toEqual({ minX: 9, maxX: 18, minY: 9, maxY: 18 })
   })
 })
+
+describe('Wrong Attempts Tracking', () => {
+  it('tracks wrong attempt positions for each move', () => {
+    const moves = [{ x: 3, y: 3, color: 'B' }]
+    const gm = new GameManager(moves, 19)
+    gm.startReplay()
+
+    gm.validateMove(10, 10)
+    gm.validateMove(5, 5)
+
+    expect(gm.getWrongAttempts(0)).toEqual([
+      { x: 10, y: 10 },
+      { x: 5, y: 5 }
+    ])
+  })
+
+  it('clears wrong attempts after correct move', () => {
+    const moves = [
+      { x: 3, y: 3, color: 'B' },
+      { x: 15, y: 15, color: 'W' }
+    ]
+    const gm = new GameManager(moves, 19)
+    gm.startReplay()
+
+    gm.validateMove(10, 10)
+    gm.validateMove(3, 3)
+    gm.validateMove(0, 0)
+
+    expect(gm.getWrongAttempts(0)).toEqual([{ x: 10, y: 10 }])
+    expect(gm.getWrongAttempts(1)).toEqual([{ x: 0, y: 0 }])
+  })
+
+  it('getDifficultMoves returns top N moves by attempt count', () => {
+    const moves = [
+      { x: 3, y: 3, color: 'B' },
+      { x: 15, y: 15, color: 'W' },
+      { x: 10, y: 10, color: 'B' }
+    ]
+    const gm = new GameManager(moves, 19)
+    gm.startReplay()
+
+    gm.validateMove(0, 0)
+    gm.validateMove(0, 1)
+    gm.validateMove(0, 2)
+    gm.validateMove(3, 3)
+
+    gm.validateMove(15, 15)
+
+    gm.validateMove(0, 0)
+    gm.validateMove(10, 10)
+
+    const difficult = gm.getDifficultMoves(2)
+    expect(difficult).toHaveLength(2)
+    expect(difficult[0].moveIndex).toBe(0)
+    expect(difficult[0].attemptCount).toBe(3)
+    expect(difficult[1].moveIndex).toBe(2)
+    expect(difficult[1].attemptCount).toBe(1)
+  })
+})

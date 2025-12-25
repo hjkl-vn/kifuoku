@@ -17,6 +17,7 @@ export default class GameManager {
     this.currentHintRegion = null
     this.replayStartMove = 0
     this.replayEndMove = this.moves.length - 1
+    this.wrongAttemptsByMove = []
 
     this.stats = {
       wrongMoveCount: 0,
@@ -113,6 +114,7 @@ export default class GameManager {
     this.replayPosition = startMove
     this.studyPosition = startMove
     this.wrongAttemptsCurrentMove = 0
+    this.wrongAttemptsByMove = []
     this.stats.startTime = Date.now()
     this.stats.wrongMoveCount = 0
     this.stats.correctFirstTry = 0
@@ -132,6 +134,7 @@ export default class GameManager {
     this.currentHintRegion = null
     this.replayStartMove = 0
     this.replayEndMove = this.moves.length - 1
+    this.wrongAttemptsByMove = []
 
     this.stats = {
       wrongMoveCount: 0,
@@ -196,6 +199,15 @@ export default class GameManager {
     this.wrongAttemptsCurrentMove++
     this.stats.wrongMoveCount++
 
+    if (!this.wrongAttemptsByMove[this.replayPosition]) {
+      this.wrongAttemptsByMove[this.replayPosition] = {
+        moveIndex: this.replayPosition,
+        wrongAttempts: [],
+        correctPosition: { x: correctMove.x, y: correctMove.y }
+      }
+    }
+    this.wrongAttemptsByMove[this.replayPosition].wrongAttempts.push({ x, y })
+
     if (this.wrongAttemptsCurrentMove === 1) {
       this.stats.quadrantHintsUsed++
       this.currentHintRegion = getQuadrantBounds(correctMove, this.boardSize)
@@ -225,5 +237,23 @@ export default class GameManager {
       hintType: HINT_TYPES.QUADRANT,
       region: this.currentHintRegion
     }
+  }
+
+  getWrongAttempts(moveIndex) {
+    const record = this.wrongAttemptsByMove[moveIndex]
+    return record ? record.wrongAttempts : []
+  }
+
+  getDifficultMoves(limit = 5) {
+    return this.wrongAttemptsByMove
+      .filter((record) => record && record.wrongAttempts.length > 0)
+      .map((record) => ({
+        moveIndex: record.moveIndex,
+        wrongAttempts: record.wrongAttempts,
+        correctPosition: record.correctPosition,
+        attemptCount: record.wrongAttempts.length
+      }))
+      .sort((a, b) => b.attemptCount - a.attemptCount)
+      .slice(0, limit)
   }
 }
