@@ -256,4 +256,11 @@ export default class GameManager {
       .sort((a, b) => b.attemptCount - a.attemptCount)
       .slice(0, limit)
   }
+
+  getBoardAtPosition(position) {
+    if (position < 0 || position >= this.boardHistory.length) {
+      return null
+    }
+    return this.boardHistory[position]
+  }
 }

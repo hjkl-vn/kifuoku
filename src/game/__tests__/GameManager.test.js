@@ -351,3 +351,29 @@ describe('Wrong Attempts Tracking', () => {
     expect(difficult[1].attemptCount).toBe(1)
   })
 })
+
+describe('getBoardAtPosition', () => {
+  it('returns board state at given position', () => {
+    const moves = [
+      { x: 3, y: 3, color: 'B' },
+      { x: 15, y: 15, color: 'W' }
+    ]
+    const gm = new GameManager(moves, 19)
+    gm.startReplay()
+    gm.validateMove(3, 3)
+    gm.validateMove(15, 15)
+
+    const boardAt0 = gm.getBoardAtPosition(0)
+    const boardAt1 = gm.getBoardAtPosition(1)
+
+    expect(boardAt0.isEmpty()).toBe(true)
+    expect(boardAt1.get([3, 3])).toBe(1)
+    expect(boardAt1.get([15, 15])).toBe(0)
+  })
+
+  it('returns null for invalid position', () => {
+    const gm = new GameManager([{ x: 3, y: 3, color: 'B' }], 19)
+    expect(gm.getBoardAtPosition(10)).toBeNull()
+    expect(gm.getBoardAtPosition(-1)).toBeNull()
+  })
+})
