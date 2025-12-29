@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { parseSGFToMoves, getBoardSize, getGameInfo } from '../lib/sgf-parser.js'
-import GameController from '../game/GameController'
+import useGameController from '../game/useGameController'
 import UploadPhase from '../components/UploadPhase.jsx'
 import StudyPhase from '../components/StudyPhase.jsx'
 import ReplayPhase from '../components/ReplayPhase.jsx'
@@ -13,11 +13,18 @@ function GameWrapper({ moves, boardSize, gameInfo, onGoHome }) {
   const lastIndexRef = useRef(-1)
 
   useEffect(() => {
-    audioRefs.current = STONE_SOUNDS.map((src) => {
+    const audios = STONE_SOUNDS.map((src) => {
       const audio = new Audio(src)
       audio.preload = 'auto'
       return audio
     })
+    audioRefs.current = audios
+    return () => {
+      audios.forEach((audio) => {
+        audio.pause()
+        audio.src = ''
+      })
+    }
   }, [])
 
   const playStoneSound = useCallback(() => {
@@ -37,7 +44,7 @@ function GameWrapper({ moves, boardSize, gameInfo, onGoHome }) {
     sounds[index].play().catch(() => {})
   }, [])
 
-  const gameManager = GameController(moves, boardSize, { onStonePlace: playStoneSound })
+  const gameManager = useGameController(moves, boardSize, { onStonePlace: playStoneSound })
   const state = gameManager.getState()
 
   if (state.phase === 'study') {

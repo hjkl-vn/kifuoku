@@ -49,8 +49,9 @@ export default function RangeSlider({ min, max, start, end, onChange }) {
     [getPositionFromEvent, start, end, min, max, onChange]
   )
 
-  const startPercent = ((start - min) / (max - min)) * 100
-  const endPercent = ((end - min) / (max - min)) * 100
+  const range = max - min || 1
+  const startPercent = ((start - min) / range) * 100
+  const endPercent = ((end - min) / range) * 100
 
   const movesSelected = end - start + 1
 

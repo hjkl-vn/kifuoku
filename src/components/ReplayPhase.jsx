@@ -5,7 +5,7 @@ import RightPanel from './RightPanel'
 import CollapsibleHeader from './CollapsibleHeader'
 import CollapsibleBottomPanel from './CollapsibleBottomPanel'
 import { createEmptyBoardMap } from '../game/boardUtils'
-import { BORDER_FLASH_DURATION_MS, PHASES } from '../game/constants'
+import { BORDER_FLASH_DURATION_MS, PHASES, MARKER_COLORS } from '../game/constants'
 import { useBoardSize } from '../hooks/useBoardSize'
 import layout from '../styles/GameLayout.module.css'
 import replayStyles from '../styles/ReplayPhase.module.css'
@@ -58,10 +58,10 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
 
   if (selectedDifficultMove) {
     selectedDifficultMove.wrongAttempts.forEach(({ x, y }) => {
-      markerMap[y][x] = { type: 'circle', label: '', color: '#c62828' }
+      markerMap[y][x] = { type: 'circle', label: '', color: MARKER_COLORS.WRONG_ATTEMPT }
     })
     const { x, y } = selectedDifficultMove.correctPosition
-    markerMap[y][x] = { type: 'triangle', color: '#2e7d32' }
+    markerMap[y][x] = { type: 'triangle', color: MARKER_COLORS.CORRECT_POSITION }
   } else {
     if (lastMove) {
       markerMap[lastMove.y][lastMove.x] = { type: 'circle' }

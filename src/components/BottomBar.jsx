@@ -1,13 +1,7 @@
 import React from 'react'
+import { ANNOTATION_TOOLS } from '../game/constants'
 import ProgressBar from './ProgressBar'
 import styles from '../styles/BottomBar.module.css'
-
-const TOOLS = [
-  { id: 'circle', label: '○', title: 'Circle' },
-  { id: 'triangle', label: '△', title: 'Triangle' },
-  { id: 'cross', label: '✕', title: 'Cross' },
-  { id: 'label', label: 'A', title: 'Label' }
-]
 
 export default function BottomBar({
   canGoPrev,
@@ -30,7 +24,7 @@ export default function BottomBar({
       <div className={styles.controls}>
         {hasAnnotationTools && (
           <div className={styles.tools}>
-            {TOOLS.map((tool) => (
+            {ANNOTATION_TOOLS.map((tool) => (
               <button
                 key={tool.id}
                 className={[styles.toolButton, selectedTool === tool.id ? styles.toolSelected : '']
@@ -38,6 +32,7 @@ export default function BottomBar({
                   .join(' ')}
                 onClick={() => onSelectTool(selectedTool === tool.id ? null : tool.id)}
                 title={tool.title}
+                aria-pressed={selectedTool === tool.id}
               >
                 {tool.label}
               </button>
