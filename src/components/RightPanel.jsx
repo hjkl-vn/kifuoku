@@ -20,7 +20,9 @@ export default function RightPanel({
   stats,
   difficultMoves,
   onSelectDifficultMove,
-  selectedMoveIndex
+  selectedMoveIndex,
+  onRestart,
+  onGoHome
 }) {
   return (
     <aside className={styles.panel}>
@@ -108,6 +110,15 @@ export default function RightPanel({
               </ul>
             </div>
           )}
+
+          <div className={styles.actions}>
+            <button className={buttons.button} onClick={onRestart}>
+              Play Again
+            </button>
+            <button className={buttons.primaryButton} onClick={onGoHome}>
+              New Game
+            </button>
+          </div>
         </>
       )}
     </aside>
