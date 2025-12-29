@@ -18,7 +18,7 @@ export default function CollapsibleHeader({
   const [isExpanded, setIsExpanded] = useState(false)
 
   const playerSummary = gameInfo
-    ? `${gameInfo.blackPlayer || 'Black'} vs ${gameInfo.whitePlayer || 'White'}`
+    ? `${gameInfo.blackPlayer || 'Black'} ⚫ vs ${gameInfo.whitePlayer || 'White'} ⚪`
     : 'Game'
 
   return (

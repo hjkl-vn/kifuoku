@@ -1,72 +1,12 @@
 import React from 'react'
 import GameInfo from './GameInfo'
-import ProgressBar from './ProgressBar'
-import RangeSlider from './RangeSlider'
 import styles from '../styles/Sidebar.module.css'
-import buttons from '../styles/Buttons.module.css'
 
-export default function Sidebar({
-  gameInfo,
-  phase,
-  canGoPrev,
-  canGoNext,
-  onPrev,
-  onNext,
-  totalMoves,
-  rangeStart,
-  rangeEnd,
-  onRangeChange,
-  onStartReplay,
-  stats,
-  current,
-  total,
-  currentTurn
-}) {
+export default function Sidebar({ gameInfo, currentTurn, children }) {
   return (
     <aside className={styles.sidebar}>
       <GameInfo gameInfo={gameInfo} currentTurn={currentTurn} />
-
-      <div className={styles.section}>
-        <ProgressBar current={current} total={total} />
-        {phase === 'study' && (
-          <div className={buttons.controls}>
-            <button className={buttons.buttonFlex} onClick={onPrev} disabled={!canGoPrev}>
-              Prev
-            </button>
-            <button className={buttons.buttonFlex} onClick={onNext} disabled={!canGoNext}>
-              Next
-            </button>
-          </div>
-        )}
-      </div>
-
-      {phase === 'study' && (
-        <div className={styles.section}>
-          <RangeSlider
-            min={0}
-            max={totalMoves - 1}
-            start={rangeStart}
-            end={rangeEnd}
-            onChange={onRangeChange}
-          />
-          <button className={buttons.primaryButton} onClick={onStartReplay}>
-            Start Replay
-          </button>
-        </div>
-      )}
-
-      {phase === 'replay' && stats && (
-        <div className={styles.statsBox}>
-          <div className={styles.statRow}>
-            <span>Correct (1st try)</span>
-            <span>{stats.correctFirstTry}</span>
-          </div>
-          <div className={styles.statRow}>
-            <span>Wrong attempts</span>
-            <span>{stats.wrongMoveCount}</span>
-          </div>
-        </div>
-      )}
+      {children}
     </aside>
   )
 }

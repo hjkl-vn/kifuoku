@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import GameManager from '../GameManager'
-import { getQuadrantBounds, getSubQuadrant, isRegionSmallEnough } from '../board-utils'
+import { getQuadrantBounds, getSubQuadrant, isRegionSmallEnough } from '../boardUtils'
 
 describe('GameManager', () => {
   const mockMoves = [
@@ -276,6 +276,48 @@ describe('subdivision hints', () => {
     expect(result.position).toEqual({ x: 1, y: 1 })
   })
 
+  it('continues showing exact hint on subsequent wrong clicks', () => {
+    const moves = [{ x: 1, y: 1, color: 'B' }]
+    const gm = new GameManager(moves, 19)
+    gm.startReplay()
+
+    gm.validateMove(10, 10)
+    gm.validateMove(10, 10)
+    gm.validateMove(10, 10)
+    gm.validateMove(10, 10)
+
+    const result1 = gm.validateMove(5, 5)
+    expect(result1.correct).toBe(false)
+    expect(result1.hintType).toBe('exact')
+    expect(result1.position).toEqual({ x: 1, y: 1 })
+
+    const result2 = gm.validateMove(0, 0)
+    expect(result2.correct).toBe(false)
+    expect(result2.hintType).toBe('exact')
+
+    expect(gm.replayPosition).toBe(0)
+  })
+
+  it('only advances move when clicking exact hint position', () => {
+    const moves = [
+      { x: 1, y: 1, color: 'B' },
+      { x: 10, y: 10, color: 'W' }
+    ]
+    const gm = new GameManager(moves, 19)
+    gm.startReplay()
+
+    gm.validateMove(10, 10)
+    gm.validateMove(10, 10)
+    gm.validateMove(10, 10)
+    gm.validateMove(10, 10)
+
+    expect(gm.replayPosition).toBe(0)
+
+    const result = gm.validateMove(1, 1)
+    expect(result.correct).toBe(true)
+    expect(gm.replayPosition).toBe(1)
+  })
+
   it('resets hint region after correct move', () => {
     const moves = [
       { x: 3, y: 3, color: 'B' },
@@ -290,5 +332,131 @@ describe('subdivision hints', () => {
     const result = gm.validateMove(0, 0)
     expect(result.hintType).toBe('quadrant')
     expect(result.region).toEqual({ minX: 9, maxX: 18, minY: 9, maxY: 18 })
+  })
+
+  it('never advances position without correct click even with many wrong attempts', () => {
+    const moves = [{ x: 5, y: 5, color: 'B' }]
+    const gm = new GameManager(moves, 19)
+    gm.startReplay()
+
+    const wrongPositions = [
+      [0, 0],
+      [18, 18],
+      [0, 18],
+      [18, 0],
+      [10, 10],
+      [3, 3],
+      [7, 7],
+      [4, 4],
+      [6, 6],
+      [5, 4],
+      [4, 5],
+      [6, 5],
+      [5, 6]
+    ]
+
+    let gotExactHint = false
+    for (const [x, y] of wrongPositions) {
+      const result = gm.validateMove(x, y)
+      expect(result.correct).toBe(false)
+      expect(gm.replayPosition).toBe(0)
+
+      if (result.hintType === 'exact') {
+        gotExactHint = true
+        expect(result.position).toEqual({ x: 5, y: 5 })
+      }
+    }
+
+    expect(gotExactHint).toBe(true)
+    expect(gm.replayPosition).toBe(0)
+
+    const correctResult = gm.validateMove(5, 5)
+    expect(correctResult.correct).toBe(true)
+    expect(gm.replayPosition).toBe(1)
+  })
+})
+
+describe('Wrong Attempts Tracking', () => {
+  it('tracks wrong attempt positions for each move', () => {
+    const moves = [{ x: 3, y: 3, color: 'B' }]
+    const gm = new GameManager(moves, 19)
+    gm.startReplay()
+
+    gm.validateMove(10, 10)
+    gm.validateMove(5, 5)
+
+    expect(gm.getWrongAttempts(0)).toEqual([
+      { x: 10, y: 10 },
+      { x: 5, y: 5 }
+    ])
+  })
+
+  it('clears wrong attempts after correct move', () => {
+    const moves = [
+      { x: 3, y: 3, color: 'B' },
+      { x: 15, y: 15, color: 'W' }
+    ]
+    const gm = new GameManager(moves, 19)
+    gm.startReplay()
+
+    gm.validateMove(10, 10)
+    gm.validateMove(3, 3)
+    gm.validateMove(0, 0)
+
+    expect(gm.getWrongAttempts(0)).toEqual([{ x: 10, y: 10 }])
+    expect(gm.getWrongAttempts(1)).toEqual([{ x: 0, y: 0 }])
+  })
+
+  it('getDifficultMoves returns top N moves by attempt count', () => {
+    const moves = [
+      { x: 3, y: 3, color: 'B' },
+      { x: 15, y: 15, color: 'W' },
+      { x: 10, y: 10, color: 'B' }
+    ]
+    const gm = new GameManager(moves, 19)
+    gm.startReplay()
+
+    gm.validateMove(0, 0)
+    gm.validateMove(0, 1)
+    gm.validateMove(0, 2)
+    gm.validateMove(3, 3)
+
+    gm.validateMove(15, 15)
+
+    gm.validateMove(0, 0)
+    gm.validateMove(10, 10)
+
+    const difficult = gm.getDifficultMoves(2)
+    expect(difficult).toHaveLength(2)
+    expect(difficult[0].moveIndex).toBe(0)
+    expect(difficult[0].attemptCount).toBe(3)
+    expect(difficult[1].moveIndex).toBe(2)
+    expect(difficult[1].attemptCount).toBe(1)
+  })
+})
+
+describe('getBoardAtPosition', () => {
+  it('returns board state at given position', () => {
+    const moves = [
+      { x: 3, y: 3, color: 'B' },
+      { x: 15, y: 15, color: 'W' }
+    ]
+    const gm = new GameManager(moves, 19)
+    gm.startReplay()
+    gm.validateMove(3, 3)
+    gm.validateMove(15, 15)
+
+    const boardAt0 = gm.getBoardAtPosition(0)
+    const boardAt1 = gm.getBoardAtPosition(1)
+
+    expect(boardAt0.isEmpty()).toBe(true)
+    expect(boardAt1.get([3, 3])).toBe(1)
+    expect(boardAt1.get([15, 15])).toBe(0)
+  })
+
+  it('returns null for invalid position', () => {
+    const gm = new GameManager([{ x: 3, y: 3, color: 'B' }], 19)
+    expect(gm.getBoardAtPosition(10)).toBeNull()
+    expect(gm.getBoardAtPosition(-1)).toBeNull()
   })
 })
