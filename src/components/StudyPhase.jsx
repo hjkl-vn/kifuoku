@@ -46,7 +46,6 @@ export default function StudyPhase({ gameManager, gameInfo }) {
   const handleBoardClick = (evt, [x, y]) => {
     if (evt.button !== 0 || !selectedTool) return
 
-    const posKey = `${x},${y}`
     const existing = currentAnnotations.find((a) => a.x === x && a.y === y)
 
     if (existing) {
