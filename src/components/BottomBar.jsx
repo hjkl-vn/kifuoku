@@ -5,6 +5,7 @@ import styles from '../styles/BottomBar.module.css'
 const TOOLS = [
   { id: 'circle', label: '○', title: 'Circle' },
   { id: 'triangle', label: '△', title: 'Triangle' },
+  { id: 'cross', label: '✕', title: 'Cross' },
   { id: 'label', label: 'A', title: 'Label' }
 ]
 
