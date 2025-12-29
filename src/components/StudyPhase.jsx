@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Board from './Board'
 import Sidebar from './Sidebar'
+import RightPanel from './RightPanel'
 import CollapsibleHeader from './CollapsibleHeader'
 import BottomBar from './BottomBar'
 import { createEmptyBoardMap } from '../game/board-utils'
@@ -69,24 +70,7 @@ export default function StudyPhase({ gameManager, gameInfo }) {
         />
       )}
 
-      {!isMobileLayout && (
-        <Sidebar
-          gameInfo={gameInfo}
-          phase="study"
-          canGoPrev={canGoPrev}
-          canGoNext={canGoNext}
-          onPrev={() => gameManager.studyPrev()}
-          onNext={() => gameManager.studyNext()}
-          totalMoves={state.totalMoves}
-          rangeStart={rangeStart}
-          rangeEnd={rangeEnd}
-          onRangeChange={handleRangeChange}
-          onStartReplay={handleStartReplay}
-          current={state.studyPosition}
-          total={state.totalMoves}
-          currentTurn={currentTurn}
-        />
-      )}
+      {!isMobileLayout && <Sidebar gameInfo={gameInfo} currentTurn={currentTurn} />}
 
       <div className={layout.boardArea}>
         <div className={layout.boardWrapper}>
@@ -95,6 +79,23 @@ export default function StudyPhase({ gameManager, gameInfo }) {
           </div>
         </div>
       </div>
+
+      {!isMobileLayout && (
+        <RightPanel
+          phase="study"
+          current={state.studyPosition}
+          total={state.totalMoves}
+          canGoPrev={canGoPrev}
+          canGoNext={canGoNext}
+          onPrev={() => gameManager.studyPrev()}
+          onNext={() => gameManager.studyNext()}
+          rangeStart={rangeStart}
+          rangeEnd={rangeEnd}
+          totalMoves={state.totalMoves}
+          onRangeChange={handleRangeChange}
+          onStartReplay={handleStartReplay}
+        />
+      )}
 
       {isMobileLayout && (
         <BottomBar
