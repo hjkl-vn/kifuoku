@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import styles from '../styles/CollapsibleBottomPanel.module.css'
 
 export default function CollapsibleBottomPanel({
