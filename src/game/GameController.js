@@ -82,6 +82,18 @@ export default function GameController(sgfMoves, boardSize, { onStonePlace } = {
 
       getCompletionStats() {
         return manager.getCompletionStats()
+      },
+
+      getBoardAtPosition(position) {
+        return manager.getBoardAtPosition(position)
+      },
+
+      getDifficultMoves(limit = 5) {
+        return manager.getDifficultMoves(limit)
+      },
+
+      getWrongAttempts(moveIndex) {
+        return manager.getWrongAttempts(moveIndex)
       }
     }),
     [manager, onStonePlace]

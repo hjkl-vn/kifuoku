@@ -5,7 +5,7 @@ import RightPanel from './RightPanel'
 import AnnotationToolbar from './AnnotationToolbar'
 import CollapsibleHeader from './CollapsibleHeader'
 import BottomBar from './BottomBar'
-import { createEmptyBoardMap } from '../game/board-utils'
+import { createEmptyBoardMap } from '../game/boardUtils'
 import { useBoardSize } from '../hooks/useBoardSize'
 import layout from '../styles/GameLayout.module.css'
 
