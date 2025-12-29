@@ -158,6 +158,8 @@ export default function StudyPhase({ gameManager, gameInfo }) {
           onNext={() => gameManager.studyNext()}
           current={state.studyPosition}
           total={state.totalMoves}
+          selectedTool={selectedTool}
+          onSelectTool={setSelectedTool}
         />
       )}
     </div>
