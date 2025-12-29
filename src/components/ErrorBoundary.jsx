@@ -49,24 +49,24 @@ const styles = {
     minHeight: '100vh',
     backgroundColor: '#1a1a1a',
     color: '#fff',
-    padding: '20px',
+    padding: '20px'
   },
   content: {
     textAlign: 'center',
-    maxWidth: '400px',
+    maxWidth: '400px'
   },
   title: {
     fontSize: '1.5rem',
-    marginBottom: '1rem',
+    marginBottom: '1rem'
   },
   message: {
     color: '#888',
-    marginBottom: '1.5rem',
+    marginBottom: '1.5rem'
   },
   buttons: {
     display: 'flex',
     gap: '10px',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   button: {
     padding: '10px 20px',
@@ -74,7 +74,7 @@ const styles = {
     borderRadius: '4px',
     backgroundColor: 'transparent',
     color: '#fff',
-    cursor: 'pointer',
+    cursor: 'pointer'
   },
   buttonPrimary: {
     padding: '10px 20px',
@@ -82,6 +82,6 @@ const styles = {
     borderRadius: '4px',
     backgroundColor: '#2e7d32',
     color: '#fff',
-    cursor: 'pointer',
-  },
+    cursor: 'pointer'
+  }
 }
