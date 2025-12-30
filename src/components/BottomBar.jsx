@@ -45,10 +45,10 @@ export default function BottomBar({
         )}
         {hasConfirmCancel ? (
           <div className={styles.buttons}>
-            <button className={styles.cancelButton} onClick={onCancel}>
+            <button type="button" className={styles.cancelButton} onClick={onCancel}>
               Cancel
             </button>
-            <button className={styles.confirmButton} onClick={onConfirm}>
+            <button type="button" className={styles.confirmButton} onClick={onConfirm}>
               Confirm
             </button>
           </div>

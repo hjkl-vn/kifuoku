@@ -91,6 +91,10 @@
   cursor: pointer;
 }
 
+.confirmButton:hover {
+  background-color: #45a049;
+}
+
 .confirmButton:active {
   background-color: #388e3c;
 }
@@ -105,6 +109,10 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
+}
+
+.cancelButton:hover {
+  background-color: #8e8e8e;
 }
 
 .cancelButton:active {
