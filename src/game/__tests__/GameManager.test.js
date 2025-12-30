@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import GameManager from '../GameManager'
+import GameManager from '../gameManager'
 import { getQuadrantBounds, getSubQuadrant, isRegionSmallEnough } from '../boardUtils'
 
 describe('GameManager', () => {
