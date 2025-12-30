@@ -81,6 +81,7 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
   }
 
   const handleSelectDifficultMove = (move) => {
+    setPendingMove(null)
     setSelectedDifficultMove(selectedDifficultMove?.moveIndex === move.moveIndex ? null : move)
   }
 
