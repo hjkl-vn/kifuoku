@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { parseSGFToMoves, getBoardSize, getGameInfo } from '../sgf-parser.js'
+import { parseSGFToMoves, getBoardSize, getGameInfo } from '../sgfParser.js'
 
 describe('parseSGFToMoves', () => {
   it('parses simple game with black and white moves', () => {
