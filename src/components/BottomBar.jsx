@@ -11,10 +11,14 @@ export default function BottomBar({
   current,
   total,
   selectedTool,
-  onSelectTool
+  onSelectTool,
+  pendingMove,
+  onConfirm,
+  onCancel
 }) {
   const hasNavButtons = onPrev && onNext
   const hasAnnotationTools = onSelectTool !== undefined
+  const hasConfirmCancel = pendingMove && onConfirm && onCancel
 
   return (
     <div className={styles.container}>
@@ -22,7 +26,7 @@ export default function BottomBar({
         <ProgressBar current={current} total={total} />
       </div>
       <div className={styles.controls}>
-        {hasAnnotationTools && (
+        {hasAnnotationTools && !hasConfirmCancel && (
           <div className={styles.tools}>
             {ANNOTATION_TOOLS.map((tool) => (
               <button
@@ -39,15 +43,26 @@ export default function BottomBar({
             ))}
           </div>
         )}
-        {hasNavButtons && (
+        {hasConfirmCancel ? (
           <div className={styles.buttons}>
-            <button className={styles.button} onClick={onPrev} disabled={!canGoPrev}>
-              ◀ Prev
+            <button className={styles.cancelButton} onClick={onCancel}>
+              Cancel
             </button>
-            <button className={styles.button} onClick={onNext} disabled={!canGoNext}>
-              Next ▶
+            <button className={styles.confirmButton} onClick={onConfirm}>
+              Confirm
             </button>
           </div>
+        ) : (
+          hasNavButtons && (
+            <div className={styles.buttons}>
+              <button className={styles.button} onClick={onPrev} disabled={!canGoPrev}>
+                ◀ Prev
+              </button>
+              <button className={styles.button} onClick={onNext} disabled={!canGoNext}>
+                Next ▶
+              </button>
+            </div>
+          )
         )}
       </div>
     </div>
