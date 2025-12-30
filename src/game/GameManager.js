@@ -263,4 +263,12 @@ export default class GameManager {
     }
     return this.boardHistory[position]
   }
+
+  isValidPosition(x, y) {
+    if (this.phase !== PHASES.REPLAY) return false
+    const board = this.getCurrentBoard()
+    if (!board) return false
+    if (board.signMap[y]?.[x] !== 0) return false
+    return true
+  }
 }

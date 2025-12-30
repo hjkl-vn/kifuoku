@@ -64,7 +64,9 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
     if (evt.button !== 0 || isComplete) return
 
     if (isMobileLayout) {
-      setPendingMove({ x, y })
+      if (gameManager.isValidPosition(x, y)) {
+        setPendingMove({ x, y })
+      }
     } else {
       commitMove(x, y)
     }

@@ -94,6 +94,10 @@ export default function useGameController(sgfMoves, boardSize, { onStonePlace } 
 
       getWrongAttempts(moveIndex) {
         return manager.getWrongAttempts(moveIndex)
+      },
+
+      isValidPosition(x, y) {
+        return manager.isValidPosition(x, y)
       }
     }),
     [manager, onStonePlace]
