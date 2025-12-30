@@ -35,8 +35,8 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
     if (!pendingMove) return null
     const map = Array(boardSize)
       .fill(null)
-      .map(() => Array(boardSize).fill(0))
-    map[pendingMove.y][pendingMove.x] = currentTurn === 'B' ? 1 : -1
+      .map(() => Array(boardSize).fill(null))
+    map[pendingMove.y][pendingMove.x] = { sign: currentTurn === 'B' ? 1 : -1 }
     return map
   }
 
