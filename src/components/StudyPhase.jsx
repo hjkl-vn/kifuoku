@@ -18,7 +18,6 @@ export default function StudyPhase({ gameManager, gameInfo }) {
   const [rangeEnd, setRangeEnd] = useState(state.totalMoves - 1)
   const [selectedTool, setSelectedTool] = useState(null)
   const [annotations, setAnnotations] = useState({})
-  const [nextLabel, setNextLabel] = useState('A')
 
   const { containerRef, vertexSize, isMobileLayout } = useBoardSize({
     boardSize: state.boardSize
@@ -43,6 +42,23 @@ export default function StudyPhase({ gameManager, gameInfo }) {
 
   const currentAnnotations = annotations[state.studyPosition] || []
 
+  const getNextLabel = (existingAnnotations) => {
+    const usedLabels = existingAnnotations
+      .filter((a) => a.type === 'label' && a.label)
+      .map((a) => a.label)
+      .sort()
+
+    let nextChar = 'A'
+    for (const label of usedLabels) {
+      if (label === nextChar) {
+        nextChar = String.fromCharCode(nextChar.charCodeAt(0) + 1)
+      } else {
+        break
+      }
+    }
+    return nextChar
+  }
+
   const handleBoardClick = (evt, [x, y]) => {
     if (evt.button !== 0 || !selectedTool) return
 
@@ -58,11 +74,7 @@ export default function StudyPhase({ gameManager, gameInfo }) {
         x,
         y,
         type: selectedTool,
-        label: selectedTool === 'label' ? nextLabel : undefined
-      }
-
-      if (selectedTool === 'label') {
-        setNextLabel(String.fromCharCode(nextLabel.charCodeAt(0) + 1))
+        label: selectedTool === 'label' ? getNextLabel(currentAnnotations) : undefined
       }
 
       setAnnotations((prev) => ({
