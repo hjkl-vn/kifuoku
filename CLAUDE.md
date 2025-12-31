@@ -30,9 +30,9 @@ docker compose --profile prod up   # Production with nginx (port 8080)
 ## Architecture
 
 **MVC Pattern:**
-- **Model:** `GameManager` class (`src/game/GameManager.js`) - pure JavaScript, no React dependencies
+- **Model:** `GameManager` class (`src/game/gameManager.js`) - pure JavaScript, no React dependencies
 - **View:** React components in `src/components/`
-- **Controller:** `GameController` hook (`src/game/GameController.js`) - wraps GameManager and triggers React re-renders
+- **Controller:** `useGameController` hook (`src/game/useGameController.js`) - wraps GameManager and triggers React re-renders
 
 **Game Flow:**
 1. Upload Phase → user uploads SGF file or pastes online-go.com URL
@@ -48,7 +48,7 @@ docker compose --profile prod up   # Production with nginx (port 8080)
 
 **Progressive Hint System (Replay Phase):**
 - Wrong attempts trigger progressively smaller region highlights (quadrant → sub-quadrant → smaller)
-- Uses `board-utils.js` functions: `getQuadrantBounds()`, `getSubQuadrant()`, `isRegionSmallEnough()`
+- Uses `boardUtils.js` functions: `getQuadrantBounds()`, `getSubQuadrant()`, `isRegionSmallEnough()`
 - When region is small enough (≤3x3), shows exact position marker
 
 **Key Libraries:**
@@ -56,7 +56,7 @@ docker compose --profile prod up   # Production with nginx (port 8080)
 - `@sabaki/shudan` - React Goban component for rendering
 - `@sabaki/sgf` - SGF file parsing
 
-**SGF Parser (`src/lib/sgf-parser.js`):**
+**SGF Parser (`src/lib/sgfParser.js`):**
 - `parseSGFToMoves(sgfContent)` - extracts moves array
 - `getBoardSize(sgfContent)` - returns board size (supports 9x9, 13x13, 19x19, etc.)
 - `getGameInfo(sgfContent)` - extracts metadata (PB, PW, BR, WR, DT, GN, RE, RU)
