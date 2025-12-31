@@ -1,5 +1,5 @@
 import { useState, useMemo, useReducer } from 'react'
-import GameManager from './GameManager'
+import GameManager from './gameManager'
 
 export default function useGameController(sgfMoves, boardSize, { onStonePlace } = {}) {
   const [manager] = useState(() => new GameManager(sgfMoves, boardSize))
@@ -94,6 +94,10 @@ export default function useGameController(sgfMoves, boardSize, { onStonePlace } 
 
       getWrongAttempts(moveIndex) {
         return manager.getWrongAttempts(moveIndex)
+      },
+
+      isValidPosition(x, y) {
+        return manager.isValidPosition(x, y)
       }
     }),
     [manager, onStonePlace]

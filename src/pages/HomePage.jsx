@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
-import { parseSGFToMoves, getBoardSize, getGameInfo } from '../lib/sgf-parser.js'
+import { parseSGFToMoves, getBoardSize, getGameInfo } from '../lib/sgfParser.js'
 import useGameController from '../game/useGameController'
 import UploadPhase from '../components/UploadPhase.jsx'
 import StudyPhase from '../components/StudyPhase.jsx'

@@ -4,6 +4,7 @@ import Sidebar from './Sidebar'
 import RightPanel from './RightPanel'
 import CollapsibleHeader from './CollapsibleHeader'
 import CollapsibleBottomPanel from './CollapsibleBottomPanel'
+import BottomBar from './BottomBar'
 import { createEmptyBoardMap } from '../game/boardUtils'
 import { BORDER_FLASH_DURATION_MS, PHASES, MARKER_COLORS } from '../game/constants'
 import { useBoardSize } from '../hooks/useBoardSize'
@@ -15,6 +16,7 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
   const [borderFlash, setBorderFlash] = useState(null)
   const [selectedDifficultMove, setSelectedDifficultMove] = useState(null)
   const [bottomPanelExpanded, setBottomPanelExpanded] = useState(false)
+  const [pendingMove, setPendingMove] = useState(null)
 
   const state = gameManager.getState()
   const isComplete = state.phase === PHASES.COMPLETE
@@ -29,13 +31,21 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
     boardSize: state.boardSize
   })
 
-  const handleVertexClick = (evt, [x, y]) => {
-    if (evt.button !== 0 || isComplete) return
+  const createGhostStoneMap = (pendingMove, currentTurn, boardSize) => {
+    if (!pendingMove) return null
+    const map = Array(boardSize)
+      .fill(null)
+      .map(() => Array(boardSize).fill(null))
+    map[pendingMove.y][pendingMove.x] = { sign: currentTurn === 'B' ? 1 : -1 }
+    return map
+  }
 
+  const commitMove = (x, y) => {
     const result = gameManager.validateMove(x, y)
 
     if (result.correct) {
       setHintState(null)
+      setPendingMove(null)
       setBorderFlash('success')
       setTimeout(() => setBorderFlash(null), BORDER_FLASH_DURATION_MS)
 
@@ -44,12 +54,36 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
       }
     } else if (result.needHint) {
       setHintState(result)
+      setPendingMove(null)
       setBorderFlash('error')
       setTimeout(() => setBorderFlash(null), BORDER_FLASH_DURATION_MS)
     }
   }
 
+  const handleVertexClick = (evt, [x, y]) => {
+    if (evt.button !== 0 || isComplete) return
+
+    if (isMobileLayout) {
+      if (gameManager.isValidPosition(x, y)) {
+        setPendingMove({ x, y })
+      }
+    } else {
+      commitMove(x, y)
+    }
+  }
+
+  const handleConfirm = () => {
+    if (pendingMove) {
+      commitMove(pendingMove.x, pendingMove.y)
+    }
+  }
+
+  const handleCancel = () => {
+    setPendingMove(null)
+  }
+
   const handleSelectDifficultMove = (move) => {
+    setPendingMove(null)
     setSelectedDifficultMove(selectedDifficultMove?.moveIndex === move.moveIndex ? null : move)
   }
 
@@ -99,6 +133,7 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
 
   const difficultMoves = isComplete ? gameManager.getDifficultMoves(5) : []
   const currentTurn = gameManager.getCurrentTurn()
+  const ghostStoneMap = createGhostStoneMap(pendingMove, currentTurn, state.boardSize)
 
   const containerClass = [layout.container, isMobileLayout ? layout.mobileLayout : '']
     .filter(Boolean)
@@ -116,6 +151,7 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
       onRestart={() => {
         gameManager.resetGame()
         setSelectedDifficultMove(null)
+        setPendingMove(null)
       }}
       onGoHome={onGoHome}
     />
@@ -143,6 +179,7 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
               signMap={board?.signMap}
               markerMap={markerMap}
               paintMap={paintMap}
+              ghostStoneMap={ghostStoneMap}
               onVertexClick={handleVertexClick}
               vertexSize={vertexSize}
             />
@@ -151,6 +188,16 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
       </div>
 
       {!isMobileLayout && rightPanelContent}
+
+      {isMobileLayout && !isComplete && (
+        <BottomBar
+          current={state.replayPosition}
+          total={state.totalMoves}
+          pendingMove={pendingMove}
+          onConfirm={handleConfirm}
+          onCancel={handleCancel}
+        />
+      )}
 
       {isMobileLayout && isComplete && (
         <CollapsibleBottomPanel isExpanded={bottomPanelExpanded} onToggle={setBottomPanelExpanded}>
