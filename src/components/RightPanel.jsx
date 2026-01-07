@@ -17,6 +17,8 @@ export default function RightPanel({
   totalMoves,
   onRangeChange,
   onStartReplay,
+  onStartReplayAs,
+  gameInfo,
   stats,
   difficultMoves,
   onSelectDifficultMove,
@@ -48,9 +50,17 @@ export default function RightPanel({
               end={rangeEnd}
               onChange={onRangeChange}
             />
-            <button className={buttons.primaryButton} onClick={onStartReplay}>
-              Start Replay
-            </button>
+            <div className={buttons.replayButtonGroup}>
+              <button className={buttons.primaryButton} onClick={onStartReplay}>
+                Replay All
+              </button>
+              <button className={buttons.replayAsBlack} onClick={() => onStartReplayAs('B')}>
+                Replay as {gameInfo?.blackPlayer || 'Black'}
+              </button>
+              <button className={buttons.replayAsWhite} onClick={() => onStartReplayAs('W')}>
+                Replay as {gameInfo?.whitePlayer || 'White'}
+              </button>
+            </div>
           </div>
         </>
       )}
