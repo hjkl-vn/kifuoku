@@ -27,6 +27,7 @@ export default class GameManager {
       subdivisionHintsUsed: 0,
       exactHintsUsed: 0,
       startTime: null,
+      endTime: null,
       moveTimes: []
     }
   }
@@ -61,7 +62,8 @@ export default class GameManager {
   }
 
   getCompletionStats() {
-    const totalTime = this.stats.startTime ? Date.now() - this.stats.startTime : 0
+    const endTime = this.stats.endTime || Date.now()
+    const totalTime = this.stats.startTime ? endTime - this.stats.startTime : 0
 
     let userMoveCount
     if (this.replaySide === null) {
@@ -158,6 +160,7 @@ export default class GameManager {
       subdivisionHintsUsed: 0,
       exactHintsUsed: 0,
       startTime: null,
+      endTime: null,
       moveTimes: []
     }
 
@@ -196,6 +199,7 @@ export default class GameManager {
 
     if (this.replayPosition > this.replayEndMove) {
       this.phase = PHASES.COMPLETE
+      this.stats.endTime = Date.now()
       return { success: true, move, gameComplete: true }
     }
 
@@ -233,6 +237,7 @@ export default class GameManager {
 
       if (this.replayPosition > this.replayEndMove) {
         this.phase = PHASES.COMPLETE
+        this.stats.endTime = Date.now()
         return {
           correct: true,
           gameComplete: true
