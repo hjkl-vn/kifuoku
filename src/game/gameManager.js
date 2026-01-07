@@ -58,11 +58,20 @@ export default class GameManager {
 
   getCompletionStats() {
     const totalTime = this.stats.startTime ? Date.now() - this.stats.startTime : 0
-    const replayedMoves = this.replayEndMove - this.replayStartMove + 1
-    const avgTime = replayedMoves > 0 ? totalTime / replayedMoves : 0
+
+    let userMoveCount
+    if (this.replaySide === null) {
+      userMoveCount = this.replayEndMove - this.replayStartMove + 1
+    } else {
+      userMoveCount = this.moves
+        .slice(this.replayStartMove, this.replayEndMove + 1)
+        .filter((m) => m.color === this.replaySide).length
+    }
+
+    const avgTime = userMoveCount > 0 ? totalTime / userMoveCount : 0
 
     return {
-      totalMoves: replayedMoves,
+      totalMoves: userMoveCount,
       totalTimeMs: totalTime,
       totalTimeFormatted: (totalTime / 1000).toFixed(1),
       avgTimeMs: avgTime,
@@ -70,7 +79,7 @@ export default class GameManager {
       wrongMoveCount: this.stats.wrongMoveCount,
       correctFirstTry: this.stats.correctFirstTry,
       accuracy:
-        replayedMoves > 0 ? Math.round((this.stats.correctFirstTry / replayedMoves) * 100) : 0
+        userMoveCount > 0 ? Math.round((this.stats.correctFirstTry / userMoveCount) * 100) : 0
     }
   }
 

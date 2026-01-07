@@ -548,4 +548,45 @@ describe('Single-Side Replay', () => {
       expect(gm.replayPosition).toBe(2)
     })
   })
+
+  describe('stats tracking', () => {
+    it('counts only user moves for correctFirstTry', () => {
+      const gm = new GameManager(mockMoves)
+      gm.startReplay(0, 3, 'B')
+
+      gm.validateMove(3, 3)
+      gm.playOpponentMove()
+      gm.validateMove(3, 15)
+      gm.playOpponentMove()
+
+      expect(gm.stats.correctFirstTry).toBe(2)
+    })
+
+    it('getCompletionStats returns only user move count', () => {
+      const gm = new GameManager(mockMoves)
+      gm.startReplay(0, 3, 'B')
+
+      gm.validateMove(3, 3)
+      gm.playOpponentMove()
+      gm.validateMove(3, 15)
+      gm.playOpponentMove()
+
+      const stats = gm.getCompletionStats()
+      expect(stats.totalMoves).toBe(2)
+    })
+
+    it('calculates accuracy from user moves only', () => {
+      const gm = new GameManager(mockMoves)
+      gm.startReplay(0, 3, 'B')
+
+      gm.validateMove(3, 3)
+      gm.playOpponentMove()
+      gm.validateMove(0, 0)
+      gm.validateMove(3, 15)
+      gm.playOpponentMove()
+
+      const stats = gm.getCompletionStats()
+      expect(stats.accuracy).toBe(50)
+    })
+  })
 })
