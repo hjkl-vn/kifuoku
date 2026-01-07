@@ -12,6 +12,7 @@ export default function CollapsibleHeader({
   rangeEnd,
   onRangeChange,
   onStartReplay,
+  onStartReplayAs,
   stats,
   currentTurn
 }) {
@@ -47,15 +48,35 @@ export default function CollapsibleHeader({
                   end={rangeEnd}
                   onChange={onRangeChange}
                 />
-                <button
-                  className={buttons.primaryButton}
-                  onClick={() => {
-                    onStartReplay()
-                    setIsExpanded(false)
-                  }}
-                >
-                  Start Replay
-                </button>
+                <div className={buttons.replayButtonGroup}>
+                  <button
+                    className={buttons.primaryButton}
+                    onClick={() => {
+                      onStartReplay()
+                      setIsExpanded(false)
+                    }}
+                  >
+                    Replay All
+                  </button>
+                  <button
+                    className={buttons.replayAsBlack}
+                    onClick={() => {
+                      onStartReplayAs('B')
+                      setIsExpanded(false)
+                    }}
+                  >
+                    Replay as {gameInfo?.blackPlayer || 'Black'}
+                  </button>
+                  <button
+                    className={buttons.replayAsWhite}
+                    onClick={() => {
+                      onStartReplayAs('W')
+                      setIsExpanded(false)
+                    }}
+                  >
+                    Replay as {gameInfo?.whitePlayer || 'White'}
+                  </button>
+                </div>
               </div>
             )}
 
