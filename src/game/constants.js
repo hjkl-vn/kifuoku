@@ -20,6 +20,12 @@ export const PHASES = {
   COMPLETE: 'complete'
 }
 
+export const REPLAY_SIDES = {
+  BOTH: null,
+  BLACK: 'B',
+  WHITE: 'W'
+}
+
 export const HINT_TYPES = {
   QUADRANT: 'quadrant',
   EXACT: 'exact'
