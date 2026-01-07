@@ -12,7 +12,6 @@ export default function CollapsibleHeader({
   rangeEnd,
   onRangeChange,
   onStartReplay,
-  onStartReplayAs,
   stats,
   currentTurn
 }) {
@@ -61,7 +60,7 @@ export default function CollapsibleHeader({
                   <button
                     className={buttons.replayAsBlack}
                     onClick={() => {
-                      onStartReplayAs('B')
+                      onStartReplay('B')
                       setIsExpanded(false)
                     }}
                   >
@@ -70,7 +69,7 @@ export default function CollapsibleHeader({
                   <button
                     className={buttons.replayAsWhite}
                     onClick={() => {
-                      onStartReplayAs('W')
+                      onStartReplay('W')
                       setIsExpanded(false)
                     }}
                   >
