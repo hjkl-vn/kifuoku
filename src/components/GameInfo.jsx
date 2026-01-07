@@ -10,7 +10,8 @@ export default function GameInfo({ gameInfo, currentTurn }) {
     gameInfo.gameName ||
     gameInfo.date ||
     gameInfo.result ||
-    gameInfo.rules
+    gameInfo.rules ||
+    gameInfo.sourceUrl
 
   if (!hasInfo) return null
 
@@ -62,6 +63,14 @@ export default function GameInfo({ gameInfo, currentTurn }) {
           <div className={styles.detailRow}>
             <span className={styles.label}>Rules:</span>
             <span>{gameInfo.rules}</span>
+          </div>
+        )}
+        {gameInfo.sourceUrl && (
+          <div className={styles.detailRow}>
+            <span className={styles.label}>Source:</span>
+            <a href={gameInfo.sourceUrl} target="_blank" rel="noopener noreferrer">
+              View game ↗
+            </a>
           </div>
         )}
       </div>

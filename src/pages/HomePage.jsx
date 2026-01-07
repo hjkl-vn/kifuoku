@@ -64,7 +64,7 @@ export default function HomePage() {
   const [gameInfo, setGameInfo] = useState(null)
   const [error, setError] = useState(null)
 
-  const handleFileLoaded = (sgfContent) => {
+  const handleFileLoaded = (sgfContent, sourceUrl = null) => {
     try {
       const size = getBoardSize(sgfContent)
       const parsedMoves = parseSGFToMoves(sgfContent)
@@ -74,9 +74,14 @@ export default function HomePage() {
         return
       }
 
+      const info = getGameInfo(sgfContent)
+      if (sourceUrl && !info.sourceUrl) {
+        info.sourceUrl = sourceUrl
+      }
+
       setMoves(parsedMoves)
       setBoardSize(size)
-      setGameInfo(getGameInfo(sgfContent))
+      setGameInfo(info)
       setError(null)
     } catch (err) {
       setError(`Failed to load game: ${err.message}`)

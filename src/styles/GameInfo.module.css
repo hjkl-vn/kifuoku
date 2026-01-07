@@ -52,10 +52,22 @@
 
 .detailRow {
   display: flex;
+  align-items: baseline;
   gap: 8px;
 }
 
 .label {
   color: #666;
   min-width: 50px;
+  font-size: 14px;
+}
+
+.detailRow a {
+  color: #1976d2;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.detailRow a:hover {
+  text-decoration: underline;
 }

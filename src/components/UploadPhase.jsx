@@ -54,7 +54,7 @@ export default function UploadPhase({ onFileLoaded }) {
     try {
       const sgf = await fetchOgsSgf(gameId)
       setUrlValue('')
-      onFileLoaded(sgf)
+      onFileLoaded(sgf, `https://online-go.com/game/${gameId}`)
     } catch (err) {
       setError(err.message)
     } finally {

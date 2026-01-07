@@ -80,6 +80,8 @@ export function getGameInfo(sgfContent) {
     const rootNode = gameTree[0]
     const data = rootNode.data
 
+    const sourceUrl = extractSourceUrl(data.PC?.[0]) || extractSourceUrl(data.SO?.[0]) || null
+
     return {
       blackPlayer: data.PB?.[0] || null,
       whitePlayer: data.PW?.[0] || null,
@@ -88,9 +90,16 @@ export function getGameInfo(sgfContent) {
       date: data.DT?.[0] || null,
       gameName: data.GN?.[0] || null,
       result: data.RE?.[0] || null,
-      rules: data.RU?.[0] || null
+      rules: data.RU?.[0] || null,
+      sourceUrl
     }
   } catch (_error) {
     return {}
   }
+}
+
+function extractSourceUrl(value) {
+  if (!value) return null
+  const urlMatch = value.match(/https?:\/\/[^\s]+/)
+  return urlMatch ? urlMatch[0] : null
 }
