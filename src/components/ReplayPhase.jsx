@@ -130,10 +130,11 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
 
   if (selectedDifficultMove) {
     selectedDifficultMove.wrongAttempts.forEach(({ x, y }) => {
-      markerMap[y][x] = { type: 'circle', label: '', color: MARKER_COLORS.WRONG_ATTEMPT }
+      markerMap[y][x] = { type: 'cross' }
     })
+
     const { x, y } = selectedDifficultMove.correctPosition
-    markerMap[y][x] = { type: 'triangle', color: MARKER_COLORS.CORRECT_POSITION }
+    markerMap[y][x] = { type: 'circle' }
   } else {
     if (lastMove) {
       markerMap[lastMove.y][lastMove.x] = { type: 'circle' }
