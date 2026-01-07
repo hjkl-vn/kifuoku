@@ -17,6 +17,7 @@ export default class GameManager {
     this.currentHintRegion = null
     this.replayStartMove = 0
     this.replayEndMove = this.moves.length - 1
+    this.replaySide = null
     this.wrongAttemptsByMove = []
 
     this.stats = {
@@ -107,10 +108,11 @@ export default class GameManager {
     }
   }
 
-  startReplay(startMove = 0, endMove = this.moves.length - 1) {
+  startReplay(startMove = 0, endMove = this.moves.length - 1, side = null) {
     this.phase = PHASES.REPLAY
     this.replayStartMove = startMove
     this.replayEndMove = endMove
+    this.replaySide = side
     this.replayPosition = startMove
     this.studyPosition = startMove
     this.wrongAttemptsCurrentMove = 0
@@ -150,6 +152,13 @@ export default class GameManager {
       success: true,
       phase: this.phase
     }
+  }
+
+  isUserMove(position) {
+    if (this.replaySide === null) return true
+    const move = this.moves[position]
+    if (!move) return false
+    return move.color === this.replaySide
   }
 
   validateMove(x, y) {

@@ -460,3 +460,43 @@ describe('getBoardAtPosition', () => {
     expect(gm.getBoardAtPosition(-1)).toBeNull()
   })
 })
+
+describe('Single-Side Replay', () => {
+  const mockMoves = [
+    { x: 3, y: 3, color: 'B' },
+    { x: 15, y: 15, color: 'W' },
+    { x: 3, y: 15, color: 'B' },
+    { x: 15, y: 3, color: 'W' }
+  ]
+
+  describe('isUserMove', () => {
+    it('returns true for all moves when replaySide is null', () => {
+      const gm = new GameManager(mockMoves)
+      gm.startReplay()
+
+      expect(gm.isUserMove(0)).toBe(true)
+      expect(gm.isUserMove(1)).toBe(true)
+      expect(gm.isUserMove(2)).toBe(true)
+    })
+
+    it('returns true only for black moves when replaySide is B', () => {
+      const gm = new GameManager(mockMoves)
+      gm.startReplay(0, 3, 'B')
+
+      expect(gm.isUserMove(0)).toBe(true)
+      expect(gm.isUserMove(1)).toBe(false)
+      expect(gm.isUserMove(2)).toBe(true)
+      expect(gm.isUserMove(3)).toBe(false)
+    })
+
+    it('returns true only for white moves when replaySide is W', () => {
+      const gm = new GameManager(mockMoves)
+      gm.startReplay(0, 3, 'W')
+
+      expect(gm.isUserMove(0)).toBe(false)
+      expect(gm.isUserMove(1)).toBe(true)
+      expect(gm.isUserMove(2)).toBe(false)
+      expect(gm.isUserMove(3)).toBe(true)
+    })
+  })
+})
