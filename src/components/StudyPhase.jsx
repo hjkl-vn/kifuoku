@@ -103,8 +103,8 @@ export default function StudyPhase({ gameManager, gameInfo }) {
     setRangeEnd(end)
   }
 
-  const handleStartReplay = () => {
-    gameManager.startReplay(rangeStart, rangeEnd)
+  const handleStartReplay = (side = null) => {
+    gameManager.startReplay(rangeStart, rangeEnd, side)
   }
 
   const containerClass = [layout.container, isMobileLayout ? layout.mobileLayout : '']
@@ -159,6 +159,7 @@ export default function StudyPhase({ gameManager, gameInfo }) {
           totalMoves={state.totalMoves}
           onRangeChange={handleRangeChange}
           onStartReplay={handleStartReplay}
+          gameInfo={gameInfo}
         />
       )}
 

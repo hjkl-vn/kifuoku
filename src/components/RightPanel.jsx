@@ -17,6 +17,8 @@ export default function RightPanel({
   totalMoves,
   onRangeChange,
   onStartReplay,
+  gameInfo,
+  replaySide,
   stats,
   difficultMoves,
   onSelectDifficultMove,
@@ -48,24 +50,39 @@ export default function RightPanel({
               end={rangeEnd}
               onChange={onRangeChange}
             />
-            <button className={buttons.primaryButton} onClick={onStartReplay}>
-              Start Replay
-            </button>
+            <div className={buttons.replayButtonGroup}>
+              <button className={buttons.primaryButton} onClick={() => onStartReplay()}>
+                Replay All
+              </button>
+              <button className={buttons.replayAsBlack} onClick={() => onStartReplay('B')}>
+                Replay as {gameInfo?.blackPlayer || 'Black'}
+              </button>
+              <button className={buttons.replayAsWhite} onClick={() => onStartReplay('W')}>
+                Replay as {gameInfo?.whitePlayer || 'White'}
+              </button>
+            </div>
           </div>
         </>
       )}
 
       {phase === 'replay' && stats && (
-        <div className={styles.statsBox}>
-          <div className={styles.statRow}>
-            <span>Correct (1st try)</span>
-            <span>{stats.correctFirstTry}</span>
+        <>
+          {replaySide && (
+            <div className={styles.playingAs}>
+              Playing as {replaySide === 'B' ? 'Black' : 'White'}
+            </div>
+          )}
+          <div className={styles.statsBox}>
+            <div className={styles.statRow}>
+              <span>Correct (1st try)</span>
+              <span>{stats.correctFirstTry}</span>
+            </div>
+            <div className={styles.statRow}>
+              <span>Wrong attempts</span>
+              <span>{stats.wrongMoveCount}</span>
+            </div>
           </div>
-          <div className={styles.statRow}>
-            <span>Wrong attempts</span>
-            <span>{stats.wrongMoveCount}</span>
-          </div>
-        </div>
+        </>
       )}
 
       {phase === 'complete' && (

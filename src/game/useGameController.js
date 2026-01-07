@@ -45,8 +45,8 @@ export default function useGameController(sgfMoves, boardSize, { onStonePlace } 
         return result
       },
 
-      startReplay(startMove, endMove) {
-        const result = manager.startReplay(startMove, endMove)
+      startReplay(startMove, endMove, side = null) {
+        const result = manager.startReplay(startMove, endMove, side)
         forceUpdate()
         return result
       },
@@ -61,6 +61,13 @@ export default function useGameController(sgfMoves, boardSize, { onStonePlace } 
         const result = manager.validateMove(x, y)
         forceUpdate()
         if (result.correct) onStonePlace?.()
+        return result
+      },
+
+      playOpponentMove() {
+        const result = manager.playOpponentMove()
+        forceUpdate()
+        if (result.success) onStonePlace?.()
         return result
       },
 
@@ -98,6 +105,14 @@ export default function useGameController(sgfMoves, boardSize, { onStonePlace } 
 
       isValidPosition(x, y) {
         return manager.isValidPosition(x, y)
+      },
+
+      isUserMove(position) {
+        return manager.isUserMove(position)
+      },
+
+      getReplaySide() {
+        return manager.getReplaySide()
       }
     }),
     [manager, onStonePlace]

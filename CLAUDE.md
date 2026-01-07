@@ -67,9 +67,14 @@ docker compose --profile prod up   # Production with nginx (port 8080)
 - `fetchOgsSgf(gameId)` - fetches SGF from OGS API
 
 **Constants (`src/game/constants.js`):**
-- `DEFAULT_BOARD_SIZE`, `GHOST_HINT_COUNT`, `GHOST_HINT_RADIUS` - game configuration
+- `DEFAULT_BOARD_SIZE`, `BORDER_FLASH_DURATION_MS` - game configuration
 - `PHASES`, `HINT_TYPES` - enums for game state
-- `getQuadrant()`, `getQuadrantVertices()` - hint system helpers (accept boardSize parameter)
+- `MARKER_COLORS`, `ANNOTATION_TOOLS` - UI constants
+
+**Board Utilities (`src/game/boardUtils.js`):**
+- `createEmptyBoardMap()` - creates empty 2D board array
+- `getQuadrantBounds()`, `getSubQuadrant()`, `isRegionSmallEnough()` - hint region calculation
+- `colorToSign()` - converts 'B'/'W' to board sign (1/-1)
 
 **CSS Modules (all in `src/styles/`):**
 - `GameLayout.module.css` - responsive game layout (2-column desktop, collapsible mobile)

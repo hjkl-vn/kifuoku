@@ -1,6 +1,6 @@
 import Board from '@sabaki/go-board'
-import { DEFAULT_BOARD_SIZE, PHASES, HINT_TYPES, colorToSign } from './constants'
-import { getQuadrantBounds, getSubQuadrant, isRegionSmallEnough } from './boardUtils'
+import { DEFAULT_BOARD_SIZE, PHASES, HINT_TYPES } from './constants'
+import { getQuadrantBounds, getSubQuadrant, isRegionSmallEnough, colorToSign } from './boardUtils'
 
 export default class GameManager {
   constructor(moves, boardSize = DEFAULT_BOARD_SIZE) {
@@ -17,6 +17,7 @@ export default class GameManager {
     this.currentHintRegion = null
     this.replayStartMove = 0
     this.replayEndMove = this.moves.length - 1
+    this.replaySide = null
     this.wrongAttemptsByMove = []
 
     this.stats = {
@@ -55,13 +56,26 @@ export default class GameManager {
     }
   }
 
+  getReplaySide() {
+    return this.replaySide
+  }
+
   getCompletionStats() {
     const totalTime = this.stats.startTime ? Date.now() - this.stats.startTime : 0
-    const replayedMoves = this.replayEndMove - this.replayStartMove + 1
-    const avgTime = replayedMoves > 0 ? totalTime / replayedMoves : 0
+
+    let userMoveCount
+    if (this.replaySide === null) {
+      userMoveCount = this.replayEndMove - this.replayStartMove + 1
+    } else {
+      userMoveCount = this.moves
+        .slice(this.replayStartMove, this.replayEndMove + 1)
+        .filter((m) => m.color === this.replaySide).length
+    }
+
+    const avgTime = userMoveCount > 0 ? totalTime / userMoveCount : 0
 
     return {
-      totalMoves: replayedMoves,
+      totalMoves: userMoveCount,
       totalTimeMs: totalTime,
       totalTimeFormatted: (totalTime / 1000).toFixed(1),
       avgTimeMs: avgTime,
@@ -69,7 +83,7 @@ export default class GameManager {
       wrongMoveCount: this.stats.wrongMoveCount,
       correctFirstTry: this.stats.correctFirstTry,
       accuracy:
-        replayedMoves > 0 ? Math.round((this.stats.correctFirstTry / replayedMoves) * 100) : 0
+        userMoveCount > 0 ? Math.round((this.stats.correctFirstTry / userMoveCount) * 100) : 0
     }
   }
 
@@ -107,10 +121,11 @@ export default class GameManager {
     }
   }
 
-  startReplay(startMove = 0, endMove = this.moves.length - 1) {
+  startReplay(startMove = 0, endMove = this.moves.length - 1, side = null) {
     this.phase = PHASES.REPLAY
     this.replayStartMove = startMove
     this.replayEndMove = endMove
+    this.replaySide = side
     this.replayPosition = startMove
     this.studyPosition = startMove
     this.wrongAttemptsCurrentMove = 0
@@ -150,6 +165,41 @@ export default class GameManager {
       success: true,
       phase: this.phase
     }
+  }
+
+  isUserMove(position) {
+    if (this.replaySide === null) return true
+    const move = this.moves[position]
+    if (!move) return false
+    return move.color === this.replaySide
+  }
+
+  playOpponentMove() {
+    if (this.phase !== PHASES.REPLAY) {
+      return { error: 'Not in replay phase' }
+    }
+
+    if (this.replayPosition > this.replayEndMove) {
+      return { error: 'All moves completed' }
+    }
+
+    if (this.isUserMove(this.replayPosition)) {
+      return { error: 'Current move is not opponent move' }
+    }
+
+    const move = this.moves[this.replayPosition]
+    const sign = colorToSign(move.color)
+    const newBoard = this.getCurrentBoard().makeMove(sign, [move.x, move.y])
+    this.boardHistory.push(newBoard)
+    this.studyPosition++
+    this.replayPosition++
+
+    if (this.replayPosition > this.replayEndMove) {
+      this.phase = PHASES.COMPLETE
+      return { success: true, move, gameComplete: true }
+    }
+
+    return { success: true, move }
   }
 
   validateMove(x, y) {
