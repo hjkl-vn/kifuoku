@@ -56,6 +56,10 @@ export default class GameManager {
     }
   }
 
+  getReplaySide() {
+    return this.replaySide
+  }
+
   getCompletionStats() {
     const totalTime = this.stats.startTime ? Date.now() - this.stats.startTime : 0
 
