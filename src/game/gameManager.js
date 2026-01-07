@@ -161,6 +161,34 @@ export default class GameManager {
     return move.color === this.replaySide
   }
 
+  playOpponentMove() {
+    if (this.phase !== PHASES.REPLAY) {
+      return { error: 'Not in replay phase' }
+    }
+
+    if (this.replayPosition > this.replayEndMove) {
+      return { error: 'All moves completed' }
+    }
+
+    if (this.isUserMove(this.replayPosition)) {
+      return { error: 'Current move is not opponent move' }
+    }
+
+    const move = this.moves[this.replayPosition]
+    const sign = colorToSign(move.color)
+    const newBoard = this.getCurrentBoard().makeMove(sign, [move.x, move.y])
+    this.boardHistory.push(newBoard)
+    this.studyPosition++
+    this.replayPosition++
+
+    if (this.replayPosition > this.replayEndMove) {
+      this.phase = PHASES.COMPLETE
+      return { success: true, move, gameComplete: true }
+    }
+
+    return { success: true, move }
+  }
+
   validateMove(x, y) {
     if (this.phase !== PHASES.REPLAY) {
       return { error: 'Not in replay phase' }

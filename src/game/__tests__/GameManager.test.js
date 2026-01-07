@@ -499,4 +499,53 @@ describe('Single-Side Replay', () => {
       expect(gm.isUserMove(3)).toBe(true)
     })
   })
+
+  describe('playOpponentMove', () => {
+    it('plays the current move and advances position', () => {
+      const gm = new GameManager(mockMoves)
+      gm.startReplay(0, 3, 'W')
+
+      const result = gm.playOpponentMove()
+
+      expect(result.success).toBe(true)
+      expect(result.move).toEqual({ x: 3, y: 3, color: 'B' })
+      expect(gm.replayPosition).toBe(1)
+      expect(gm.getCurrentBoard().get([3, 3])).toBe(1)
+    })
+
+    it('does not update stats', () => {
+      const gm = new GameManager(mockMoves)
+      gm.startReplay(0, 3, 'W')
+
+      gm.playOpponentMove()
+
+      expect(gm.stats.correctFirstTry).toBe(0)
+      expect(gm.stats.wrongMoveCount).toBe(0)
+    })
+
+    it('returns error if called on user move', () => {
+      const gm = new GameManager(mockMoves)
+      gm.startReplay(0, 3, 'B')
+
+      const result = gm.playOpponentMove()
+
+      expect(result.error).toBe('Current move is not opponent move')
+    })
+
+    it('handles consecutive opponent moves', () => {
+      const moves = [
+        { x: 3, y: 3, color: 'W' },
+        { x: 15, y: 15, color: 'W' },
+        { x: 10, y: 10, color: 'B' }
+      ]
+      const gm = new GameManager(moves)
+      gm.startReplay(0, 2, 'B')
+
+      gm.playOpponentMove()
+      const result = gm.playOpponentMove()
+
+      expect(result.success).toBe(true)
+      expect(gm.replayPosition).toBe(2)
+    })
+  })
 })
