@@ -9,22 +9,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-npm install         # Install dependencies
-npm run dev         # Start development server (Vite)
-npm run build       # Production build
-npm test            # Run tests in watch mode
-npm test -- --run   # Run tests once
-npm test -- --run src/game/__tests__/GameManager.test.js  # Run single test file
-npm run lint          # Run ESLint
-npm run lint:fix      # Run ESLint with auto-fix
-npm run format:check  # Check Prettier formatting
-npm run format        # Format with Prettier
+npm install
+npm run dev              # Vite dev server
+npm run build
+npm test                 # Watch mode
+npm test -- --run        # Run once
+npm test -- --run src/game/__tests__/GameManager.test.js
+npm run lint
+npm run lint:fix
+npm run format
+npm run format:check
 ```
 
 **Docker:**
 ```bash
-docker compose --profile dev up    # Development with hot reload (port 3000)
-docker compose --profile prod up   # Production with nginx (port 8080)
+docker compose --profile dev up     # Port 3000
+docker compose --profile prod up    # Port 8080
 ```
 
 ## Architecture
@@ -36,9 +36,10 @@ docker compose --profile prod up   # Production with nginx (port 8080)
 
 **Game Flow:**
 1. Upload Phase → user uploads SGF file or pastes online-go.com URL
-2. Study Phase → navigate through moves, select replay range at the end
+2. Study Phase → navigate through moves, select replay range
 3. Replay Phase → recreate moves from memory with progressive hints
-4. Complete → modal overlay showing statistics with Play Again/New Game options
+   - Optional: Single-side replay (play as Black or White only, opponent auto-plays)
+4. Complete → statistics with Play Again/New Game options
 
 **Board State Management:**
 - Uses `@sabaki/go-board` for immutable board state and capture detection
@@ -48,7 +49,6 @@ docker compose --profile prod up   # Production with nginx (port 8080)
 
 **Progressive Hint System (Replay Phase):**
 - Wrong attempts trigger progressively smaller region highlights (quadrant → sub-quadrant → smaller)
-- Uses `boardUtils.js` functions: `getQuadrantBounds()`, `getSubQuadrant()`, `isRegionSmallEnough()`
 - When region is small enough (≤3x3), shows exact position marker
 
 **Key Libraries:**
@@ -56,32 +56,9 @@ docker compose --profile prod up   # Production with nginx (port 8080)
 - `@sabaki/shudan` - React Goban component for rendering
 - `@sabaki/sgf` - SGF file parsing
 
-**SGF Parser (`src/lib/sgfParser.js`):**
-- `parseSGFToMoves(sgfContent)` - extracts moves array
-- `getBoardSize(sgfContent)` - returns board size (supports 9x9, 13x13, 19x19, etc.)
-- `getGameInfo(sgfContent)` - extracts metadata (PB, PW, BR, WR, DT, GN, RE, RU)
-
-**OGS Import (`src/lib/ogs.js`):**
-- `extractGameId(url)` - extracts game ID from online-go.com URLs
-- `isValidOgsUrl(url)` - validates OGS URL format
-- `fetchOgsSgf(gameId)` - fetches SGF from OGS API
-
-**Constants (`src/game/constants.js`):**
-- `DEFAULT_BOARD_SIZE`, `BORDER_FLASH_DURATION_MS` - game configuration
-- `PHASES`, `HINT_TYPES` - enums for game state
-- `MARKER_COLORS`, `ANNOTATION_TOOLS` - UI constants
-
-**Board Utilities (`src/game/boardUtils.js`):**
-- `createEmptyBoardMap()` - creates empty 2D board array
-- `getQuadrantBounds()`, `getSubQuadrant()`, `isRegionSmallEnough()` - hint region calculation
-- `colorToSign()` - converts 'B'/'W' to board sign (1/-1)
-
 **CSS Modules (all in `src/styles/`):**
-- `GameLayout.module.css` - responsive game layout (2-column desktop, collapsible mobile)
-- `Buttons.module.css` - shared button styles with `composes`
-- Component-specific styles named after their component (e.g., `Sidebar.module.css`)
 - Dynamic classes use array join pattern: `[styles.a, condition ? styles.b : ''].filter(Boolean).join(' ')`
 
 **Responsive Layout (768px breakpoint):**
-- Desktop: Left sidebar (280px) + board area with progress bar
+- Desktop: Left sidebar (280px) + board area + right panel
 - Mobile: Collapsible header (overlay) + board + fixed bottom bar
