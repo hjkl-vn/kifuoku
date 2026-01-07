@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import Board from './Board'
 import Sidebar from './Sidebar'
 import RightPanel from './RightPanel'
@@ -31,6 +31,42 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
     boardSize: state.boardSize
   })
 
+  const autoPlayTimeoutRef = useRef(null)
+
+  const scheduleOpponentMove = useCallback(() => {
+    if (autoPlayTimeoutRef.current) {
+      clearTimeout(autoPlayTimeoutRef.current)
+    }
+
+    const delay = 500 + Math.random() * 500
+    autoPlayTimeoutRef.current = setTimeout(() => {
+      const result = gameManager.playOpponentMove()
+      if (result.success && !result.gameComplete) {
+        if (!gameManager.isUserMove(gameManager.replayPosition)) {
+          scheduleOpponentMove()
+        }
+      }
+      if (result.gameComplete) {
+        setBottomPanelExpanded(true)
+      }
+    }, delay)
+  }, [gameManager])
+
+  useEffect(() => {
+    const replaySide = gameManager.getReplaySide()
+    if (replaySide === null || isComplete) return
+
+    if (!gameManager.isUserMove(gameManager.replayPosition)) {
+      scheduleOpponentMove()
+    }
+
+    return () => {
+      if (autoPlayTimeoutRef.current) {
+        clearTimeout(autoPlayTimeoutRef.current)
+      }
+    }
+  }, [gameManager, gameManager.replayPosition, isComplete, scheduleOpponentMove])
+
   const createGhostStoneMap = (pendingMove, currentTurn, boardSize) => {
     if (!pendingMove) return null
     const map = Array(boardSize)
@@ -51,6 +87,8 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
 
       if (result.gameComplete) {
         setBottomPanelExpanded(true)
+      } else if (!gameManager.isUserMove(gameManager.replayPosition)) {
+        scheduleOpponentMove()
       }
     } else if (result.needHint) {
       setHintState(result)
