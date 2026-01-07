@@ -1,6 +1,6 @@
 import Board from '@sabaki/go-board'
-import { DEFAULT_BOARD_SIZE, PHASES, HINT_TYPES, colorToSign } from './constants'
-import { getQuadrantBounds, getSubQuadrant, isRegionSmallEnough } from './boardUtils'
+import { DEFAULT_BOARD_SIZE, PHASES, HINT_TYPES } from './constants'
+import { getQuadrantBounds, getSubQuadrant, isRegionSmallEnough, colorToSign } from './boardUtils'
 
 export default class GameManager {
   constructor(moves, boardSize = DEFAULT_BOARD_SIZE) {
