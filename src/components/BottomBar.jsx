@@ -10,6 +10,7 @@ export default function BottomBar({
   onNext,
   current,
   total,
+  replaySide,
   selectedTool,
   onSelectTool,
   pendingMove,
@@ -23,7 +24,7 @@ export default function BottomBar({
   return (
     <div className={styles.container}>
       <div className={styles.progressWrapper}>
-        <ProgressBar current={current} total={total} />
+        <ProgressBar current={current} total={total} replaySide={replaySide} />
       </div>
       <div className={styles.controls}>
         {hasAnnotationTools && !hasConfirmCancel && (

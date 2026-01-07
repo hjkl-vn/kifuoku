@@ -182,6 +182,7 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
       phase={isComplete ? 'complete' : 'replay'}
       current={state.replayPosition}
       total={state.totalMoves}
+      replaySide={gameManager.getReplaySide()}
       stats={stats}
       difficultMoves={difficultMoves}
       onSelectDifficultMove={handleSelectDifficultMove}
@@ -231,6 +232,7 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
         <BottomBar
           current={state.replayPosition}
           total={state.totalMoves}
+          replaySide={gameManager.getReplaySide()}
           pendingMove={pendingMove}
           onConfirm={handleConfirm}
           onCancel={handleCancel}

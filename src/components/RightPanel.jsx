@@ -18,6 +18,7 @@ export default function RightPanel({
   onRangeChange,
   onStartReplay,
   gameInfo,
+  replaySide,
   stats,
   difficultMoves,
   onSelectDifficultMove,
@@ -65,16 +66,23 @@ export default function RightPanel({
       )}
 
       {phase === 'replay' && stats && (
-        <div className={styles.statsBox}>
-          <div className={styles.statRow}>
-            <span>Correct (1st try)</span>
-            <span>{stats.correctFirstTry}</span>
+        <>
+          {replaySide && (
+            <div className={styles.playingAs}>
+              Playing as {replaySide === 'B' ? 'Black' : 'White'}
+            </div>
+          )}
+          <div className={styles.statsBox}>
+            <div className={styles.statRow}>
+              <span>Correct (1st try)</span>
+              <span>{stats.correctFirstTry}</span>
+            </div>
+            <div className={styles.statRow}>
+              <span>Wrong attempts</span>
+              <span>{stats.wrongMoveCount}</span>
+            </div>
           </div>
-          <div className={styles.statRow}>
-            <span>Wrong attempts</span>
-            <span>{stats.wrongMoveCount}</span>
-          </div>
-        </div>
+        </>
       )}
 
       {phase === 'complete' && (
