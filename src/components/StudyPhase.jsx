@@ -6,6 +6,7 @@ import AnnotationToolbar from './AnnotationToolbar'
 import CollapsibleHeader from './CollapsibleHeader'
 import BottomBar from './BottomBar'
 import { createEmptyBoardMap } from '../game/boardUtils'
+import { trackReplayStarted } from '../lib/analytics.js'
 import { useBoardSize } from '../hooks/useBoardSize'
 import layout from '../styles/GameLayout.module.css'
 
@@ -104,6 +105,10 @@ export default function StudyPhase({ gameManager, gameInfo }) {
   }
 
   const handleStartReplay = (side = null) => {
+    trackReplayStarted({
+      side: side || 'both',
+      rangeLength: rangeEnd - rangeStart + 1
+    })
     gameManager.startReplay(rangeStart, rangeEnd, side)
   }
 
