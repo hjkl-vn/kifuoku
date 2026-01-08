@@ -6,7 +6,7 @@ import AnnotationToolbar from './AnnotationToolbar'
 import CollapsibleHeader from './CollapsibleHeader'
 import BottomBar from './BottomBar'
 import { createEmptyBoardMap } from '../game/boardUtils'
-import { trackReplayStarted } from '../lib/analytics.js'
+import { trackReplayStarted, trackAnnotationUsed } from '../lib/analytics.js'
 import { useBoardSize } from '../hooks/useBoardSize'
 import layout from '../styles/GameLayout.module.css'
 
@@ -71,6 +71,7 @@ export default function StudyPhase({ gameManager, gameInfo }) {
         [state.studyPosition]: currentAnnotations.filter((a) => !(a.x === x && a.y === y))
       }))
     } else {
+      trackAnnotationUsed()
       const newAnnotation = {
         x,
         y,
