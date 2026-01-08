@@ -1,11 +1,6 @@
 export const DEFAULT_BOARD_SIZE = 19
 export const BORDER_FLASH_DURATION_MS = 500
 
-export const MARKER_COLORS = {
-  WRONG_ATTEMPT: '#c62828',
-  CORRECT_POSITION: '#2e7d32'
-}
-
 export const ANNOTATION_TOOLS = [
   { id: 'circle', label: '○', title: 'Circle' },
   { id: 'triangle', label: '△', title: 'Triangle' },

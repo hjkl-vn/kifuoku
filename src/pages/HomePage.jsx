@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { parseSGFToMoves, getBoardSize, getGameInfo } from '../lib/sgfParser.js'
+import { trackGameLoaded, trackNewGameStarted } from '../lib/analytics.js'
 import useGameController from '../game/useGameController'
 import UploadPhase from '../components/UploadPhase.jsx'
 import StudyPhase from '../components/StudyPhase.jsx'
@@ -82,6 +83,11 @@ export default function HomePage() {
       setMoves(parsedMoves)
       setBoardSize(size)
       setGameInfo(info)
+      trackGameLoaded({
+        source: sourceUrl ? 'ogs' : 'file',
+        boardSize: size,
+        moveCount: parsedMoves.length
+      })
       setError(null)
     } catch (err) {
       setError(`Failed to load game: ${err.message}`)
@@ -100,7 +106,8 @@ export default function HomePage() {
     )
   }
 
-  const handleGoHome = () => {
+  const handleGoHome = (fromPhase = 'study') => {
+    trackNewGameStarted({ fromPhase })
     setMoves(null)
     setBoardSize(null)
     setGameInfo(null)

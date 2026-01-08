@@ -23,8 +23,8 @@ npm run format:check
 
 **Docker:**
 ```bash
-docker compose --profile dev up     # Port 3000
-docker compose --profile prod up    # Port 8080
+docker compose --profile dev up     # Port 8181
+docker compose --profile prod up    # Port 9090
 ```
 
 ## Architecture
@@ -62,3 +62,8 @@ docker compose --profile prod up    # Port 8080
 **Responsive Layout (768px breakpoint):**
 - Desktop: Left sidebar (280px) + board area + right panel
 - Mobile: Collapsible header (overlay) + board + fixed bottom bar
+
+**Analytics (`src/lib/analytics.js`):**
+- PostHog integration with 6 events: `game_loaded`, `replay_started`, `replay_completed`, `game_reset`, `new_game_started`, `annotation_used`
+- Requires `VITE_POSTHOG_KEY` env var; gracefully disabled when not set
+- Event properties use snake_case (PostHog convention)

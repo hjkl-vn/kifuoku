@@ -4,7 +4,7 @@ services:
       context: .
       target: dev
     image: kifuoku-dev
-    container_name: covay
+    container_name: kifuoku
     ports:
       - "8181:3000"
     volumes:
@@ -19,11 +19,15 @@ services:
     build:
       context: .
       target: prod
+      args:
+        - VITE_POSTHOG_KEY=${VITE_POSTHOG_KEY}
+        - VITE_POSTHOG_HOST=${VITE_POSTHOG_HOST}
     image: kifuoku-prod
-    container_name: covay
+    container_name: kifuoku
     ports:
       - "9090:80"
     environment:
       - NODE_ENV=production
+    restart: unless-stopped
     profiles:
       - prod

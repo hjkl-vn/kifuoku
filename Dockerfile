@@ -9,6 +9,8 @@ EXPOSE 3000
 CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
 
 FROM base AS build
+ARG VITE_POSTHOG_KEY
+ARG VITE_POSTHOG_HOST
 RUN npm run build
 
 FROM nginx:alpine AS prod

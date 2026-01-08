@@ -8,4 +8,60 @@ My friend, Nobu, said this name was great. I trust her.
 
 ## Development
 
+### Prerequisites
+
+- Node.js 18+
+- npm
+
+### Setup with npm
+
+```bash
+npm install
+cp .env.example .env.local  # Configure environment variables
+npm run dev                  # http://localhost:5173
+```
+
+### Setup with Docker
+
+```bash
+docker compose --profile dev up    # http://localhost:8181
+```
+
+For production build:
+```bash
+docker compose --profile prod up   # http://localhost:9090
+```
+
+### Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `VITE_POSTHOG_KEY` | PostHog project API key |
+| `VITE_POSTHOG_HOST` | PostHog instance URL (defaults to US cloud) |
+
+**Analytics (PostHog):**
+- **Disabled by default** - analytics only runs when `VITE_POSTHOG_KEY` is set
+- **To enable:** Set `VITE_POSTHOG_KEY` to your PostHog project API key
+- **To disable:** Leave `VITE_POSTHOG_KEY` empty or remove it
+
+Tracked events:
+| Event | Description |
+|-------|-------------|
+| `game_loaded` | Game loaded from file or OGS URL |
+| `replay_started` | User begins replay phase |
+| `replay_completed` | User finishes replay (with accuracy, time, hints used) |
+| `game_reset` | User restarts the same game |
+| `new_game_started` | User loads a different game |
+| `annotation_used` | User adds an annotation during study |
+
+**How env vars are loaded:**
+
+| Scenario | Source |
+|----------|--------|
+| `npm run dev` | `.env.local` (Vite auto-loads) |
+| `docker compose --profile dev` | `.env.local` (via volume mount) |
+| `docker compose --profile prod` | `.env` or shell environment |
+
+For local development, copy `.env.example` to `.env.local`. For production Docker builds, use `.env` (docker compose auto-loads this) or pass variables via shell.
+
 ## Deployment
