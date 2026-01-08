@@ -209,7 +209,7 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
         setSelectedDifficultMove(null)
         setPendingMove(null)
       }}
-      onGoHome={onGoHome}
+      onGoHome={() => onGoHome(state.phase)}
     />
   )
 
