@@ -8,7 +8,7 @@ import BottomBar from './BottomBar'
 import { createEmptyBoardMap } from '../game/boardUtils'
 import { BORDER_FLASH_DURATION_MS, PHASES, MARKER_COLORS } from '../game/constants'
 import { useBoardSize } from '../hooks/useBoardSize'
-import { trackReplayCompleted } from '../lib/analytics.js'
+import { trackReplayCompleted, trackGameReset } from '../lib/analytics.js'
 import layout from '../styles/GameLayout.module.css'
 import replayStyles from '../styles/ReplayPhase.module.css'
 
@@ -203,6 +203,8 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
       onSelectDifficultMove={handleSelectDifficultMove}
       selectedMoveIndex={selectedDifficultMove?.moveIndex}
       onRestart={() => {
+        const stats = gameManager.getCompletionStats()
+        trackGameReset({ previousAccuracy: stats.accuracy })
         gameManager.resetGame()
         setSelectedDifficultMove(null)
         setPendingMove(null)
