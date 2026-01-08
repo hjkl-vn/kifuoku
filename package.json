@@ -18,6 +18,7 @@
     "@sabaki/go-board": "^1.4.3",
     "@sabaki/sgf": "^3.4.7",
     "@sabaki/shudan": "^1.7.1",
+    "posthog-js": "^1.315.1",
     "preact": "^10.28.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
