@@ -19,7 +19,8 @@ function trackCompletion(gameManager) {
     accuracy: stats.accuracy,
     wrongMoveCount: stats.wrongMoveCount,
     totalTimeSeconds: Math.round(stats.totalTimeMs / 1000),
-    hintsUsed: gameStats.quadrantHintsUsed + gameStats.subdivisionHintsUsed + gameStats.exactHintsUsed
+    hintsUsed:
+      gameStats.quadrantHintsUsed + gameStats.subdivisionHintsUsed + gameStats.exactHintsUsed
   })
 }
 
