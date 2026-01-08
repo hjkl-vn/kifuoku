@@ -1,6 +1,7 @@
 *.log
 .claude/
 .DS_Store
+.env
 .git/
 .vite/
 
