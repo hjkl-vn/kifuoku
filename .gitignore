@@ -2,6 +2,7 @@
 .claude/
 .DS_Store
 .env
+.env.local
 .git/
 .vite/
 
