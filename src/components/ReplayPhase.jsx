@@ -8,8 +8,20 @@ import BottomBar from './BottomBar'
 import { createEmptyBoardMap } from '../game/boardUtils'
 import { BORDER_FLASH_DURATION_MS, PHASES, MARKER_COLORS } from '../game/constants'
 import { useBoardSize } from '../hooks/useBoardSize'
+import { trackReplayCompleted } from '../lib/analytics.js'
 import layout from '../styles/GameLayout.module.css'
 import replayStyles from '../styles/ReplayPhase.module.css'
+
+function trackCompletion(gameManager) {
+  const stats = gameManager.getCompletionStats()
+  const gameStats = gameManager.getState().stats
+  trackReplayCompleted({
+    accuracy: stats.accuracy,
+    wrongMoveCount: stats.wrongMoveCount,
+    totalTimeSeconds: Math.round(stats.totalTimeMs / 1000),
+    hintsUsed: gameStats.quadrantHintsUsed + gameStats.subdivisionHintsUsed + gameStats.exactHintsUsed
+  })
+}
 
 export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
   const [hintState, setHintState] = useState(null)
@@ -48,6 +60,7 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
       }
       if (result.gameComplete) {
         setBottomPanelExpanded(true)
+        trackCompletion(gameManager)
       }
     }, delay)
   }, [gameManager])
@@ -87,6 +100,7 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
 
       if (result.gameComplete) {
         setBottomPanelExpanded(true)
+        trackCompletion(gameManager)
       } else if (!gameManager.isUserMove(gameManager.replayPosition)) {
         scheduleOpponentMove()
       }
