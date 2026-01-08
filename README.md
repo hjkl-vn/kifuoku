@@ -36,8 +36,23 @@ docker compose --profile prod up   # http://localhost:9090
 
 | Variable | Description |
 |----------|-------------|
-| `VITE_POSTHOG_KEY` | PostHog project API key (optional) |
+| `VITE_POSTHOG_KEY` | PostHog project API key |
 | `VITE_POSTHOG_HOST` | PostHog instance URL (defaults to US cloud) |
+
+**Analytics (PostHog):**
+- **Disabled by default** - analytics only runs when `VITE_POSTHOG_KEY` is set
+- **To enable:** Set `VITE_POSTHOG_KEY` to your PostHog project API key
+- **To disable:** Leave `VITE_POSTHOG_KEY` empty or remove it
+
+Tracked events:
+| Event | Description |
+|-------|-------------|
+| `game_loaded` | Game loaded from file or OGS URL |
+| `replay_started` | User begins replay phase |
+| `replay_completed` | User finishes replay (with accuracy, time, hints used) |
+| `game_reset` | User restarts the same game |
+| `new_game_started` | User loads a different game |
+| `annotation_used` | User adds an annotation during study |
 
 **How env vars are loaded:**
 
