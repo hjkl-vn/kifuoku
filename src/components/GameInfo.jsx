@@ -11,6 +11,8 @@ export default function GameInfo({ gameInfo, currentTurn }) {
     gameInfo.date ||
     gameInfo.result ||
     gameInfo.rules ||
+    gameInfo.handicap ||
+    gameInfo.komi !== null ||
     gameInfo.sourceUrl
 
   if (!hasInfo) return null
@@ -63,6 +65,18 @@ export default function GameInfo({ gameInfo, currentTurn }) {
           <div className={styles.detailRow}>
             <span className={styles.label}>Rules:</span>
             <span>{gameInfo.rules}</span>
+          </div>
+        )}
+        {gameInfo.handicap && (
+          <div className={styles.detailRow}>
+            <span className={styles.label}>Handicap:</span>
+            <span>{gameInfo.handicap} stones</span>
+          </div>
+        )}
+        {gameInfo.komi !== null && (
+          <div className={styles.detailRow}>
+            <span className={styles.label}>Komi:</span>
+            <span>{gameInfo.komi}</span>
           </div>
         )}
         {gameInfo.sourceUrl && (
