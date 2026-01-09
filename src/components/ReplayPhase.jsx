@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react'
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import Board from './Board'
 import Sidebar from './Sidebar'
 import RightPanel from './RightPanel'
@@ -6,11 +6,21 @@ import CollapsibleHeader from './CollapsibleHeader'
 import CollapsibleBottomPanel from './CollapsibleBottomPanel'
 import BottomBar from './BottomBar'
 import { createEmptyBoardMap } from '../game/boardUtils'
-import { BORDER_FLASH_DURATION_MS, PHASES } from '../game/constants'
+import { PHASES } from '../game/constants'
 import { useBoardSize } from '../hooks/useBoardSize'
+import { useBorderFlash } from '../hooks/useBorderFlash'
 import { trackReplayCompleted, trackGameReset } from '../lib/analytics.js'
 import layout from '../styles/GameLayout.module.css'
 import replayStyles from '../styles/ReplayPhase.module.css'
+
+function createGhostStoneMap(pendingMove, currentTurn, boardSize) {
+  if (!pendingMove) return null
+  const map = Array(boardSize)
+    .fill(null)
+    .map(() => Array(boardSize).fill(null))
+  map[pendingMove.y][pendingMove.x] = { sign: currentTurn === 'B' ? 1 : -1 }
+  return map
+}
 
 function trackCompletion(gameManager) {
   const stats = gameManager.getCompletionStats()
@@ -26,7 +36,7 @@ function trackCompletion(gameManager) {
 
 export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
   const [hintState, setHintState] = useState(null)
-  const [borderFlash, setBorderFlash] = useState(null)
+  const [borderFlash, triggerFlash] = useBorderFlash()
   const [selectedDifficultMove, setSelectedDifficultMove] = useState(null)
   const [bottomPanelExpanded, setBottomPanelExpanded] = useState(false)
   const [pendingMove, setPendingMove] = useState(null)
@@ -83,23 +93,13 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
     }
   }, [gameManager, gameManager.replayPosition, isComplete, scheduleOpponentMove])
 
-  const createGhostStoneMap = (pendingMove, currentTurn, boardSize) => {
-    if (!pendingMove) return null
-    const map = Array(boardSize)
-      .fill(null)
-      .map(() => Array(boardSize).fill(null))
-    map[pendingMove.y][pendingMove.x] = { sign: currentTurn === 'B' ? 1 : -1 }
-    return map
-  }
-
   const commitMove = (x, y) => {
     const result = gameManager.validateMove(x, y)
 
     if (result.correct) {
       setHintState(null)
       setPendingMove(null)
-      setBorderFlash('success')
-      setTimeout(() => setBorderFlash(null), BORDER_FLASH_DURATION_MS)
+      triggerFlash('success')
 
       if (result.gameComplete) {
         setBottomPanelExpanded(true)
@@ -109,13 +109,11 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
       }
     } else if (result.expectedPass) {
       setPendingMove(null)
-      setBorderFlash('error')
-      setTimeout(() => setBorderFlash(null), BORDER_FLASH_DURATION_MS)
+      triggerFlash('error')
     } else if (result.needHint) {
       setHintState(result)
       setPendingMove(null)
-      setBorderFlash('error')
-      setTimeout(() => setBorderFlash(null), BORDER_FLASH_DURATION_MS)
+      triggerFlash('error')
     }
   }
 
@@ -138,15 +136,14 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
   }
 
   const handlePass = useCallback(() => {
-    if (isComplete || !gameManager.isUserMove(gameManager.replayPosition)) return
+    if (isComplete || !isUserTurn) return
 
     const result = gameManager.validatePass()
 
     if (result.correct) {
       setHintState(null)
       setPendingMove(null)
-      setBorderFlash('success')
-      setTimeout(() => setBorderFlash(null), BORDER_FLASH_DURATION_MS)
+      triggerFlash('success')
 
       if (result.gameComplete) {
         setBottomPanelExpanded(true)
@@ -157,10 +154,9 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
     } else if (result.needHint) {
       setHintState(result)
       setPendingMove(null)
-      setBorderFlash('error')
-      setTimeout(() => setBorderFlash(null), BORDER_FLASH_DURATION_MS)
+      triggerFlash('error')
     }
-  }, [gameManager, isComplete, scheduleOpponentMove])
+  }, [gameManager, isComplete, isUserTurn, scheduleOpponentMove, triggerFlash])
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -179,35 +175,39 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
     setSelectedDifficultMove(selectedDifficultMove?.moveIndex === move.moveIndex ? null : move)
   }
 
-  const markerMap = createEmptyBoardMap(state.boardSize)
-  const paintMap = createEmptyBoardMap(state.boardSize)
+  const { markerMap, paintMap } = useMemo(() => {
+    const marker = createEmptyBoardMap(state.boardSize)
+    const paint = createEmptyBoardMap(state.boardSize)
 
-  if (selectedDifficultMove) {
-    selectedDifficultMove.wrongAttempts.forEach(({ x, y }) => {
-      markerMap[y][x] = { type: 'cross' }
-    })
+    if (selectedDifficultMove) {
+      selectedDifficultMove.wrongAttempts.forEach(({ x, y }) => {
+        marker[y][x] = { type: 'cross' }
+      })
 
-    const { x, y } = selectedDifficultMove.correctPosition
-    markerMap[y][x] = { type: 'circle' }
-  } else {
-    if (lastMove) {
-      markerMap[lastMove.y][lastMove.x] = { type: 'circle' }
-    }
+      const { x, y } = selectedDifficultMove.correctPosition
+      marker[y][x] = { type: 'circle' }
+    } else {
+      if (lastMove) {
+        marker[lastMove.y][lastMove.x] = { type: 'circle' }
+      }
 
-    if (hintState?.hintType === 'quadrant' && hintState.region) {
-      const { minX, maxX, minY, maxY } = hintState.region
-      for (let y = minY; y <= maxY; y++) {
-        for (let x = minX; x <= maxX; x++) {
-          paintMap[y][x] = 1
+      if (hintState?.hintType === 'quadrant' && hintState.region) {
+        const { minX, maxX, minY, maxY } = hintState.region
+        for (let py = minY; py <= maxY; py++) {
+          for (let px = minX; px <= maxX; px++) {
+            paint[py][px] = 1
+          }
         }
+      }
+
+      if (hintState?.hintType === 'exact' && hintState.position) {
+        const { x, y } = hintState.position
+        marker[y][x] = { type: 'triangle' }
       }
     }
 
-    if (hintState?.hintType === 'exact' && hintState.position) {
-      const { x, y } = hintState.position
-      markerMap[y][x] = { type: 'triangle' }
-    }
-  }
+    return { markerMap: marker, paintMap: paint }
+  }, [state.boardSize, selectedDifficultMove, lastMove, hintState])
 
   const boardContainerClass = [
     layout.boardContainer,

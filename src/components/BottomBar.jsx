@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { ANNOTATION_TOOLS } from '../game/constants'
 import ProgressBar from './ProgressBar'
 import styles from '../styles/BottomBar.module.css'
 
-export default function BottomBar({
+export default memo(function BottomBar({
   canGoPrev,
   canGoNext,
   onPrev,
@@ -79,4 +79,4 @@ export default function BottomBar({
       </div>
     </div>
   )
-}
+})
