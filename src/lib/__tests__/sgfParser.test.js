@@ -13,10 +13,10 @@ describe('parseSGFToMoves', () => {
     const moves = parseSGFToMoves(sgf)
 
     expect(moves).toHaveLength(4)
-    expect(moves[0]).toEqual({ x: 15, y: 3, color: 'B', moveNumber: 1 })
-    expect(moves[1]).toEqual({ x: 3, y: 3, color: 'W', moveNumber: 2 })
-    expect(moves[2]).toEqual({ x: 15, y: 16, color: 'B', moveNumber: 3 })
-    expect(moves[3]).toEqual({ x: 3, y: 15, color: 'W', moveNumber: 4 })
+    expect(moves[0]).toEqual({ x: 15, y: 3, color: 'B', moveNumber: 1, isPass: false })
+    expect(moves[1]).toEqual({ x: 3, y: 3, color: 'W', moveNumber: 2, isPass: false })
+    expect(moves[2]).toEqual({ x: 15, y: 16, color: 'B', moveNumber: 3, isPass: false })
+    expect(moves[3]).toEqual({ x: 3, y: 15, color: 'W', moveNumber: 4, isPass: false })
   })
 
   it('parses game starting with white move', () => {
@@ -24,8 +24,8 @@ describe('parseSGFToMoves', () => {
     const moves = parseSGFToMoves(sgf)
 
     expect(moves).toHaveLength(2)
-    expect(moves[0]).toEqual({ x: 3, y: 3, color: 'W', moveNumber: 1 })
-    expect(moves[1]).toEqual({ x: 15, y: 3, color: 'B', moveNumber: 2 })
+    expect(moves[0]).toEqual({ x: 3, y: 3, color: 'W', moveNumber: 1, isPass: false })
+    expect(moves[1]).toEqual({ x: 15, y: 3, color: 'B', moveNumber: 2, isPass: false })
   })
 
   it('returns empty array for game with no moves', () => {
@@ -35,37 +35,29 @@ describe('parseSGFToMoves', () => {
     expect(moves).toEqual([])
   })
 
-  it('skips pass moves (empty coordinate)', () => {
-    const sgf = '(;FF[4]GM[1]SZ[19];B[pd];W[];B[dd])'
+  it('includes isPass property on regular moves', () => {
+    const sgf = '(;FF[4]GM[1]SZ[19];B[pd];W[dd])'
     const moves = parseSGFToMoves(sgf)
 
     expect(moves).toHaveLength(2)
-    expect(moves[0].color).toBe('B')
-    expect(moves[1].color).toBe('B')
-    expect(moves[1].moveNumber).toBe(2)
-  })
-
-  it('skips pass moves (tt coordinate)', () => {
-    const sgf = '(;FF[4]GM[1]SZ[19];B[pd];W[tt];B[dd])'
-    const moves = parseSGFToMoves(sgf)
-
-    expect(moves).toHaveLength(2)
+    expect(moves[0].isPass).toBe(false)
+    expect(moves[1].isPass).toBe(false)
   })
 
   it('parses coordinates at board edges', () => {
     const sgf = '(;FF[4]GM[1]SZ[19];B[aa];W[ss])'
     const moves = parseSGFToMoves(sgf)
 
-    expect(moves[0]).toEqual({ x: 0, y: 0, color: 'B', moveNumber: 1 })
-    expect(moves[1]).toEqual({ x: 18, y: 18, color: 'W', moveNumber: 2 })
+    expect(moves[0]).toEqual({ x: 0, y: 0, color: 'B', moveNumber: 1, isPass: false })
+    expect(moves[1]).toEqual({ x: 18, y: 18, color: 'W', moveNumber: 2, isPass: false })
   })
 
   it('parses 9x9 board coordinates', () => {
     const sgf = '(;FF[4]GM[1]SZ[9];B[ee];W[cc])'
     const moves = parseSGFToMoves(sgf)
 
-    expect(moves[0]).toEqual({ x: 4, y: 4, color: 'B', moveNumber: 1 })
-    expect(moves[1]).toEqual({ x: 2, y: 2, color: 'W', moveNumber: 2 })
+    expect(moves[0]).toEqual({ x: 4, y: 4, color: 'B', moveNumber: 1, isPass: false })
+    expect(moves[1]).toEqual({ x: 2, y: 2, color: 'W', moveNumber: 2, isPass: false })
   })
 
   it('returns empty array for text without moves', () => {
@@ -86,7 +78,7 @@ describe('parseSGFToMoves', () => {
     const moves = parseSGFToMoves(sgf)
 
     expect(moves).toHaveLength(3)
-    expect(moves[1]).toEqual({ x: 3, y: 3, color: 'W', moveNumber: 2 })
+    expect(moves[1]).toEqual({ x: 3, y: 3, color: 'W', moveNumber: 2, isPass: false })
   })
 
   it('handles SGF with metadata in root node', () => {
@@ -303,5 +295,33 @@ describe('parseSGF', () => {
     const result = parseSGF('not valid')
     expect(result.moves).toEqual([])
     expect(result.boardSize).toBe(19)
+  })
+})
+
+describe('pass moves', () => {
+  it('parses pass move with empty coordinate', () => {
+    const sgf = '(;GM[1]SZ[19];B[pd];W[];B[dp])'
+    const result = parseSGF(sgf)
+
+    expect(result.moves).toHaveLength(3)
+    expect(result.moves[0]).toEqual({ x: 15, y: 3, color: 'B', moveNumber: 1, isPass: false })
+    expect(result.moves[1]).toEqual({ color: 'W', moveNumber: 2, isPass: true })
+    expect(result.moves[2]).toEqual({ x: 3, y: 15, color: 'B', moveNumber: 3, isPass: false })
+  })
+
+  it('parses pass move with tt coordinate', () => {
+    const sgf = '(;GM[1]SZ[19];B[pd];W[tt];B[dp])'
+    const result = parseSGF(sgf)
+
+    expect(result.moves).toHaveLength(3)
+    expect(result.moves[1]).toEqual({ color: 'W', moveNumber: 2, isPass: true })
+  })
+
+  it('parseSGFToMoves includes pass moves', () => {
+    const sgf = '(;GM[1]SZ[19];B[pd];W[];B[dp])'
+    const moves = parseSGFToMoves(sgf)
+
+    expect(moves).toHaveLength(3)
+    expect(moves[1].isPass).toBe(true)
   })
 })
