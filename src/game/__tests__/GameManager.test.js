@@ -629,3 +629,88 @@ describe('Single-Side Replay', () => {
     })
   })
 })
+
+describe('Handicap Game Stats Integrity', () => {
+  const handicapSetupStones = [
+    { x: 3, y: 3, color: 'B' },
+    { x: 15, y: 3, color: 'B' },
+    { x: 3, y: 15, color: 'B' },
+    { x: 15, y: 15, color: 'B' }
+  ]
+
+  const handicapMoves = [
+    { x: 16, y: 2, color: 'W' },
+    { x: 2, y: 16, color: 'B' },
+    { x: 16, y: 16, color: 'W' }
+  ]
+
+  it('totalMoves reflects game moves, not setup stones', () => {
+    const manager = new GameManager(handicapMoves, 19, handicapSetupStones)
+    const state = manager.getState()
+
+    expect(state.totalMoves).toBe(3)
+  })
+
+  it('setup stones do not affect move count in completion stats', () => {
+    const manager = new GameManager(handicapMoves, 19, handicapSetupStones)
+    manager.startReplay(0, 2)
+
+    manager.validateMove(16, 2)
+    manager.validateMove(2, 16)
+    manager.validateMove(16, 16)
+
+    const stats = manager.getCompletionStats()
+    expect(stats.totalMoves).toBe(3)
+  })
+
+  it('accuracy calculation is based on game moves only', () => {
+    const manager = new GameManager(handicapMoves, 19, handicapSetupStones)
+    manager.startReplay(0, 2)
+
+    manager.validateMove(16, 2)
+    manager.validateMove(2, 16)
+    manager.validateMove(16, 16)
+
+    const stats = manager.getCompletionStats()
+    expect(stats.accuracy).toBe(100)
+    expect(stats.correctFirstTry).toBe(3)
+  })
+
+  it('study navigation works correctly with setup stones', () => {
+    const manager = new GameManager(handicapMoves, 19, handicapSetupStones)
+
+    expect(manager.studyPosition).toBe(0)
+    expect(manager.getCurrentBoard().get([3, 3])).toBe(1)
+
+    manager.studyNext()
+    expect(manager.studyPosition).toBe(1)
+    expect(manager.getCurrentBoard().get([16, 2])).toBe(-1)
+    expect(manager.getCurrentBoard().get([3, 3])).toBe(1)
+  })
+
+  it('range selection indexes into game moves, not setup stones', () => {
+    const manager = new GameManager(handicapMoves, 19, handicapSetupStones)
+    manager.startReplay(1, 2)
+
+    expect(manager.replayStartMove).toBe(1)
+    expect(manager.replayEndMove).toBe(2)
+
+    const firstMoveToReplay = manager.moves[manager.replayPosition]
+    expect(firstMoveToReplay.color).toBe('B')
+    expect(firstMoveToReplay.x).toBe(2)
+  })
+
+  it('wrong move count only tracks game moves', () => {
+    const manager = new GameManager(handicapMoves, 19, handicapSetupStones)
+    manager.startReplay(0, 2)
+
+    manager.validateMove(0, 0)
+    manager.validateMove(16, 2)
+    manager.validateMove(2, 16)
+    manager.validateMove(16, 16)
+
+    const stats = manager.getCompletionStats()
+    expect(stats.wrongMoveCount).toBe(1)
+    expect(stats.correctFirstTry).toBe(2)
+  })
+})
