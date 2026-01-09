@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
-import { parseSGFToMoves, getBoardSize, getGameInfo, getSetupStones } from '../lib/sgfParser.js'
+import { parseSGF } from '../lib/sgfParser.js'
 import { trackGameLoaded, trackNewGameStarted } from '../lib/analytics.js'
 import useGameController from '../game/useGameController'
 import UploadPhase from '../components/UploadPhase.jsx'
@@ -70,28 +70,29 @@ export default function HomePage() {
 
   const handleFileLoaded = (sgfContent, sourceUrl = null) => {
     try {
-      const size = getBoardSize(sgfContent)
-      const parsedMoves = parseSGFToMoves(sgfContent)
+      const {
+        moves: parsedMoves,
+        boardSize,
+        gameInfo: info,
+        setupStones: stones
+      } = parseSGF(sgfContent)
 
       if (parsedMoves.length === 0) {
         setError('No moves found in SGF file')
         return
       }
 
-      const info = getGameInfo(sgfContent)
       if (sourceUrl && !info.sourceUrl) {
         info.sourceUrl = sourceUrl
       }
 
-      const stones = getSetupStones(sgfContent)
-
       setMoves(parsedMoves)
-      setBoardSize(size)
+      setBoardSize(boardSize)
       setGameInfo(info)
       setSetupStones(stones)
       trackGameLoaded({
         source: sourceUrl ? 'ogs' : 'file',
-        boardSize: size,
+        boardSize,
         moveCount: parsedMoves.length,
         handicapStones: stones.length
       })
