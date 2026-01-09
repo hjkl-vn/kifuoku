@@ -10,8 +10,15 @@ export function initAnalytics() {
 
   posthog.init(POSTHOG_KEY, {
     api_host: POSTHOG_HOST,
-    capture_pageview: false,
-    persistence: 'localStorage'
+    autocapture: true,
+    capture_dead_clicks: false,
+    capture_pageview: true,
+    defaults: '2025-05-24',
+    enable_heatmaps: true,
+    rate_limiting: {
+      events_per_second: 10,
+      events_burst_limit: 100
+    }
   })
   analyticsEnabled = true
 }
