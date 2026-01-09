@@ -83,18 +83,6 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
     }
   }, [gameManager, gameManager.replayPosition, isComplete, scheduleOpponentMove])
 
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.code === 'Space' && !isComplete) {
-        event.preventDefault()
-        handlePass()
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [handlePass, isComplete])
-
   const createGhostStoneMap = (pendingMove, currentTurn, boardSize) => {
     if (!pendingMove) return null
     const map = Array(boardSize)
@@ -176,6 +164,18 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
       setTimeout(() => setBorderFlash(null), BORDER_FLASH_DURATION_MS)
     }
   }, [gameManager, isComplete, scheduleOpponentMove])
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.code === 'Space' && !isComplete) {
+        event.preventDefault()
+        handlePass()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [handlePass, isComplete])
 
   const handleSelectDifficultMove = (move) => {
     setPendingMove(null)
