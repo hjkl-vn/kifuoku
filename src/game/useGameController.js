@@ -76,6 +76,12 @@ export default function useGameController(
         return result
       },
 
+      validatePass() {
+        const result = manager.validatePass()
+        forceUpdate()
+        return result
+      },
+
       getCurrentBoard() {
         return manager.getCurrentBoard()
       },
