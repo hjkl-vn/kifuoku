@@ -149,10 +149,6 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
     }
   }
 
-  const handleCancel = () => {
-    setPendingMove(null)
-  }
-
   const handlePass = useCallback(() => {
     if (isComplete || !gameManager.isUserMove(gameManager.replayPosition)) return
 
