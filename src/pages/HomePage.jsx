@@ -92,7 +92,8 @@ export default function HomePage() {
       trackGameLoaded({
         source: sourceUrl ? 'ogs' : 'file',
         boardSize: size,
-        moveCount: parsedMoves.length
+        moveCount: parsedMoves.length,
+        handicapStones: stones.length
       })
       setError(null)
     } catch (err) {
