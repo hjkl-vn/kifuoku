@@ -126,6 +126,8 @@ export function getGameInfo(sgfContent) {
       gameName: data.GN?.[0] || null,
       result: data.RE?.[0] || null,
       rules: data.RU?.[0] || null,
+      handicap: data.HA?.[0] ? parseInt(data.HA[0]) : null,
+      komi: data.KM?.[0] ? parseFloat(data.KM[0]) : null,
       sourceUrl
     }
   } catch (_error) {

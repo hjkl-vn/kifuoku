@@ -178,6 +178,36 @@ describe('getGameInfo', () => {
     const sgf3 = '(;FF[4]GM[1]RE[0])'
     expect(getGameInfo(sgf3).result).toBe('0')
   })
+
+  it('extracts handicap from HA property', () => {
+    const sgf = '(;FF[4]GM[1]SZ[19]HA[9])'
+    const info = getGameInfo(sgf)
+    expect(info.handicap).toBe(9)
+  })
+
+  it('returns null handicap when not present', () => {
+    const sgf = '(;FF[4]GM[1]SZ[19])'
+    const info = getGameInfo(sgf)
+    expect(info.handicap).toBeNull()
+  })
+
+  it('extracts komi from KM property', () => {
+    const sgf = '(;FF[4]GM[1]SZ[19]KM[6.5])'
+    const info = getGameInfo(sgf)
+    expect(info.komi).toBe(6.5)
+  })
+
+  it('extracts zero komi for handicap games', () => {
+    const sgf = '(;FF[4]GM[1]SZ[19]HA[9]KM[0.5])'
+    const info = getGameInfo(sgf)
+    expect(info.komi).toBe(0.5)
+  })
+
+  it('returns null komi when not present', () => {
+    const sgf = '(;FF[4]GM[1]SZ[19])'
+    const info = getGameInfo(sgf)
+    expect(info.komi).toBeNull()
+  })
 })
 
 describe('getSetupStones', () => {
