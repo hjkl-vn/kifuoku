@@ -159,9 +159,6 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
       setPendingMove(null)
       setBorderFlash('error')
       setTimeout(() => setBorderFlash(null), BORDER_FLASH_DURATION_MS)
-    } else if (result.expectedStone) {
-      setBorderFlash('error')
-      setTimeout(() => setBorderFlash(null), BORDER_FLASH_DURATION_MS)
     }
   }, [gameManager, isComplete, scheduleOpponentMove])
 

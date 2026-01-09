@@ -681,8 +681,10 @@ describe('Pass Move Validation', () => {
     expect(result.correct).toBe(false)
     expect(result.needHint).toBe(true)
     expect(result.expectedStone).toBe(true)
-    expect(result.hintType).toBeUndefined()
+    expect(result.hintType).toBe('quadrant')
+    expect(result.region).toBeDefined()
     expect(gm.replayPosition).toBe(0)
+    expect(gm.currentHintRegion).toEqual(result.region)
   })
 
   it('validateMove on stone when expected is pass flashes error without quadrant hint', () => {
@@ -714,6 +716,20 @@ describe('Pass Move Validation', () => {
     gm.validatePass()
 
     expect(gm.stats.wrongMoveCount).toBe(1)
+  })
+
+  it('validateMove after wrong pass attempt provides subdivision hint', () => {
+    const gm = new GameManager(movesWithPass)
+    gm.startReplay()
+
+    gm.validatePass()
+
+    const result = gm.validateMove(10, 10)
+
+    expect(result.correct).toBe(false)
+    expect(result.hintType).toBe('quadrant')
+    expect(result.region).toBeDefined()
+    expect(gm.stats.wrongMoveCount).toBe(2)
   })
 
   it('pass moves are not added to difficult moves', () => {
