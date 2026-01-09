@@ -198,10 +198,14 @@ export default class GameManager {
     }
 
     const move = this.moves[this.replayPosition]
-    const sign = colorToSign(move.color)
-    const newBoard = this.getCurrentBoard().makeMove(sign, [move.x, move.y])
-    this.boardHistory.push(newBoard)
-    this.studyPosition++
+
+    if (!move.isPass) {
+      const sign = colorToSign(move.color)
+      const newBoard = this.getCurrentBoard().makeMove(sign, [move.x, move.y])
+      this.boardHistory.push(newBoard)
+      this.studyPosition++
+    }
+
     this.replayPosition++
 
     if (this.replayPosition > this.replayEndMove) {
@@ -223,6 +227,16 @@ export default class GameManager {
     }
 
     const correctMove = this.moves[this.replayPosition]
+
+    if (correctMove.isPass) {
+      this.wrongAttemptsCurrentMove++
+      this.stats.wrongMoveCount++
+      return {
+        correct: false,
+        expectedPass: true
+      }
+    }
+
     const isCorrect = correctMove.x === x && correctMove.y === y
 
     if (isCorrect) {
@@ -269,6 +283,80 @@ export default class GameManager {
       }
     }
     this.wrongAttemptsByMove[this.replayPosition].wrongAttempts.push({ x, y })
+
+    if (this.wrongAttemptsCurrentMove === 1) {
+      this.stats.quadrantHintsUsed++
+      this.currentHintRegion = getQuadrantBounds(correctMove, this.boardSize)
+      return {
+        correct: false,
+        needHint: true,
+        hintType: HINT_TYPES.QUADRANT,
+        region: this.currentHintRegion
+      }
+    }
+
+    if (isRegionSmallEnough(this.currentHintRegion)) {
+      this.stats.exactHintsUsed++
+      return {
+        correct: false,
+        needHint: true,
+        hintType: HINT_TYPES.EXACT,
+        position: { x: correctMove.x, y: correctMove.y }
+      }
+    }
+
+    this.stats.subdivisionHintsUsed++
+    this.currentHintRegion = getSubQuadrant(this.currentHintRegion, correctMove)
+    return {
+      correct: false,
+      needHint: true,
+      hintType: HINT_TYPES.QUADRANT,
+      region: this.currentHintRegion
+    }
+  }
+
+  validatePass() {
+    if (this.phase !== PHASES.REPLAY) {
+      return { error: 'Not in replay phase' }
+    }
+
+    if (this.replayPosition > this.replayEndMove) {
+      return { error: 'All moves completed' }
+    }
+
+    const correctMove = this.moves[this.replayPosition]
+    const isCorrect = correctMove.isPass === true
+
+    if (isCorrect) {
+      if (this.wrongAttemptsCurrentMove === 0) {
+        this.stats.correctFirstTry++
+      }
+
+      const moveTime = this.stats.startTime ? Date.now() - this.stats.startTime : 0
+      this.stats.moveTimes.push(moveTime)
+
+      this.replayPosition++
+      this.wrongAttemptsCurrentMove = 0
+      this.currentHintRegion = null
+
+      if (this.replayPosition > this.replayEndMove) {
+        this.phase = PHASES.COMPLETE
+        this.stats.endTime = Date.now()
+        return {
+          correct: true,
+          gameComplete: true
+        }
+      }
+
+      return {
+        correct: true,
+        needHint: false,
+        currentMove: this.replayPosition
+      }
+    }
+
+    this.wrongAttemptsCurrentMove++
+    this.stats.wrongMoveCount++
 
     if (this.wrongAttemptsCurrentMove === 1) {
       this.stats.quadrantHintsUsed++
