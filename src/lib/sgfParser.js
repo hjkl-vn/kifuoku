@@ -59,6 +59,41 @@ function parseSGFCoordinate(coord) {
   return [x, y]
 }
 
+export function getSetupStones(sgfContent) {
+  try {
+    const gameTree = parse(sgfContent)
+
+    if (!gameTree || gameTree.length === 0) {
+      return []
+    }
+
+    const rootNode = gameTree[0]
+    const stones = []
+
+    if (rootNode.data.AB) {
+      rootNode.data.AB.forEach((coord) => {
+        const [x, y] = parseSGFCoordinate(coord)
+        if (x !== null && y !== null) {
+          stones.push({ x, y, color: 'B' })
+        }
+      })
+    }
+
+    if (rootNode.data.AW) {
+      rootNode.data.AW.forEach((coord) => {
+        const [x, y] = parseSGFCoordinate(coord)
+        if (x !== null && y !== null) {
+          stones.push({ x, y, color: 'W' })
+        }
+      })
+    }
+
+    return stones
+  } catch (_error) {
+    return []
+  }
+}
+
 export function getBoardSize(sgfContent) {
   try {
     const gameTree = parse(sgfContent)

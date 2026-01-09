@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { parseSGFToMoves, getBoardSize, getGameInfo } from '../sgfParser.js'
+import { parseSGFToMoves, getBoardSize, getGameInfo, getSetupStones } from '../sgfParser.js'
 
 describe('parseSGFToMoves', () => {
   it('parses simple game with black and white moves', () => {
@@ -177,5 +177,60 @@ describe('getGameInfo', () => {
 
     const sgf3 = '(;FF[4]GM[1]RE[0])'
     expect(getGameInfo(sgf3).result).toBe('0')
+  })
+})
+
+describe('getSetupStones', () => {
+  it('returns empty array for game without setup stones', () => {
+    const sgf = '(;FF[4]GM[1]SZ[19];B[pd];W[dd])'
+    const stones = getSetupStones(sgf)
+    expect(stones).toEqual([])
+  })
+
+  it('parses AB (Add Black) stones', () => {
+    const sgf = '(;FF[4]GM[1]SZ[19]AB[dd][pd][dp][pp];W[qf])'
+    const stones = getSetupStones(sgf)
+
+    expect(stones).toHaveLength(4)
+    expect(stones).toContainEqual({ x: 3, y: 3, color: 'B' })
+    expect(stones).toContainEqual({ x: 15, y: 3, color: 'B' })
+    expect(stones).toContainEqual({ x: 3, y: 15, color: 'B' })
+    expect(stones).toContainEqual({ x: 15, y: 15, color: 'B' })
+  })
+
+  it('parses AW (Add White) stones', () => {
+    const sgf = '(;FF[4]GM[1]SZ[19]AW[dd][pd];B[dp])'
+    const stones = getSetupStones(sgf)
+
+    expect(stones).toHaveLength(2)
+    expect(stones).toContainEqual({ x: 3, y: 3, color: 'W' })
+    expect(stones).toContainEqual({ x: 15, y: 3, color: 'W' })
+  })
+
+  it('parses both AB and AW stones', () => {
+    const sgf = '(;FF[4]GM[1]SZ[19]AB[dd][pd]AW[dp][pp];B[qf])'
+    const stones = getSetupStones(sgf)
+
+    expect(stones).toHaveLength(4)
+    expect(stones.filter((s) => s.color === 'B')).toHaveLength(2)
+    expect(stones.filter((s) => s.color === 'W')).toHaveLength(2)
+  })
+
+  it('parses 9-stone handicap correctly', () => {
+    const sgf = '(;FF[4]GM[1]SZ[19]HA[9]AB[jd][jp][dj][pj][jj][dd][pp][pd][dp];W[qq])'
+    const stones = getSetupStones(sgf)
+
+    expect(stones).toHaveLength(9)
+    expect(stones.every((s) => s.color === 'B')).toBe(true)
+  })
+
+  it('returns empty array for invalid SGF', () => {
+    const stones = getSetupStones('invalid')
+    expect(stones).toEqual([])
+  })
+
+  it('returns empty array for empty string', () => {
+    const stones = getSetupStones('')
+    expect(stones).toEqual([])
   })
 })
