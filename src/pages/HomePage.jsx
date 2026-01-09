@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
-import { parseSGFToMoves, getBoardSize, getGameInfo } from '../lib/sgfParser.js'
+import { parseSGFToMoves, getBoardSize, getGameInfo, getSetupStones } from '../lib/sgfParser.js'
 import { trackGameLoaded, trackNewGameStarted } from '../lib/analytics.js'
 import useGameController from '../game/useGameController'
 import UploadPhase from '../components/UploadPhase.jsx'
@@ -9,7 +9,7 @@ import styles from '../styles/HomePage.module.css'
 
 const STONE_SOUNDS = [0, 1, 2, 3, 4].map((i) => `/sounds/stone${i}.mp3`)
 
-function GameWrapper({ moves, boardSize, gameInfo, onGoHome }) {
+function GameWrapper({ moves, boardSize, setupStones, gameInfo, onGoHome }) {
   const audioRefs = useRef([])
   const lastIndexRef = useRef(-1)
 
@@ -45,7 +45,9 @@ function GameWrapper({ moves, boardSize, gameInfo, onGoHome }) {
     sounds[index].play().catch(() => {})
   }, [])
 
-  const gameManager = useGameController(moves, boardSize, { onStonePlace: playStoneSound })
+  const gameManager = useGameController(moves, boardSize, setupStones, {
+    onStonePlace: playStoneSound
+  })
   const state = gameManager.getState()
 
   if (state.phase === 'study') {
@@ -63,6 +65,7 @@ export default function HomePage() {
   const [moves, setMoves] = useState(null)
   const [boardSize, setBoardSize] = useState(null)
   const [gameInfo, setGameInfo] = useState(null)
+  const [setupStones, setSetupStones] = useState(null)
   const [error, setError] = useState(null)
 
   const handleFileLoaded = (sgfContent, sourceUrl = null) => {
@@ -80,9 +83,12 @@ export default function HomePage() {
         info.sourceUrl = sourceUrl
       }
 
+      const stones = getSetupStones(sgfContent)
+
       setMoves(parsedMoves)
       setBoardSize(size)
       setGameInfo(info)
+      setSetupStones(stones)
       trackGameLoaded({
         source: sourceUrl ? 'ogs' : 'file',
         boardSize: size,
@@ -111,6 +117,7 @@ export default function HomePage() {
     setMoves(null)
     setBoardSize(null)
     setGameInfo(null)
+    setSetupStones(null)
   }
 
   if (!moves) {
@@ -118,6 +125,12 @@ export default function HomePage() {
   }
 
   return (
-    <GameWrapper moves={moves} boardSize={boardSize} gameInfo={gameInfo} onGoHome={handleGoHome} />
+    <GameWrapper
+      moves={moves}
+      boardSize={boardSize}
+      setupStones={setupStones}
+      gameInfo={gameInfo}
+      onGoHome={handleGoHome}
+    />
   )
 }
