@@ -1,8 +1,13 @@
 import { useState, useMemo, useReducer } from 'react'
 import GameManager from './gameManager'
 
-export default function useGameController(sgfMoves, boardSize, { onStonePlace } = {}) {
-  const [manager] = useState(() => new GameManager(sgfMoves, boardSize))
+export default function useGameController(
+  sgfMoves,
+  boardSize,
+  setupStones = [],
+  { onStonePlace } = {}
+) {
+  const [manager] = useState(() => new GameManager(sgfMoves, boardSize, setupStones))
   const [, forceUpdate] = useReducer((x) => x + 1, 0)
 
   const wrappedManager = useMemo(
