@@ -50,6 +50,15 @@ docker compose --profile prod up    # Port 9090
 **Progressive Hint System (Replay Phase):**
 - Wrong attempts trigger progressively smaller region highlights (quadrant → sub-quadrant → smaller)
 - When region is small enough (≤3x3), shows exact position marker
+- `currentHintRegion` tracks hint state across both `validateMove()` and `validatePass()`
+
+**Pass Move Handling:**
+- Pass moves (`move.isPass = true`) keep the same board state in history
+- Both `validatePass()` and `validateMove()` set `currentHintRegion` on wrong attempts
+
+**Board Utils (`src/game/boardUtils.js`):**
+- `getQuadrantBounds()`, `getSubQuadrant()`, `isRegionSmallEnough()` - hint region calculations
+- `colorToSign()` - converts 'B'/'W' to 1/-1 for @sabaki/go-board
 
 **SGF Parsing (`src/lib/sgfParser.js`):**
 - `parseSGF()` - Single parse returning `{ moves, boardSize, gameInfo, setupStones }` (preferred)
@@ -71,3 +80,6 @@ docker compose --profile prod up    # Port 9090
 - PostHog integration with 6 events: `game_loaded`, `replay_started`, `replay_completed`, `game_reset`, `new_game_started`, `annotation_used`
 - Requires `VITE_POSTHOG_KEY` env var; gracefully disabled when not set
 - Event properties use snake_case (PostHog convention)
+
+**Test Data:**
+- SGF test files in `public/test-files/` for manual testing scenarios
