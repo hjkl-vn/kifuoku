@@ -24,7 +24,9 @@ export default function RightPanel({
   onSelectDifficultMove,
   selectedMoveIndex,
   onRestart,
-  onGoHome
+  onGoHome,
+  onPass,
+  isUserTurn
 }) {
   return (
     <aside className={styles.panel}>
@@ -72,6 +74,11 @@ export default function RightPanel({
               Playing as {replaySide === 'B' ? 'Black' : 'White'}
             </div>
           )}
+          <div className={styles.section}>
+            <button className={styles.passButton} onClick={onPass} disabled={!isUserTurn}>
+              Pass
+            </button>
+          </div>
           <div className={styles.statsBox}>
             <div className={styles.statRow}>
               <span>Correct (1st try)</span>
