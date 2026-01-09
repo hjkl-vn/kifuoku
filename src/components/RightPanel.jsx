@@ -104,7 +104,7 @@ export default function RightPanel({
 
           {difficultMoves && difficultMoves.length > 0 && (
             <div className={styles.section}>
-              <h3 className={styles.sectionTitle}>Difficult Moves</h3>
+              <h3 className={styles.sectionTitle}>Mistakes</h3>
               <ul className={styles.difficultList}>
                 {difficultMoves.map((move) => (
                   <li key={move.moveIndex}>
