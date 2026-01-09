@@ -361,10 +361,14 @@ export default class GameManager {
 
     this.wrongAttemptsCurrentMove++
     this.stats.wrongMoveCount++
+    this.stats.quadrantHintsUsed++
+    this.currentHintRegion = getQuadrantBounds(correctMove, this.boardSize)
 
     return {
       correct: false,
       needHint: true,
+      hintType: HINT_TYPES.QUADRANT,
+      region: this.currentHintRegion,
       expectedStone: true
     }
   }
