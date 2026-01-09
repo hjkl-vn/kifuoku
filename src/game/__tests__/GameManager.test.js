@@ -50,6 +50,45 @@ describe('GameManager', () => {
       expect(manager.moves).toHaveLength(2)
       expect(manager.moves).not.toBe(originalMoves)
     })
+
+    it('accepts setupStones and pre-populates initial board', () => {
+      const setupStones = [
+        { x: 3, y: 3, color: 'B' },
+        { x: 15, y: 3, color: 'B' },
+        { x: 3, y: 15, color: 'B' },
+        { x: 15, y: 15, color: 'B' }
+      ]
+      const manager = new GameManager(mockMoves, 19, setupStones)
+      const initialBoard = manager.getCurrentBoard()
+
+      expect(initialBoard.get([3, 3])).toBe(1)
+      expect(initialBoard.get([15, 3])).toBe(1)
+      expect(initialBoard.get([3, 15])).toBe(1)
+      expect(initialBoard.get([15, 15])).toBe(1)
+    })
+
+    it('initial board is not empty when setupStones provided', () => {
+      const setupStones = [{ x: 9, y: 9, color: 'B' }]
+      const manager = new GameManager(mockMoves, 19, setupStones)
+      const initialBoard = manager.getCurrentBoard()
+
+      expect(initialBoard.isEmpty()).toBe(false)
+    })
+
+    it('works with empty setupStones array', () => {
+      const manager = new GameManager(mockMoves, 19, [])
+      const initialBoard = manager.getCurrentBoard()
+
+      expect(initialBoard.isEmpty()).toBe(true)
+    })
+
+    it('handles white setup stones', () => {
+      const setupStones = [{ x: 3, y: 3, color: 'W' }]
+      const manager = new GameManager(mockMoves, 19, setupStones)
+      const initialBoard = manager.getCurrentBoard()
+
+      expect(initialBoard.get([3, 3])).toBe(-1)
+    })
   })
 
   describe('Study Phase', () => {
