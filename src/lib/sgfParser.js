@@ -27,19 +27,23 @@ function extractMoves(rootNode) {
     const blackMove = node.data.B
     const whiteMove = node.data.W
 
-    if (blackMove) {
+    if (blackMove !== undefined) {
       const [x, y] = parseSGFCoordinate(blackMove[0])
+      moveNumber++
       if (x !== null && y !== null) {
-        moveNumber++
-        moves.push({ x, y, color: 'B', moveNumber })
+        moves.push({ x, y, color: 'B', moveNumber, isPass: false })
+      } else {
+        moves.push({ color: 'B', moveNumber, isPass: true })
       }
     }
 
-    if (whiteMove) {
+    if (whiteMove !== undefined) {
       const [x, y] = parseSGFCoordinate(whiteMove[0])
+      moveNumber++
       if (x !== null && y !== null) {
-        moveNumber++
-        moves.push({ x, y, color: 'W', moveNumber })
+        moves.push({ x, y, color: 'W', moveNumber, isPass: false })
+      } else {
+        moves.push({ color: 'W', moveNumber, isPass: true })
       }
     }
 
