@@ -3,7 +3,7 @@ import { DEFAULT_BOARD_SIZE, PHASES, HINT_TYPES } from './constants'
 import { getQuadrantBounds, getSubQuadrant, isRegionSmallEnough, colorToSign } from './boardUtils'
 
 export default class GameManager {
-  constructor(moves, boardSize = DEFAULT_BOARD_SIZE) {
+  constructor(moves, boardSize = DEFAULT_BOARD_SIZE, setupStones = []) {
     if (!Array.isArray(moves)) {
       throw new Error('moves must be an array')
     }
@@ -12,7 +12,14 @@ export default class GameManager {
     this.phase = PHASES.STUDY
     this.studyPosition = 0
     this.replayPosition = 0
-    this.boardHistory = [Board.fromDimensions(boardSize, boardSize)]
+
+    let initialBoard = Board.fromDimensions(boardSize, boardSize)
+    for (const stone of setupStones) {
+      const sign = colorToSign(stone.color)
+      initialBoard = initialBoard.set([stone.x, stone.y], sign)
+    }
+    this.boardHistory = [initialBoard]
+
     this.wrongAttemptsCurrentMove = 0
     this.currentHintRegion = null
     this.replayStartMove = 0
