@@ -15,11 +15,12 @@ export default function BottomBar({
   onSelectTool,
   pendingMove,
   onConfirm,
-  onCancel
+  onPass,
+  isUserTurn
 }) {
   const hasNavButtons = onPrev && onNext
   const hasAnnotationTools = onSelectTool !== undefined
-  const hasConfirmCancel = pendingMove && onConfirm && onCancel
+  const hasReplayControls = onPass !== undefined
 
   return (
     <div className={styles.container}>
@@ -27,7 +28,7 @@ export default function BottomBar({
         <ProgressBar current={current} total={total} replaySide={replaySide} />
       </div>
       <div className={styles.controls}>
-        {hasAnnotationTools && !hasConfirmCancel && (
+        {hasAnnotationTools && !hasReplayControls && (
           <div className={styles.tools}>
             {ANNOTATION_TOOLS.map((tool) => (
               <button
@@ -44,12 +45,22 @@ export default function BottomBar({
             ))}
           </div>
         )}
-        {hasConfirmCancel ? (
+        {hasReplayControls ? (
           <div className={styles.buttons}>
-            <button type="button" className={styles.cancelButton} onClick={onCancel}>
-              Cancel
+            <button
+              type="button"
+              className={styles.passButton}
+              onClick={onPass}
+              disabled={!isUserTurn}
+            >
+              Pass
             </button>
-            <button type="button" className={styles.confirmButton} onClick={onConfirm}>
+            <button
+              type="button"
+              className={styles.confirmButton}
+              onClick={onConfirm}
+              disabled={!pendingMove}
+            >
               Confirm
             </button>
           </div>
