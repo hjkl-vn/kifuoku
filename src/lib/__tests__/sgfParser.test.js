@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest'
-import { parseSGFToMoves, getBoardSize, getGameInfo, getSetupStones } from '../sgfParser.js'
+import {
+  parseSGF,
+  parseSGFToMoves,
+  getBoardSize,
+  getGameInfo,
+  getSetupStones
+} from '../sgfParser.js'
 
 describe('parseSGFToMoves', () => {
   it('parses simple game with black and white moves', () => {
@@ -262,5 +268,40 @@ describe('getSetupStones', () => {
   it('returns empty array for empty string', () => {
     const stones = getSetupStones('')
     expect(stones).toEqual([])
+  })
+})
+
+describe('parseSGF', () => {
+  it('parses all data in single call', () => {
+    const sgf = '(;FF[4]GM[1]SZ[19]PB[Black]PW[White]KM[6.5];B[pd];W[dd])'
+    const result = parseSGF(sgf)
+
+    expect(result.moves).toHaveLength(2)
+    expect(result.boardSize).toBe(19)
+    expect(result.gameInfo.blackPlayer).toBe('Black')
+    expect(result.gameInfo.komi).toBe(6.5)
+    expect(result.setupStones).toEqual([])
+  })
+
+  it('parses handicap game with setup stones', () => {
+    const sgf = '(;FF[4]GM[1]SZ[19]HA[4]KM[0.5]AB[dd][pd][dp][pp];W[qf])'
+    const result = parseSGF(sgf)
+
+    expect(result.moves).toHaveLength(1)
+    expect(result.moves[0].color).toBe('W')
+    expect(result.boardSize).toBe(19)
+    expect(result.gameInfo.handicap).toBe(4)
+    expect(result.gameInfo.komi).toBe(0.5)
+    expect(result.setupStones).toHaveLength(4)
+  })
+
+  it('throws error for empty SGF', () => {
+    expect(() => parseSGF('')).toThrow('Invalid SGF')
+  })
+
+  it('returns empty moves for invalid SGF text', () => {
+    const result = parseSGF('not valid')
+    expect(result.moves).toEqual([])
+    expect(result.boardSize).toBe(19)
   })
 })
