@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { memo } from 'react'
 import ProgressBar from './ProgressBar'
 import RangeSlider from './RangeSlider'
 import styles from '../styles/RightPanel.module.css'
 import buttons from '../styles/Buttons.module.css'
 
-export default function RightPanel({
+export default memo(function RightPanel({
   phase,
   current,
   total,
@@ -152,4 +152,4 @@ export default function RightPanel({
       )}
     </aside>
   )
-}
+})

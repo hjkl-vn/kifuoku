@@ -69,6 +69,10 @@ docker compose --profile prod up    # Port 9090
 - `@sabaki/shudan` - React Goban component for rendering
 - `@sabaki/sgf` - SGF file parsing
 
+**Custom Hooks (`src/hooks/`):**
+- `useBoardSize` - Responsive board sizing based on container dimensions
+- `useBorderFlash` - Timed visual feedback with automatic cleanup
+
 **CSS Modules (all in `src/styles/`):**
 - Dynamic classes use array join pattern: `[styles.a, condition ? styles.b : ''].filter(Boolean).join(' ')`
 
