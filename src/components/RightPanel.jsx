@@ -75,7 +75,12 @@ export default function RightPanel({
             </div>
           )}
           <div className={styles.section}>
-            <button className={styles.passButton} onClick={onPass} disabled={!isUserTurn}>
+            <button
+              type="button"
+              className={styles.passButton}
+              onClick={onPass}
+              disabled={!isUserTurn}
+            >
               Pass
             </button>
           </div>
