@@ -10,9 +10,13 @@
   padding: 12px 16px;
   background-color: #f5f5f5;
   border: none;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 2px solid #2196f3;
   cursor: pointer;
   font-size: 14px;
+}
+
+.headerBar[aria-expanded='true'] {
+  border-bottom: 1px solid #ddd;
 }
 
 .headerBar:hover {
@@ -20,8 +24,16 @@
 }
 
 .arrow {
-  margin-right: 8px;
-  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+  font-size: 0.7rem;
+  background-color: #2196f3;
+  color: white;
+  border-radius: 50%;
 }
 
 .summary {
