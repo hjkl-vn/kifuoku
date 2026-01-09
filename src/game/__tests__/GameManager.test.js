@@ -630,6 +630,107 @@ describe('Single-Side Replay', () => {
   })
 })
 
+describe('Pass Move Validation', () => {
+  const movesWithPass = [
+    { x: 3, y: 3, color: 'B', isPass: false },
+    { color: 'W', isPass: true },
+    { x: 15, y: 15, color: 'B', isPass: false }
+  ]
+
+  it('validatePass returns correct when expected move is pass', () => {
+    const gm = new GameManager(movesWithPass)
+    gm.startReplay()
+    gm.validateMove(3, 3)
+
+    const result = gm.validatePass()
+
+    expect(result.correct).toBe(true)
+    expect(gm.replayPosition).toBe(2)
+  })
+
+  it('validatePass returns wrong when expected move is stone placement', () => {
+    const gm = new GameManager(movesWithPass)
+    gm.startReplay()
+
+    const result = gm.validatePass()
+
+    expect(result.correct).toBe(false)
+    expect(result.needHint).toBe(true)
+    expect(gm.replayPosition).toBe(0)
+  })
+
+  it('validateMove on stone when expected is pass flashes error without quadrant hint', () => {
+    const gm = new GameManager(movesWithPass)
+    gm.startReplay()
+    gm.validateMove(3, 3)
+
+    const result = gm.validateMove(10, 10)
+
+    expect(result.correct).toBe(false)
+    expect(result.expectedPass).toBe(true)
+    expect(result.hintType).toBeUndefined()
+  })
+
+  it('pass moves count toward stats', () => {
+    const gm = new GameManager(movesWithPass)
+    gm.startReplay()
+    gm.validateMove(3, 3)
+    gm.validatePass()
+    gm.validateMove(15, 15)
+
+    expect(gm.stats.correctFirstTry).toBe(3)
+  })
+
+  it('wrong pass attempt increments wrongMoveCount', () => {
+    const gm = new GameManager(movesWithPass)
+    gm.startReplay()
+
+    gm.validatePass()
+
+    expect(gm.stats.wrongMoveCount).toBe(1)
+  })
+
+  it('pass moves are not added to difficult moves', () => {
+    const gm = new GameManager(movesWithPass)
+    gm.startReplay()
+    gm.validateMove(3, 3)
+    gm.validateMove(10, 10)
+    gm.validatePass()
+    gm.validateMove(15, 15)
+
+    const difficult = gm.getDifficultMoves()
+    expect(difficult).toHaveLength(0)
+  })
+
+  it('playOpponentMove handles opponent pass', () => {
+    const gm = new GameManager(movesWithPass)
+    gm.startReplay(0, 2, 'B')
+    gm.validateMove(3, 3)
+
+    const result = gm.playOpponentMove()
+
+    expect(result.success).toBe(true)
+    expect(result.move.isPass).toBe(true)
+    expect(gm.replayPosition).toBe(2)
+  })
+
+  it('game completes when final move is pass', () => {
+    const movesEndingInPass = [
+      { x: 3, y: 3, color: 'B', isPass: false },
+      { color: 'W', isPass: true }
+    ]
+    const gm = new GameManager(movesEndingInPass)
+    gm.startReplay()
+    gm.validateMove(3, 3)
+
+    const result = gm.validatePass()
+
+    expect(result.correct).toBe(true)
+    expect(result.gameComplete).toBe(true)
+    expect(gm.phase).toBe('complete')
+  })
+})
+
 describe('Handicap Game Stats Integrity', () => {
   const handicapSetupStones = [
     { x: 3, y: 3, color: 'B' },
