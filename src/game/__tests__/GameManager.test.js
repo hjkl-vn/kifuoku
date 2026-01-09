@@ -155,6 +155,30 @@ describe('GameManager', () => {
 
       expect(manager.boardHistory).toHaveLength(3)
     })
+
+    it('studyNext handles pass moves without crashing', () => {
+      const movesWithPass = [
+        { x: 3, y: 3, color: 'B', isPass: false },
+        { color: 'W', isPass: true },
+        { x: 15, y: 15, color: 'B', isPass: false }
+      ]
+      const manager = new GameManager(movesWithPass)
+
+      const result1 = manager.studyNext()
+      expect(result1.success).toBe(true)
+      expect(manager.studyPosition).toBe(1)
+      expect(manager.getCurrentBoard().get([3, 3])).toBe(1)
+
+      const result2 = manager.studyNext()
+      expect(result2.success).toBe(true)
+      expect(result2.move.isPass).toBe(true)
+      expect(manager.studyPosition).toBe(2)
+
+      const result3 = manager.studyNext()
+      expect(result3.success).toBe(true)
+      expect(manager.studyPosition).toBe(3)
+      expect(manager.getCurrentBoard().get([15, 15])).toBe(1)
+    })
   })
 
   describe('Phase Transitions', () => {
@@ -656,6 +680,8 @@ describe('Pass Move Validation', () => {
 
     expect(result.correct).toBe(false)
     expect(result.needHint).toBe(true)
+    expect(result.expectedStone).toBe(true)
+    expect(result.hintType).toBeUndefined()
     expect(gm.replayPosition).toBe(0)
   })
 

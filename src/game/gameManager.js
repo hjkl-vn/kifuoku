@@ -103,9 +103,13 @@ export default class GameManager {
 
     if (this.studyPosition === this.boardHistory.length - 1) {
       const move = this.moves[this.studyPosition]
-      const sign = colorToSign(move.color)
-      const newBoard = this.getCurrentBoard().makeMove(sign, [move.x, move.y])
-      this.boardHistory.push(newBoard)
+      if (move.isPass) {
+        this.boardHistory.push(this.getCurrentBoard())
+      } else {
+        const sign = colorToSign(move.color)
+        const newBoard = this.getCurrentBoard().makeMove(sign, [move.x, move.y])
+        this.boardHistory.push(newBoard)
+      }
     }
 
     this.studyPosition++
@@ -358,34 +362,10 @@ export default class GameManager {
     this.wrongAttemptsCurrentMove++
     this.stats.wrongMoveCount++
 
-    if (this.wrongAttemptsCurrentMove === 1) {
-      this.stats.quadrantHintsUsed++
-      this.currentHintRegion = getQuadrantBounds(correctMove, this.boardSize)
-      return {
-        correct: false,
-        needHint: true,
-        hintType: HINT_TYPES.QUADRANT,
-        region: this.currentHintRegion
-      }
-    }
-
-    if (isRegionSmallEnough(this.currentHintRegion)) {
-      this.stats.exactHintsUsed++
-      return {
-        correct: false,
-        needHint: true,
-        hintType: HINT_TYPES.EXACT,
-        position: { x: correctMove.x, y: correctMove.y }
-      }
-    }
-
-    this.stats.subdivisionHintsUsed++
-    this.currentHintRegion = getSubQuadrant(this.currentHintRegion, correctMove)
     return {
       correct: false,
       needHint: true,
-      hintType: HINT_TYPES.QUADRANT,
-      region: this.currentHintRegion
+      expectedStone: true
     }
   }
 
