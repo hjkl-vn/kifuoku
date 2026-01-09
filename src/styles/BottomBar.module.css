@@ -99,26 +99,6 @@
   background-color: #388e3c;
 }
 
-.cancelButton {
-  flex: 1;
-  padding: 14px 20px;
-  font-size: 16px;
-  font-weight: bold;
-  background-color: #9e9e9e;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.cancelButton:hover {
-  background-color: #8e8e8e;
-}
-
-.cancelButton:active {
-  background-color: #757575;
-}
-
 .passButton {
   flex: 1;
   padding: 14px 20px;
