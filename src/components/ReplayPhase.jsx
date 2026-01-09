@@ -34,6 +34,8 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
   const state = gameManager.getState()
   const isComplete = state.phase === PHASES.COMPLETE
 
+  const isUserTurn = !isComplete && gameManager.isUserMove(gameManager.replayPosition)
+
   const board = selectedDifficultMove
     ? gameManager.getBoardAtPosition(selectedDifficultMove.moveIndex)
     : gameManager.getCurrentBoard()
@@ -81,6 +83,18 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
     }
   }, [gameManager, gameManager.replayPosition, isComplete, scheduleOpponentMove])
 
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.code === 'Space' && !isComplete) {
+        event.preventDefault()
+        handlePass()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [handlePass, isComplete])
+
   const createGhostStoneMap = (pendingMove, currentTurn, boardSize) => {
     if (!pendingMove) return null
     const map = Array(boardSize)
@@ -105,6 +119,10 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
       } else if (!gameManager.isUserMove(gameManager.replayPosition)) {
         scheduleOpponentMove()
       }
+    } else if (result.expectedPass) {
+      setPendingMove(null)
+      setBorderFlash('error')
+      setTimeout(() => setBorderFlash(null), BORDER_FLASH_DURATION_MS)
     } else if (result.needHint) {
       setHintState(result)
       setPendingMove(null)
@@ -134,6 +152,34 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
   const handleCancel = () => {
     setPendingMove(null)
   }
+
+  const handlePass = useCallback(() => {
+    if (isComplete || !gameManager.isUserMove(gameManager.replayPosition)) return
+
+    const result = gameManager.validatePass()
+
+    if (result.correct) {
+      setHintState(null)
+      setPendingMove(null)
+      setBorderFlash('success')
+      setTimeout(() => setBorderFlash(null), BORDER_FLASH_DURATION_MS)
+
+      if (result.gameComplete) {
+        setBottomPanelExpanded(true)
+        trackCompletion(gameManager)
+      } else if (!gameManager.isUserMove(gameManager.replayPosition)) {
+        scheduleOpponentMove()
+      }
+    } else if (result.needHint) {
+      setHintState(result)
+      setPendingMove(null)
+      setBorderFlash('error')
+      setTimeout(() => setBorderFlash(null), BORDER_FLASH_DURATION_MS)
+    } else if (result.expectedStone) {
+      setBorderFlash('error')
+      setTimeout(() => setBorderFlash(null), BORDER_FLASH_DURATION_MS)
+    }
+  }, [gameManager, isComplete, scheduleOpponentMove])
 
   const handleSelectDifficultMove = (move) => {
     setPendingMove(null)
@@ -211,6 +257,8 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
         setPendingMove(null)
       }}
       onGoHome={() => onGoHome(state.phase)}
+      onPass={handlePass}
+      isUserTurn={isUserTurn}
     />
   )
 
@@ -253,7 +301,8 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
           replaySide={gameManager.getReplaySide()}
           pendingMove={pendingMove}
           onConfirm={handleConfirm}
-          onCancel={handleCancel}
+          onPass={handlePass}
+          isUserTurn={isUserTurn}
         />
       )}
 
