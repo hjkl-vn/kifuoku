@@ -52,10 +52,8 @@ docker compose --profile prod up    # Port 9090
 - When region is small enough (≤3x3), shows exact position marker
 
 **SGF Parsing (`src/lib/sgfParser.js`):**
-- `parseSGFToMoves()` - Extracts move list from SGF
-- `getSetupStones()` - Extracts AB/AW (handicap) stones from root node
-- `getGameInfo()` - Extracts metadata (players, date, result, handicap, komi)
-- `getBoardSize()` - Returns board size (defaults to 19)
+- `parseSGF()` - Single parse returning `{ moves, boardSize, gameInfo, setupStones }` (preferred)
+- Individual functions available for backwards compatibility: `parseSGFToMoves()`, `getBoardSize()`, `getGameInfo()`, `getSetupStones()`
 
 **Key Libraries:**
 - `@sabaki/go-board` - Board state, move validation, capture detection
