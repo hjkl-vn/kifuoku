@@ -120,7 +120,7 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
   }
 
   const handleVertexClick = (evt, [x, y]) => {
-    if (evt.button !== 0 || isComplete) return
+    if (evt.button !== 0 || isComplete || !isUserTurn) return
 
     if (isMobileLayout) {
       if (gameManager.isValidPosition(x, y)) {
