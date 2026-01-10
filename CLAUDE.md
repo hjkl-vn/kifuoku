@@ -6,6 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - DO NOT use inline comments to describe code. Only use comments to explain WHY code exists.
 
+## Prerequisites
+
+- Node.js 18+
+
 ## Commands
 
 ```bash
@@ -63,6 +67,10 @@ docker compose --profile prod up    # Port 9090
 **SGF Parsing (`src/lib/sgfParser.js`):**
 - `parseSGF()` - Single parse returning `{ moves, boardSize, gameInfo, setupStones }` (preferred)
 - Individual functions available for backwards compatibility: `parseSGFToMoves()`, `getBoardSize()`, `getGameInfo()`, `getSetupStones()`
+
+**OGS Integration (`src/lib/ogs.js`):**
+- Fetches SGF from online-go.com game URLs via their public API
+- `extractGameId()`, `isValidOgsUrl()`, `fetchOgsSgf()`
 
 **Key Libraries:**
 - `@sabaki/go-board` - Board state, move validation, capture detection
