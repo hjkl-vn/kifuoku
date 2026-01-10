@@ -10,18 +10,10 @@ export default function Board({
   onVertexClick,
   onVertexMouseEnter,
   onVertexMouseLeave,
-  vertexSize = 34,
-  hasHoverPreview = false
+  vertexSize = 34
 }) {
-  const containerClass = [
-    ghostStoneMap && !hasHoverPreview ? styles.hasPendingMove : '',
-    hasHoverPreview ? styles.hasHoverPreview : ''
-  ]
-    .filter(Boolean)
-    .join(' ')
-
   return (
-    <div className={containerClass}>
+    <div className={ghostStoneMap ? styles.hasPendingMove : ''}>
       <Goban
         animateStonePlacement={true}
         busy={false}

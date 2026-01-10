@@ -171,7 +171,6 @@ export default function StudyPhase({ gameManager, gameInfo }) {
               onVertexClick={handleBoardClick}
               onVertexMouseEnter={handleVertexMouseEnter}
               onVertexMouseLeave={handleVertexMouseLeave}
-              hasHoverPreview={!!hoverVertex && !!selectedTool}
             />
           </div>
         </div>

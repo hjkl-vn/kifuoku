@@ -37,9 +37,3 @@
   background-size: 100% 100%;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .hasHoverPreview :global(.shudan-vertex .shudan-ghost) {
-    opacity: 0.4;
-    animation: none;
-  }
-}
