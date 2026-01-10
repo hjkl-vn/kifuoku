@@ -88,6 +88,11 @@ docker compose --profile prod up    # Port 9090
 - Desktop: Left sidebar (280px) + board area + right panel
 - Mobile: Collapsible header (overlay) + board + fixed bottom bar
 
+**Logging (`src/lib/logger.js`):**
+- `createLogger('ModuleName')` returns `{ info, warn, error }` methods
+- Automatically disabled in production (`import.meta.env.DEV` check)
+- Output format: `[ModuleName] message { data }`
+
 **Analytics (`src/lib/analytics.js`):**
 - PostHog integration with 6 events: `game_loaded`, `replay_started`, `replay_completed`, `game_reset`, `new_game_started`, `annotation_used`
 - Requires `VITE_POSTHOG_KEY` env var; gracefully disabled when not set
@@ -95,3 +100,7 @@ docker compose --profile prod up    # Port 9090
 
 **Test Data:**
 - SGF test files in `public/test-files/` for manual testing scenarios
+
+## CI/CD
+
+PRs to `main` run GitHub Actions: tests, ESLint, Prettier format check. All must pass before merging.
