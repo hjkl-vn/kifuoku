@@ -19,6 +19,7 @@ export default function StudyPhase({ gameManager, gameInfo }) {
   const [rangeEnd, setRangeEnd] = useState(state.totalMoves - 1)
   const [selectedTool, setSelectedTool] = useState(null)
   const [annotations, setAnnotations] = useState({})
+  const [hoverVertex, setHoverVertex] = useState(null)
 
   const { containerRef, vertexSize, isMobileLayout } = useBoardSize({
     boardSize: state.boardSize
@@ -100,9 +101,29 @@ export default function StudyPhase({ gameManager, gameInfo }) {
     }
   })
 
+  if (hoverVertex && selectedTool && !isMobileLayout) {
+    const existingMarker = markerMap[hoverVertex.y][hoverVertex.x]
+    if (!existingMarker) {
+      markerMap[hoverVertex.y][hoverVertex.x] = {
+        type: selectedTool === 'label' ? 'label' : selectedTool,
+        label: selectedTool === 'label' ? '?' : undefined,
+        hover: true
+      }
+    }
+  }
+
   const handleRangeChange = (start, end) => {
     setRangeStart(start)
     setRangeEnd(end)
+  }
+
+  const handleVertexMouseEnter = (evt, [x, y]) => {
+    if (!selectedTool || isMobileLayout) return
+    setHoverVertex({ x, y })
+  }
+
+  const handleVertexMouseLeave = () => {
+    setHoverVertex(null)
   }
 
   const handleStartReplay = (side = null) => {
@@ -146,6 +167,8 @@ export default function StudyPhase({ gameManager, gameInfo }) {
               markerMap={markerMap}
               vertexSize={vertexSize}
               onVertexClick={handleBoardClick}
+              onVertexMouseEnter={handleVertexMouseEnter}
+              onVertexMouseLeave={handleVertexMouseLeave}
             />
           </div>
         </div>
