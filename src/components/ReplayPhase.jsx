@@ -40,6 +40,7 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
   const [selectedDifficultMove, setSelectedDifficultMove] = useState(null)
   const [bottomPanelExpanded, setBottomPanelExpanded] = useState(false)
   const [pendingMove, setPendingMove] = useState(null)
+  const [hoverVertex, setHoverVertex] = useState(null)
 
   const state = gameManager.getState()
   const isComplete = state.phase === PHASES.COMPLETE
@@ -158,6 +159,19 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
     }
   }, [gameManager, isComplete, isUserTurn, scheduleOpponentMove, triggerFlash])
 
+  const handleVertexMouseEnter = useCallback(
+    (evt, [x, y]) => {
+      if (isComplete || !isUserTurn || isMobileLayout) return
+      if (!gameManager.isValidPosition(x, y)) return
+      setHoverVertex({ x, y })
+    },
+    [gameManager, isComplete, isUserTurn, isMobileLayout]
+  )
+
+  const handleVertexMouseLeave = useCallback(() => {
+    setHoverVertex(null)
+  }, [])
+
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.code === 'Space' && !isComplete) {
@@ -226,7 +240,11 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
 
   const difficultMoves = isComplete ? gameManager.getDifficultMoves(5) : []
   const currentTurn = gameManager.getCurrentTurn()
-  const ghostStoneMap = createGhostStoneMap(pendingMove, currentTurn, state.boardSize)
+  const ghostStoneMap = createGhostStoneMap(
+    pendingMove || hoverVertex,
+    currentTurn,
+    state.boardSize
+  )
 
   const containerClass = [layout.container, isMobileLayout ? layout.mobileLayout : '']
     .filter(Boolean)
@@ -279,6 +297,8 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
               paintMap={paintMap}
               ghostStoneMap={ghostStoneMap}
               onVertexClick={handleVertexClick}
+              onVertexMouseEnter={handleVertexMouseEnter}
+              onVertexMouseLeave={handleVertexMouseLeave}
               vertexSize={vertexSize}
             />
           </div>
