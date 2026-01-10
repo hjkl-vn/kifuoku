@@ -100,6 +100,7 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
     if (result.correct) {
       setHintState(null)
       setPendingMove(null)
+      setHoverVertex(null)
       triggerFlash('success')
 
       if (result.gameComplete) {
@@ -144,6 +145,7 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
     if (result.correct) {
       setHintState(null)
       setPendingMove(null)
+      setHoverVertex(null)
       triggerFlash('success')
 
       if (result.gameComplete) {
