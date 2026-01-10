@@ -12,6 +12,7 @@ services:
       - /app/node_modules
     environment:
       - NODE_ENV=development
+      - DEV=true
     profiles:
       - dev
 
