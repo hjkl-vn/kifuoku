@@ -1,6 +1,9 @@
 import Board from '@sabaki/go-board'
 import { DEFAULT_BOARD_SIZE, PHASES, HINT_TYPES } from './constants'
 import { getQuadrantBounds, getSubQuadrant, isRegionSmallEnough, colorToSign } from './boardUtils'
+import { createLogger } from '../lib/logger'
+
+const log = createLogger('GameManager')
 
 export default class GameManager {
   constructor(moves, boardSize = DEFAULT_BOARD_SIZE, setupStones = []) {
@@ -148,6 +151,8 @@ export default class GameManager {
     this.stats.correctFirstTry = 0
     this.stats.moveTimes = []
 
+    log.info('Replay started', { startMove, endMove, side, totalMoves: this.moves.length })
+
     return {
       success: true,
       phase: this.phase
@@ -175,6 +180,8 @@ export default class GameManager {
       moveTimes: []
     }
 
+    log.info('Game reset')
+
     return {
       success: true,
       phase: this.phase
@@ -190,6 +197,7 @@ export default class GameManager {
 
   playOpponentMove() {
     if (this.phase !== PHASES.REPLAY) {
+      log.warn('Action rejected', { action: 'playOpponentMove', currentPhase: this.phase })
       return { error: 'Not in replay phase' }
     }
 
@@ -211,10 +219,16 @@ export default class GameManager {
     }
 
     this.replayPosition++
+    log.info('Opponent move played', {
+      moveNumber: this.replayPosition,
+      color: move.color,
+      position: move.isPass ? 'pass' : [move.x, move.y]
+    })
 
     if (this.replayPosition > this.replayEndMove) {
       this.phase = PHASES.COMPLETE
       this.stats.endTime = Date.now()
+      log.info('Game completed', { stats: this.getCompletionStats() })
       return { success: true, move, gameComplete: true }
     }
 
@@ -223,6 +237,7 @@ export default class GameManager {
 
   validateMove(x, y) {
     if (this.phase !== PHASES.REPLAY) {
+      log.warn('Action rejected', { action: 'validateMove', currentPhase: this.phase })
       return { error: 'Not in replay phase' }
     }
 
@@ -235,6 +250,7 @@ export default class GameManager {
     if (correctMove.isPass) {
       this.wrongAttemptsCurrentMove++
       this.stats.wrongMoveCount++
+      log.warn('Wrong move', { expected: 'pass', got: [x, y] })
       return {
         correct: false,
         expectedPass: true
@@ -260,9 +276,16 @@ export default class GameManager {
       this.wrongAttemptsCurrentMove = 0
       this.currentHintRegion = null
 
+      log.info('Move validated', {
+        moveNumber: this.replayPosition,
+        color: correctMove.color,
+        position: [x, y]
+      })
+
       if (this.replayPosition > this.replayEndMove) {
         this.phase = PHASES.COMPLETE
         this.stats.endTime = Date.now()
+        log.info('Game completed', { stats: this.getCompletionStats() })
         return {
           correct: true,
           gameComplete: true
@@ -278,6 +301,7 @@ export default class GameManager {
 
     this.wrongAttemptsCurrentMove++
     this.stats.wrongMoveCount++
+    log.warn('Wrong move', { expected: [correctMove.x, correctMove.y], got: [x, y] })
 
     if (!this.wrongAttemptsByMove[this.replayPosition]) {
       this.wrongAttemptsByMove[this.replayPosition] = {
@@ -291,6 +315,7 @@ export default class GameManager {
     if (this.wrongAttemptsCurrentMove === 1) {
       this.stats.quadrantHintsUsed++
       this.currentHintRegion = getQuadrantBounds(correctMove, this.boardSize)
+      log.info('Hint triggered', { level: 'quadrant', region: this.currentHintRegion })
       return {
         correct: false,
         needHint: true,
@@ -301,6 +326,7 @@ export default class GameManager {
 
     if (isRegionSmallEnough(this.currentHintRegion)) {
       this.stats.exactHintsUsed++
+      log.info('Showing exact position', { position: [correctMove.x, correctMove.y] })
       return {
         correct: false,
         needHint: true,
@@ -310,7 +336,9 @@ export default class GameManager {
     }
 
     this.stats.subdivisionHintsUsed++
+    const previousRegion = this.currentHintRegion
     this.currentHintRegion = getSubQuadrant(this.currentHintRegion, correctMove)
+    log.info('Hint region narrowed', { from: previousRegion, to: this.currentHintRegion })
     return {
       correct: false,
       needHint: true,
@@ -321,6 +349,7 @@ export default class GameManager {
 
   validatePass() {
     if (this.phase !== PHASES.REPLAY) {
+      log.warn('Action rejected', { action: 'validatePass', currentPhase: this.phase })
       return { error: 'Not in replay phase' }
     }
 
@@ -343,9 +372,12 @@ export default class GameManager {
       this.wrongAttemptsCurrentMove = 0
       this.currentHintRegion = null
 
+      log.info('Pass validated', { moveNumber: this.replayPosition })
+
       if (this.replayPosition > this.replayEndMove) {
         this.phase = PHASES.COMPLETE
         this.stats.endTime = Date.now()
+        log.info('Game completed', { stats: this.getCompletionStats() })
         return {
           correct: true,
           gameComplete: true
@@ -363,6 +395,9 @@ export default class GameManager {
     this.stats.wrongMoveCount++
     this.stats.quadrantHintsUsed++
     this.currentHintRegion = getQuadrantBounds(correctMove, this.boardSize)
+
+    log.warn('Wrong pass', { expectedMove: [correctMove.x, correctMove.y] })
+    log.info('Hint triggered', { level: 'quadrant', region: this.currentHintRegion })
 
     return {
       correct: false,
