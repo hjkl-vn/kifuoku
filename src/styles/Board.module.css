@@ -42,8 +42,4 @@
     opacity: 0.4;
     animation: none;
   }
-
-  .hasHoverPreview :global(.shudan-vertex .shudan-marker) {
-    opacity: 0.5;
-  }
 }
