@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Board from './Board'
 import Sidebar from './Sidebar'
 import RightPanel from './RightPanel'
@@ -106,8 +106,7 @@ export default function StudyPhase({ gameManager, gameInfo }) {
     if (!existingMarker) {
       markerMap[hoverVertex.y][hoverVertex.x] = {
         type: selectedTool === 'label' ? 'label' : selectedTool,
-        label: selectedTool === 'label' ? '?' : undefined,
-        hover: true
+        label: selectedTool === 'label' ? '?' : undefined
       }
     }
   }
@@ -117,14 +116,17 @@ export default function StudyPhase({ gameManager, gameInfo }) {
     setRangeEnd(end)
   }
 
-  const handleVertexMouseEnter = (evt, [x, y]) => {
-    if (!selectedTool || isMobileLayout) return
-    setHoverVertex({ x, y })
-  }
+  const handleVertexMouseEnter = useCallback(
+    (evt, [x, y]) => {
+      if (!selectedTool || isMobileLayout) return
+      setHoverVertex({ x, y })
+    },
+    [selectedTool, isMobileLayout]
+  )
 
-  const handleVertexMouseLeave = () => {
+  const handleVertexMouseLeave = useCallback(() => {
     setHoverVertex(null)
-  }
+  }, [])
 
   const handleStartReplay = (side = null) => {
     trackReplayStarted({
