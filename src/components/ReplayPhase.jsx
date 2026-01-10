@@ -121,11 +121,10 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
 
   const handleVertexClick = (evt, [x, y]) => {
     if (evt.button !== 0 || isComplete || !isUserTurn) return
+    if (!gameManager.isValidPosition(x, y)) return
 
     if (isMobileLayout) {
-      if (gameManager.isValidPosition(x, y)) {
-        setPendingMove({ x, y })
-      }
+      setPendingMove({ x, y })
     } else {
       commitMove(x, y)
     }
