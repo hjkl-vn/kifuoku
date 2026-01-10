@@ -225,8 +225,8 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
     return { markerMap: marker, paintMap: paint }
   }, [state.boardSize, selectedDifficultMove, lastMove, hintState])
 
-  const boardContainerClass = [
-    layout.boardContainer,
+  const borderFlashClass = [
+    replayStyles.boardFlashWrapper,
     borderFlash === 'success' ? replayStyles.borderSuccess : '',
     borderFlash === 'error' ? replayStyles.borderError : ''
   ]
@@ -292,17 +292,19 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
 
       <div className={layout.boardArea}>
         <div className={layout.boardWrapper}>
-          <div className={boardContainerClass} ref={containerRef}>
-            <Board
-              signMap={board?.signMap}
-              markerMap={markerMap}
-              paintMap={paintMap}
-              ghostStoneMap={ghostStoneMap}
-              onVertexClick={handleVertexClick}
-              onVertexMouseEnter={handleVertexMouseEnter}
-              onVertexMouseLeave={handleVertexMouseLeave}
-              vertexSize={vertexSize}
-            />
+          <div className={layout.boardContainer} ref={containerRef}>
+            <div className={borderFlashClass}>
+              <Board
+                signMap={board?.signMap}
+                markerMap={markerMap}
+                paintMap={paintMap}
+                ghostStoneMap={ghostStoneMap}
+                onVertexClick={handleVertexClick}
+                onVertexMouseEnter={handleVertexMouseEnter}
+                onVertexMouseLeave={handleVertexMouseLeave}
+                vertexSize={vertexSize}
+              />
+            </div>
           </div>
         </div>
       </div>
