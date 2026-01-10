@@ -36,3 +36,14 @@
   background: url('../../node_modules/@sabaki/shudan/css/stone_-1.svg');
   background-size: 100% 100%;
 }
+
+@media (hover: hover) and (pointer: fine) {
+  .hasHoverPreview :global(.shudan-vertex .shudan-ghost) {
+    opacity: 0.4;
+    animation: none;
+  }
+
+  .hasHoverPreview :global(.shudan-vertex .shudan-marker) {
+    opacity: 0.5;
+  }
+}
