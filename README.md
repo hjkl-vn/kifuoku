@@ -65,3 +65,51 @@ Tracked events:
 For local development, copy `.env.example` to `.env.local`. For production Docker builds, use `.env` (docker compose auto-loads this) or pass variables via shell.
 
 ## Deployment
+
+## Contributing
+
+### How to Contribute
+
+- **Bug reports:** Open an issue describing the bug, steps to reproduce, and expected behavior
+- **Feature requests:** Open an issue or start a discussion describing the feature and use case
+- **Questions:** Start a discussion in the repository's Discussions tab
+- **Pull requests:** Fork the repo, create a branch, make your changes, and submit a PR
+
+### Code Style
+
+This project uses automated tooling to enforce consistent code style:
+
+- **ESLint** for linting JavaScript/JSX
+- **Prettier** for code formatting
+- **Husky + lint-staged** for pre-commit hooks
+
+Before submitting a PR, ensure your code passes all checks:
+
+```bash
+npm run lint          # Check for linting errors
+npm run lint:fix      # Auto-fix linting errors
+npm run format        # Format code with Prettier
+npm run format:check  # Check formatting without modifying
+```
+
+### Tests
+
+All tests must pass before submitting a PR:
+
+```bash
+npm test              # Run tests in watch mode
+npm test -- --run     # Run tests once
+```
+
+### CI/CD
+
+Pull requests to `main` trigger GitHub Actions that run:
+- Unit tests (`npm test -- --run`)
+- ESLint (`npm run lint`)
+- Prettier format check (`npm run format:check`)
+
+All checks must pass before merging.
+
+### Contact
+
+For questions or collaboration: **tdo@hjkl.vn**
