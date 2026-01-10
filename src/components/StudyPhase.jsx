@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Board from './Board'
 import Sidebar from './Sidebar'
 import RightPanel from './RightPanel'
@@ -19,6 +19,7 @@ export default function StudyPhase({ gameManager, gameInfo }) {
   const [rangeEnd, setRangeEnd] = useState(state.totalMoves - 1)
   const [selectedTool, setSelectedTool] = useState(null)
   const [annotations, setAnnotations] = useState({})
+  const [hoverVertex, setHoverVertex] = useState(null)
 
   const { containerRef, vertexSize, isMobileLayout } = useBoardSize({
     boardSize: state.boardSize
@@ -100,10 +101,32 @@ export default function StudyPhase({ gameManager, gameInfo }) {
     }
   })
 
+  if (hoverVertex && selectedTool && !isMobileLayout) {
+    const existingMarker = markerMap[hoverVertex.y][hoverVertex.x]
+    if (!existingMarker) {
+      markerMap[hoverVertex.y][hoverVertex.x] = {
+        type: selectedTool === 'label' ? 'label' : selectedTool,
+        label: selectedTool === 'label' ? '?' : undefined
+      }
+    }
+  }
+
   const handleRangeChange = (start, end) => {
     setRangeStart(start)
     setRangeEnd(end)
   }
+
+  const handleVertexMouseEnter = useCallback(
+    (evt, [x, y]) => {
+      if (!selectedTool || isMobileLayout) return
+      setHoverVertex({ x, y })
+    },
+    [selectedTool, isMobileLayout]
+  )
+
+  const handleVertexMouseLeave = useCallback(() => {
+    setHoverVertex(null)
+  }, [])
 
   const handleStartReplay = (side = null) => {
     trackReplayStarted({
@@ -146,6 +169,8 @@ export default function StudyPhase({ gameManager, gameInfo }) {
               markerMap={markerMap}
               vertexSize={vertexSize}
               onVertexClick={handleBoardClick}
+              onVertexMouseEnter={handleVertexMouseEnter}
+              onVertexMouseLeave={handleVertexMouseLeave}
             />
           </div>
         </div>

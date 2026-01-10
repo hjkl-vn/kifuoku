@@ -8,6 +8,8 @@ export default function Board({
   paintMap,
   ghostStoneMap,
   onVertexClick,
+  onVertexMouseEnter,
+  onVertexMouseLeave,
   vertexSize = 34
 }) {
   return (
@@ -23,6 +25,8 @@ export default function Board({
         ghostStoneMap={ghostStoneMap}
         vertexSize={vertexSize}
         onVertexClick={onVertexClick}
+        onVertexMouseEnter={onVertexMouseEnter}
+        onVertexMouseLeave={onVertexMouseLeave}
       />
     </div>
   )
