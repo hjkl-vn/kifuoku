@@ -302,6 +302,7 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
               onVertexMouseEnter={handleVertexMouseEnter}
               onVertexMouseLeave={handleVertexMouseLeave}
               vertexSize={vertexSize}
+              hasHoverPreview={!!hoverVertex && !pendingMove}
             />
           </div>
         </div>
