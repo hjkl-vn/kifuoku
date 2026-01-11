@@ -78,15 +78,19 @@ docker compose --profile prod up    # Port 9090
 - `@sabaki/sgf` - SGF file parsing
 
 **Custom Hooks (`src/hooks/`):**
-- `useBoardSize` - Responsive board sizing based on container dimensions
+- `useBoardSize` - Responsive board sizing based on container dimensions (ResizeObserver)
+- `useIsMobile` - Media query hook for JS-level mobile detection (< 768px)
 - `useBorderFlash` - Timed visual feedback with automatic cleanup
 
-**CSS Modules (all in `src/styles/`):**
-- Dynamic classes use array join pattern: `[styles.a, condition ? styles.b : ''].filter(Boolean).join(' ')`
+**Styling (Tailwind CSS v4):**
+- Uses `@tailwindcss/vite` plugin (no tailwind.config.js needed)
+- Custom theme colors defined in `src/index.css` via `@theme` block: primary, success, error, neutral, stone-black, stone-white
+- Dynamic classes use array join pattern: `['base-class', condition ? 'conditional-class' : ''].filter(Boolean).join(' ')`
+- Ghost stone animation for pending moves defined in `src/index.css` (`.has-pending-move` selectors)
 
 **Responsive Layout (768px breakpoint):**
-- Desktop: Left sidebar (280px) + board area + right panel
-- Mobile: Collapsible header (overlay) + board + fixed bottom bar
+- Desktop (md+): Left sidebar (280px) + board area + right panel (max-w-320px)
+- Mobile: Collapsible header (overlay) + board + fixed bottom bar + BottomSheet for completion stats
 
 **Logging (`src/lib/logger.js`):**
 - `createLogger('ModuleName')` returns `{ info, warn, error }` methods
