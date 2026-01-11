@@ -1,5 +1,4 @@
 import React, { useRef, useCallback } from 'react'
-import styles from '../styles/RangeSlider.module.css'
 
 export default function RangeSlider({ min, max, start, end, onChange }) {
   const trackRef = useRef(null)
@@ -56,33 +55,33 @@ export default function RangeSlider({ min, max, start, end, onChange }) {
   const movesSelected = end - start + 1
 
   return (
-    <div className={styles.container}>
-      <div className={styles.track} ref={trackRef}>
+    <div className="w-full py-2.5">
+      <div className="relative h-3 bg-gray-300 rounded-md cursor-pointer" ref={trackRef}>
         <div
-          className={styles.range}
+          className="absolute h-full bg-primary rounded-md"
           style={{
             left: `${startPercent}%`,
             width: `${endPercent - startPercent}%`
           }}
         />
         <div
-          className={styles.handle}
+          className="absolute top-1/2 w-5 h-5 bg-white border-2 border-primary rounded-full -translate-x-1/2 -translate-y-1/2 cursor-grab touch-none hover:bg-blue-50 active:cursor-grabbing active:bg-blue-100"
           style={{ left: `${startPercent}%` }}
           onMouseDown={handleMouseDown('start')}
           onTouchStart={handleMouseDown('start')}
         />
         <div
-          className={styles.handle}
+          className="absolute top-1/2 w-5 h-5 bg-white border-2 border-primary rounded-full -translate-x-1/2 -translate-y-1/2 cursor-grab touch-none hover:bg-blue-50 active:cursor-grabbing active:bg-blue-100"
           style={{ left: `${endPercent}%` }}
           onMouseDown={handleMouseDown('end')}
           onTouchStart={handleMouseDown('end')}
         />
       </div>
-      <div className={styles.labels}>
+      <div className="flex justify-between mt-2 text-xs text-gray-500">
         <span>Move 1</span>
         <span>Move {max + 1}</span>
       </div>
-      <div className={styles.selection}>
+      <div className="text-center mt-3 text-sm font-medium text-gray-800">
         {movesSelected} moves selected ({start + 1}-{end + 1})
       </div>
     </div>

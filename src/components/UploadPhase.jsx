@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { isValidOgsUrl, extractGameId, fetchOgsSgf } from '../lib/ogs.js'
-import styles from '../styles/UploadPhase.module.css'
 
 export default function UploadPhase({ onFileLoaded }) {
   const [dragOver, setDragOver] = useState(false)
@@ -63,16 +62,16 @@ export default function UploadPhase({ onFileLoaded }) {
   }
 
   const dropZoneClass = [
-    styles.dropZone,
-    dragOver ? styles.dropZoneActive : '',
-    isLoading ? styles.disabled : ''
+    'border-3 border-dashed border-gray-300 rounded-xl py-15 px-5 text-center bg-gray-50 transition-all duration-200',
+    dragOver ? 'border-success bg-green-50' : '',
+    isLoading ? 'opacity-50 pointer-events-none' : ''
   ]
     .filter(Boolean)
     .join(' ')
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>Kifu-oku (棋譜憶)</h1>
+    <div className="max-w-[600px] mx-auto mt-12 p-5">
+      <h1 className="text-center text-3xl mb-8">Kifu-oku (棋譜憶)</h1>
       <div
         className={dropZoneClass}
         onDragOver={(e) => {
@@ -82,25 +81,25 @@ export default function UploadPhase({ onFileLoaded }) {
         onDragLeave={() => setDragOver(false)}
         onDrop={isLoading ? undefined : handleDrop}
       >
-        <p className={styles.dropText}>Drop SGF file here</p>
-        <p className={styles.orText}>or</p>
-        <label className={styles.button}>
+        <p className="text-lg text-gray-500 m-0 mb-2.5">Drop SGF file here</p>
+        <p className="text-sm text-gray-400 my-2.5">or</p>
+        <label className="inline-block py-3 px-8 bg-success text-white rounded cursor-pointer text-base font-bold transition-colors duration-200 hover:bg-green-600">
           Choose File
           <input
             type="file"
             accept=".sgf"
             onChange={handleFileInput}
-            className={styles.fileInput}
+            className="hidden"
             disabled={isLoading}
           />
         </label>
       </div>
 
-      <p className={styles.divider}>─── or ───</p>
+      <p className="text-center text-gray-400 my-5 text-sm">─── or ───</p>
 
       <input
         type="text"
-        className={styles.urlInput}
+        className="w-full p-4 text-base border-2 border-gray-300 rounded focus:outline-none focus:border-success disabled:bg-gray-100 disabled:cursor-not-allowed"
         placeholder="Paste online-go.com link here"
         value={urlValue}
         onChange={(e) => setUrlValue(e.target.value)}
@@ -108,11 +107,13 @@ export default function UploadPhase({ onFileLoaded }) {
         disabled={isLoading}
       />
 
-      {isLoading && <p className={styles.loading}>Loading game from OGS...</p>}
+      {isLoading && (
+        <p className="text-center text-gray-500 mt-2.5 text-sm">Loading game from OGS...</p>
+      )}
 
-      {error && <p className={styles.error}>{error}</p>}
+      {error && <p className="text-error text-center mt-5 text-sm">{error}</p>}
 
-      <div className={styles.info}>
+      <div className="mt-10 p-5 bg-blue-50 rounded text-sm leading-relaxed">
         <p>
           <strong>How to play:</strong>
         </p>

@@ -1,12 +1,11 @@
 import Header from './Header.jsx'
 import Footer from './Footer.jsx'
-import styles from '../styles/Layout.module.css'
 
 export default function Layout({ children }) {
   return (
-    <div className={styles.layout}>
+    <div className="flex flex-col min-h-screen">
       <Header />
-      <main className={styles.main}>{children}</main>
+      <main className="flex-1 flex flex-col min-h-0">{children}</main>
       <Footer />
     </div>
   )

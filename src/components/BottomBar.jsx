@@ -1,7 +1,6 @@
 import React, { memo } from 'react'
 import { ANNOTATION_TOOLS } from '../game/constants'
 import ProgressBar from './ProgressBar'
-import styles from '../styles/BottomBar.module.css'
 
 export default memo(function BottomBar({
   canGoPrev,
@@ -22,18 +21,26 @@ export default memo(function BottomBar({
   const hasAnnotationTools = onSelectTool !== undefined
   const hasReplayControls = onPass !== undefined
 
+  const toolButtonBase =
+    'w-11 h-11 flex items-center justify-center text-xl bg-gray-100 border-2 border-gray-300 rounded-lg cursor-pointer transition-all duration-150 active:bg-blue-50 active:border-primary'
+  const navButtonBase =
+    'flex-1 py-3.5 px-5 text-base font-bold bg-primary text-white border-none rounded-lg cursor-pointer disabled:bg-gray-300 disabled:cursor-not-allowed active:not-disabled:bg-blue-700'
+
   return (
-    <div className={styles.container}>
-      <div className={styles.progressWrapper}>
+    <div className="flex flex-col fixed bottom-0 left-0 right-0 px-4 py-3 bg-white border-t border-gray-300 gap-3 z-[5]">
+      <div className="w-full">
         <ProgressBar current={current} total={total} replaySide={replaySide} />
       </div>
-      <div className={styles.controls}>
+      <div className="flex gap-3 items-center">
         {hasAnnotationTools && !hasReplayControls && (
-          <div className={styles.tools}>
+          <div className="flex gap-1.5">
             {ANNOTATION_TOOLS.map((tool) => (
               <button
                 key={tool.id}
-                className={[styles.toolButton, selectedTool === tool.id ? styles.toolSelected : '']
+                className={[
+                  toolButtonBase,
+                  selectedTool === tool.id ? 'border-primary bg-primary text-white' : ''
+                ]
                   .filter(Boolean)
                   .join(' ')}
                 onClick={() => onSelectTool(selectedTool === tool.id ? null : tool.id)}
@@ -46,10 +53,10 @@ export default memo(function BottomBar({
           </div>
         )}
         {hasReplayControls ? (
-          <div className={styles.buttons}>
+          <div className="flex gap-3 flex-1">
             <button
               type="button"
-              className={styles.passButton}
+              className="flex-1 py-3.5 px-5 text-base font-bold bg-neutral text-white border-none rounded-lg cursor-pointer hover:not-disabled:bg-gray-500 active:not-disabled:bg-gray-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
               onClick={onPass}
               disabled={!isUserTurn}
             >
@@ -57,7 +64,7 @@ export default memo(function BottomBar({
             </button>
             <button
               type="button"
-              className={styles.confirmButton}
+              className="flex-1 py-3.5 px-5 text-base font-bold bg-success text-white border-none rounded-lg cursor-pointer hover:bg-green-600 active:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
               onClick={onConfirm}
               disabled={!pendingMove}
             >
@@ -66,11 +73,11 @@ export default memo(function BottomBar({
           </div>
         ) : (
           hasNavButtons && (
-            <div className={styles.buttons}>
-              <button className={styles.button} onClick={onPrev} disabled={!canGoPrev}>
+            <div className="flex gap-3 flex-1">
+              <button className={navButtonBase} onClick={onPrev} disabled={!canGoPrev}>
                 ◀ Prev
               </button>
-              <button className={styles.button} onClick={onNext} disabled={!canGoNext}>
+              <button className={navButtonBase} onClick={onNext} disabled={!canGoNext}>
                 Next ▶
               </button>
             </div>

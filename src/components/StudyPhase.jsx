@@ -8,7 +8,7 @@ import BottomBar from './BottomBar'
 import { createEmptyBoardMap } from '../game/boardUtils'
 import { trackReplayStarted, trackAnnotationUsed } from '../lib/analytics.js'
 import { useBoardSize } from '../hooks/useBoardSize'
-import layout from '../styles/GameLayout.module.css'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 export default function StudyPhase({ gameManager, gameInfo }) {
   const state = gameManager.getState()
@@ -21,9 +21,10 @@ export default function StudyPhase({ gameManager, gameInfo }) {
   const [annotations, setAnnotations] = useState({})
   const [hoverVertex, setHoverVertex] = useState(null)
 
-  const { containerRef, vertexSize, isMobileLayout } = useBoardSize({
+  const { containerRef, vertexSize } = useBoardSize({
     boardSize: state.boardSize
   })
+  const isMobile = useIsMobile()
 
   const canGoNext = state.studyPosition < state.totalMoves
   const canGoPrev = state.studyPosition > 0
@@ -101,7 +102,7 @@ export default function StudyPhase({ gameManager, gameInfo }) {
     }
   })
 
-  if (hoverVertex && selectedTool && !isMobileLayout) {
+  if (hoverVertex && selectedTool && !isMobile) {
     const existingMarker = markerMap[hoverVertex.y][hoverVertex.x]
     if (!existingMarker) {
       markerMap[hoverVertex.y][hoverVertex.x] = {
@@ -118,10 +119,10 @@ export default function StudyPhase({ gameManager, gameInfo }) {
 
   const handleVertexMouseEnter = useCallback(
     (evt, [x, y]) => {
-      if (!selectedTool || isMobileLayout) return
+      if (!selectedTool || isMobile) return
       setHoverVertex({ x, y })
     },
-    [selectedTool, isMobileLayout]
+    [selectedTool, isMobile]
   )
 
   const handleVertexMouseLeave = useCallback(() => {
@@ -136,13 +137,14 @@ export default function StudyPhase({ gameManager, gameInfo }) {
     gameManager.startReplay(rangeStart, rangeEnd, side)
   }
 
-  const containerClass = [layout.container, isMobileLayout ? layout.mobileLayout : '']
-    .filter(Boolean)
-    .join(' ')
-
   return (
-    <div className={containerClass}>
-      {isMobileLayout && (
+    <div
+      className={[
+        'flex flex-1 min-h-0',
+        isMobile ? 'flex-col gap-0 p-0' : 'gap-5 px-5 py-3 pb-5'
+      ].join(' ')}
+    >
+      {isMobile && (
         <CollapsibleHeader
           gameInfo={gameInfo}
           phase="study"
@@ -155,15 +157,25 @@ export default function StudyPhase({ gameManager, gameInfo }) {
         />
       )}
 
-      {!isMobileLayout && (
+      {!isMobile && (
         <Sidebar gameInfo={gameInfo} currentTurn={currentTurn}>
           <AnnotationToolbar selectedTool={selectedTool} onSelectTool={setSelectedTool} />
         </Sidebar>
       )}
 
-      <div className={layout.boardArea}>
-        <div className={layout.boardWrapper}>
-          <div className={layout.boardContainer} ref={containerRef}>
+      <div
+        className={[
+          'flex-[2] flex flex-col items-center min-h-0 min-w-0',
+          isMobile ? 'p-px flex-1' : ''
+        ]
+          .filter(Boolean)
+          .join(' ')}
+      >
+        <div className="flex flex-col items-stretch gap-1 flex-1 min-h-0 w-full">
+          <div
+            className="flex justify-center items-center w-full flex-1 min-h-0"
+            ref={containerRef}
+          >
             <Board
               signMap={board.signMap}
               markerMap={markerMap}
@@ -176,7 +188,7 @@ export default function StudyPhase({ gameManager, gameInfo }) {
         </div>
       </div>
 
-      {!isMobileLayout && (
+      {!isMobile && (
         <RightPanel
           phase="study"
           current={state.studyPosition}
@@ -194,7 +206,7 @@ export default function StudyPhase({ gameManager, gameInfo }) {
         />
       )}
 
-      {isMobileLayout && (
+      {isMobile && (
         <BottomBar
           canGoPrev={canGoPrev}
           canGoNext={canGoNext}
