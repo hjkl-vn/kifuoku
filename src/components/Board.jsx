@@ -1,6 +1,5 @@
 import React from 'react'
 import { Goban } from '@sabaki/shudan'
-import styles from '../styles/Board.module.css'
 
 export default function Board({
   signMap,
@@ -13,7 +12,7 @@ export default function Board({
   vertexSize = 34
 }) {
   return (
-    <div className={ghostStoneMap ? styles.hasPendingMove : ''}>
+    <div className={ghostStoneMap ? 'has-pending-move' : ''}>
       <Goban
         animateStonePlacement={true}
         busy={false}

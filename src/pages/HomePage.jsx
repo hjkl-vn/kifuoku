@@ -5,7 +5,6 @@ import useGameController from '../game/useGameController'
 import UploadPhase from '../components/UploadPhase.jsx'
 import StudyPhase from '../components/StudyPhase.jsx'
 import ReplayPhase from '../components/ReplayPhase.jsx'
-import styles from '../styles/HomePage.module.css'
 
 const STONE_SOUNDS = [0, 1, 2, 3, 4].map((i) => `/sounds/stone${i}.mp3`)
 
@@ -104,10 +103,13 @@ export default function HomePage() {
 
   if (error) {
     return (
-      <div className={styles.errorContainer}>
+      <div className="p-5 text-center">
         <h2>Error</h2>
         <p>{error}</p>
-        <button onClick={() => setError(null)} className={styles.retryButton}>
+        <button
+          onClick={() => setError(null)}
+          className="mt-5 py-2.5 px-8 text-base bg-primary text-white border-none rounded cursor-pointer"
+        >
           Try Again
         </button>
       </div>

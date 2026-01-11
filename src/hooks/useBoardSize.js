@@ -1,37 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
 
 const COORDINATE_LABEL_SPACE = 48
-const SIDEBAR_WIDTH = 280
-const LAYOUT_GAP = 40
-const CONTAINER_PADDING = 40
-
-function calculateMinDesktopWidth(boardSize, maxVertexSize) {
-  const boardWidth = boardSize * maxVertexSize + COORDINATE_LABEL_SPACE
-  return SIDEBAR_WIDTH + LAYOUT_GAP + boardWidth + CONTAINER_PADDING
-}
-
-function getInitialMobileLayout(boardSize, maxVertexSize) {
-  if (typeof window === 'undefined') return false
-  return window.innerWidth < calculateMinDesktopWidth(boardSize, maxVertexSize)
-}
 
 export function useBoardSize({ boardSize, maxVertexSize = 38 }) {
   const containerRef = useRef(null)
   const [vertexSize, setVertexSize] = useState(maxVertexSize)
-  const [isMobileLayout, setIsMobileLayout] = useState(() =>
-    getInitialMobileLayout(boardSize, maxVertexSize)
-  )
-
-  useEffect(() => {
-    const checkMobileLayout = () => {
-      const minDesktopWidth = calculateMinDesktopWidth(boardSize, maxVertexSize)
-      setIsMobileLayout(window.innerWidth < minDesktopWidth)
-    }
-
-    checkMobileLayout()
-    window.addEventListener('resize', checkMobileLayout)
-    return () => window.removeEventListener('resize', checkMobileLayout)
-  }, [boardSize, maxVertexSize])
 
   useEffect(() => {
     const container = containerRef.current
@@ -57,7 +30,7 @@ export function useBoardSize({ boardSize, maxVertexSize = 38 }) {
       observer.disconnect()
       clearTimeout(timeoutId)
     }
-  }, [boardSize, maxVertexSize, isMobileLayout])
+  }, [boardSize, maxVertexSize])
 
-  return { containerRef, vertexSize, isMobileLayout }
+  return { containerRef, vertexSize }
 }

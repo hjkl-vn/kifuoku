@@ -3,15 +3,14 @@ import Board from './Board'
 import Sidebar from './Sidebar'
 import RightPanel from './RightPanel'
 import CollapsibleHeader from './CollapsibleHeader'
-import CollapsibleBottomPanel from './CollapsibleBottomPanel'
+import BottomSheet from './BottomSheet'
 import BottomBar from './BottomBar'
 import { createEmptyBoardMap } from '../game/boardUtils'
 import { PHASES } from '../game/constants'
 import { useBoardSize } from '../hooks/useBoardSize'
+import { useIsMobile } from '../hooks/useIsMobile'
 import { useBorderFlash } from '../hooks/useBorderFlash'
 import { trackReplayCompleted, trackGameReset } from '../lib/analytics.js'
-import layout from '../styles/GameLayout.module.css'
-import replayStyles from '../styles/ReplayPhase.module.css'
 
 function createGhostStoneMap(pendingMove, currentTurn, boardSize) {
   if (!pendingMove) return null
@@ -53,9 +52,10 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
 
   const lastMove = selectedDifficultMove ? null : gameManager.getLastMove()
 
-  const { containerRef, vertexSize, isMobileLayout } = useBoardSize({
+  const { containerRef, vertexSize } = useBoardSize({
     boardSize: state.boardSize
   })
+  const isMobile = useIsMobile()
 
   const autoPlayTimeoutRef = useRef(null)
 
@@ -123,7 +123,7 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
     if (evt.button !== 0 || isComplete || !isUserTurn) return
     if (!gameManager.isValidPosition(x, y)) return
 
-    if (isMobileLayout) {
+    if (isMobile) {
       setPendingMove({ x, y })
     } else {
       commitMove(x, y)
@@ -162,11 +162,11 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
 
   const handleVertexMouseEnter = useCallback(
     (evt, [x, y]) => {
-      if (isComplete || !isUserTurn || isMobileLayout) return
+      if (isComplete || !isUserTurn || isMobile) return
       if (!gameManager.isValidPosition(x, y)) return
       setHoverVertex({ x, y })
     },
-    [gameManager, isComplete, isUserTurn, isMobileLayout]
+    [gameManager, isComplete, isUserTurn, isMobile]
   )
 
   const handleVertexMouseLeave = useCallback(() => {
@@ -225,9 +225,9 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
   }, [state.boardSize, selectedDifficultMove, lastMove, hintState])
 
   const borderFlashClass = [
-    replayStyles.boardFlashWrapper,
-    borderFlash === 'success' ? replayStyles.borderSuccess : '',
-    borderFlash === 'error' ? replayStyles.borderError : ''
+    'rounded-sm transition-shadow duration-200',
+    borderFlash === 'success' ? 'shadow-[0_0_0_3px_var(--color-success)]' : '',
+    borderFlash === 'error' ? 'shadow-[0_0_0_3px_var(--color-error)]' : ''
   ]
     .filter(Boolean)
     .join(' ')
@@ -246,10 +246,6 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
     currentTurn,
     state.boardSize
   )
-
-  const containerClass = [layout.container, isMobileLayout ? layout.mobileLayout : '']
-    .filter(Boolean)
-    .join(' ')
 
   const rightPanelContent = (
     <RightPanel
@@ -275,8 +271,13 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
   )
 
   return (
-    <div className={containerClass}>
-      {isMobileLayout && (
+    <div
+      className={[
+        'flex flex-1 min-h-0',
+        isMobile ? 'flex-col gap-0 p-0' : 'gap-5 px-5 py-3 pb-5'
+      ].join(' ')}
+    >
+      {isMobile && (
         <CollapsibleHeader
           gameInfo={gameInfo}
           phase="replay"
@@ -287,11 +288,21 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
         />
       )}
 
-      {!isMobileLayout && <Sidebar gameInfo={gameInfo} currentTurn={currentTurn} />}
+      {!isMobile && <Sidebar gameInfo={gameInfo} currentTurn={currentTurn} />}
 
-      <div className={layout.boardArea}>
-        <div className={layout.boardWrapper}>
-          <div className={layout.boardContainer} ref={containerRef}>
+      <div
+        className={[
+          'flex-[2] flex flex-col items-center min-h-0 min-w-0',
+          isMobile ? 'p-px flex-1' : ''
+        ]
+          .filter(Boolean)
+          .join(' ')}
+      >
+        <div className="flex flex-col items-stretch gap-1 flex-1 min-h-0 w-full">
+          <div
+            className="flex justify-center items-center w-full flex-1 min-h-0"
+            ref={containerRef}
+          >
             <div className={borderFlashClass}>
               <Board
                 signMap={board?.signMap}
@@ -308,9 +319,9 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
         </div>
       </div>
 
-      {!isMobileLayout && rightPanelContent}
+      {!isMobile && rightPanelContent}
 
-      {isMobileLayout && !isComplete && (
+      {isMobile && !isComplete && (
         <BottomBar
           current={state.replayPosition}
           total={state.totalMoves}
@@ -322,10 +333,15 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
         />
       )}
 
-      {isMobileLayout && isComplete && (
-        <CollapsibleBottomPanel isExpanded={bottomPanelExpanded} onToggle={setBottomPanelExpanded}>
+      {isMobile && isComplete && (
+        <BottomSheet
+          isExpanded={bottomPanelExpanded}
+          onToggle={setBottomPanelExpanded}
+          title="Show Stats"
+          expandedTitle="Hide Stats"
+        >
           {rightPanelContent}
-        </CollapsibleBottomPanel>
+        </BottomSheet>
       )}
     </div>
   )

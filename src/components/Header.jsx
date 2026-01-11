@@ -1,27 +1,24 @@
 import { Link, NavLink } from 'react-router-dom'
-import styles from '../styles/Header.module.css'
 
 export default function Header() {
+  const navLinkClass = ({ isActive }) =>
+    [
+      'no-underline text-gray-700 text-base py-2 border-b-2 border-transparent transition-colors duration-200 hover:text-black',
+      isActive ? 'text-black border-gray-700' : ''
+    ]
+      .filter(Boolean)
+      .join(' ')
+
   return (
-    <header className={styles.header}>
-      <Link to="/" className={styles.logo}>
+    <header className="flex items-center gap-8 px-6 py-2.5 border-b border-gray-200">
+      <Link to="/" className="text-2xl no-underline cursor-pointer">
         ⚫⚪
       </Link>
-      <nav className={styles.nav}>
-        <NavLink
-          to="/daily"
-          className={({ isActive }) =>
-            [styles.navLink, isActive ? styles.navLinkActive : ''].filter(Boolean).join(' ')
-          }
-        >
+      <nav className="flex gap-6">
+        <NavLink to="/daily" className={navLinkClass}>
           Daily
         </NavLink>
-        <NavLink
-          to="/library"
-          className={({ isActive }) =>
-            [styles.navLink, isActive ? styles.navLinkActive : ''].filter(Boolean).join(' ')
-          }
-        >
+        <NavLink to="/library" className={navLinkClass}>
           Library
         </NavLink>
       </nav>
