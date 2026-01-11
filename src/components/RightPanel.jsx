@@ -118,11 +118,11 @@ export default memo(function RightPanel({
             </div>
             <div className="flex justify-between py-2 border-b border-gray-300 last:border-b-0">
               <span>Total time</span>
-              <span>{stats?.totalTimeFormatted}s</span>
+              <span>{stats?.totalTimeFormatted}</span>
             </div>
             <div className="flex justify-between py-2">
               <span>Avg per move</span>
-              <span>{stats?.avgTimeFormatted}s</span>
+              <span>{stats?.avgTimeFormatted}</span>
             </div>
           </div>
 

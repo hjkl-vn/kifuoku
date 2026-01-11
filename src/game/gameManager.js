@@ -5,6 +5,32 @@ import { createLogger } from '../lib/logger'
 
 const log = createLogger('GameManager')
 
+function formatDuration(ms) {
+  const totalSeconds = Math.floor(ms / 1000)
+
+  if (totalSeconds < 60) {
+    const decimal = (ms / 1000).toFixed(1)
+    return `${decimal} second${decimal === '1.0' ? '' : 's'}`
+  }
+
+  const hours = Math.floor(totalSeconds / 3600)
+  const minutes = Math.floor((totalSeconds % 3600) / 60)
+  const seconds = totalSeconds % 60
+
+  const parts = []
+  if (hours > 0) {
+    parts.push(`${hours} hour${hours === 1 ? '' : 's'}`)
+  }
+  if (minutes > 0) {
+    parts.push(`${minutes} minute${minutes === 1 ? '' : 's'}`)
+  }
+  if (seconds > 0 || parts.length === 0) {
+    parts.push(`${seconds} second${seconds === 1 ? '' : 's'}`)
+  }
+
+  return parts.join(', ')
+}
+
 export default class GameManager {
   constructor(moves, boardSize = DEFAULT_BOARD_SIZE, setupStones = []) {
     if (!Array.isArray(moves)) {
@@ -89,9 +115,9 @@ export default class GameManager {
     return {
       totalMoves: userMoveCount,
       totalTimeMs: totalTime,
-      totalTimeFormatted: (totalTime / 1000).toFixed(1),
+      totalTimeFormatted: formatDuration(totalTime),
       avgTimeMs: avgTime,
-      avgTimeFormatted: (avgTime / 1000).toFixed(2),
+      avgTimeFormatted: formatDuration(avgTime),
       wrongMoveCount: this.stats.wrongMoveCount,
       correctFirstTry: this.stats.correctFirstTry,
       accuracy:
