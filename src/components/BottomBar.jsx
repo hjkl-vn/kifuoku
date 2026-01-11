@@ -32,26 +32,6 @@ export default memo(function BottomBar({
         <ProgressBar current={current} total={total} replaySide={replaySide} />
       </div>
       <div className="flex gap-3 items-center">
-        {hasAnnotationTools && !hasReplayControls && (
-          <div className="flex gap-1.5">
-            {ANNOTATION_TOOLS.map((tool) => (
-              <button
-                key={tool.id}
-                className={[
-                  toolButtonBase,
-                  selectedTool === tool.id ? 'border-primary bg-primary text-white' : ''
-                ]
-                  .filter(Boolean)
-                  .join(' ')}
-                onClick={() => onSelectTool(selectedTool === tool.id ? null : tool.id)}
-                title={tool.title}
-                aria-pressed={selectedTool === tool.id}
-              >
-                {tool.label}
-              </button>
-            ))}
-          </div>
-        )}
         {hasReplayControls ? (
           <div className="flex gap-3 flex-1">
             <button
@@ -82,6 +62,26 @@ export default memo(function BottomBar({
               </button>
             </div>
           )
+        )}
+        {hasAnnotationTools && !hasReplayControls && (
+          <div className="flex gap-1.5">
+            {ANNOTATION_TOOLS.map((tool) => (
+              <button
+                key={tool.id}
+                className={[
+                  toolButtonBase,
+                  selectedTool === tool.id ? 'border-primary bg-primary text-white' : ''
+                ]
+                  .filter(Boolean)
+                  .join(' ')}
+                onClick={() => onSelectTool(selectedTool === tool.id ? null : tool.id)}
+                title={tool.title}
+                aria-pressed={selectedTool === tool.id}
+              >
+                {tool.label}
+              </button>
+            ))}
+          </div>
         )}
       </div>
     </div>
