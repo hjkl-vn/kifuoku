@@ -57,14 +57,14 @@ const StudyPanel = memo(function StudyPanel({
             onChange={(e) => onOneColorModeChange(e.target.checked)}
             className="w-4 h-4 accent-primary cursor-pointer"
           />
-          One-color go
+          One color Go
         </label>
         <div className="flex flex-col gap-2">
           <button
-            className="py-4 px-8 text-lg font-bold bg-success text-white border-none rounded cursor-pointer"
+            className="py-3 px-5 text-base font-bold bg-success text-white border-none rounded cursor-pointer"
             onClick={() => onStartReplay()}
           >
-            Replay All
+            Replay
           </button>
           <button
             className="py-3 px-5 text-base font-bold bg-stone-black text-white border-none rounded cursor-pointer hover:bg-gray-800"
