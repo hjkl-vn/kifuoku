@@ -9,10 +9,15 @@ export default function Board({
   onVertexClick,
   onVertexMouseEnter,
   onVertexMouseLeave,
-  vertexSize = 34
+  vertexSize = 34,
+  oneColorMode = false
 }) {
   return (
-    <div className={ghostStoneMap ? 'has-pending-move' : ''}>
+    <div
+      className={[ghostStoneMap ? 'has-pending-move' : '', oneColorMode ? 'one-color-mode' : '']
+        .filter(Boolean)
+        .join(' ')}
+    >
       <Goban
         animateStonePlacement={true}
         busy={false}

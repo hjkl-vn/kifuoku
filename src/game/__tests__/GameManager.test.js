@@ -17,7 +17,7 @@ describe('GameManager', () => {
       expect(manager.moves).toEqual(mockMoves)
       expect(manager.studyPosition).toBe(0)
       expect(manager.replayPosition).toBe(0)
-      expect(manager.boardHistory).toHaveLength(1)
+      expect(manager.boardHistory).toHaveLength(mockMoves.length + 1)
       expect(manager.stats.wrongMoveCount).toBe(0)
       expect(manager.stats.correctFirstTry).toBe(0)
     })
@@ -99,7 +99,6 @@ describe('GameManager', () => {
 
       expect(result.success).toBe(true)
       expect(manager.studyPosition).toBe(1)
-      expect(manager.boardHistory).toHaveLength(2)
       expect(manager.getCurrentBoard().get([3, 3])).toBe(1)
     })
 
@@ -152,8 +151,6 @@ describe('GameManager', () => {
       manager.studyNext()
       expect(manager.getCurrentBoard().get([3, 3])).toBe(1)
       expect(manager.getCurrentBoard().get([15, 15])).toBe(-1)
-
-      expect(manager.boardHistory).toHaveLength(3)
     })
 
     it('studyNext handles pass moves without crashing', () => {
@@ -770,6 +767,42 @@ describe('Pass Move Validation', () => {
     expect(result.correct).toBe(true)
     expect(result.gameComplete).toBe(true)
     expect(gm.phase).toBe('complete')
+  })
+})
+
+describe('One-Color Mode', () => {
+  const mockMoves = [
+    { x: 3, y: 3, color: 'B' },
+    { x: 15, y: 15, color: 'W' },
+    { x: 3, y: 15, color: 'B' }
+  ]
+
+  it('initializes oneColorMode to false', () => {
+    const manager = new GameManager(mockMoves)
+    const state = manager.getState()
+    expect(state.oneColorMode).toBe(false)
+  })
+
+  it('stores oneColorMode when starting replay', () => {
+    const manager = new GameManager(mockMoves)
+    manager.startReplay(0, 2, null, true)
+    const state = manager.getState()
+    expect(state.oneColorMode).toBe(true)
+  })
+
+  it('defaults oneColorMode to false in startReplay', () => {
+    const manager = new GameManager(mockMoves)
+    manager.startReplay(0, 2)
+    const state = manager.getState()
+    expect(state.oneColorMode).toBe(false)
+  })
+
+  it('resets oneColorMode on resetGame', () => {
+    const manager = new GameManager(mockMoves)
+    manager.startReplay(0, 2, null, true)
+    manager.resetGame()
+    const state = manager.getState()
+    expect(state.oneColorMode).toBe(false)
   })
 })
 

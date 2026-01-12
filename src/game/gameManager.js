@@ -42,12 +42,22 @@ export default class GameManager {
     this.studyPosition = 0
     this.replayPosition = 0
 
-    let initialBoard = Board.fromDimensions(boardSize, boardSize)
+    let board = Board.fromDimensions(boardSize, boardSize)
     for (const stone of setupStones) {
       const sign = colorToSign(stone.color)
-      initialBoard = initialBoard.set([stone.x, stone.y], sign)
+      board = board.set([stone.x, stone.y], sign)
     }
-    this.boardHistory = [initialBoard]
+    this.boardHistory = [board]
+
+    for (const move of this.moves) {
+      if (move.isPass) {
+        this.boardHistory.push(board)
+      } else {
+        const sign = colorToSign(move.color)
+        board = board.makeMove(sign, [move.x, move.y])
+        this.boardHistory.push(board)
+      }
+    }
 
     this.wrongAttemptsCurrentMove = 0
     this.currentHintRegion = null
@@ -55,6 +65,7 @@ export default class GameManager {
     this.replayEndMove = this.moves.length - 1
     this.replaySide = null
     this.wrongAttemptsByMove = []
+    this.oneColorMode = false
 
     this.stats = {
       wrongMoveCount: 0,
@@ -89,7 +100,8 @@ export default class GameManager {
       totalMoves: this.moves.length,
       boardSize: this.boardSize,
       boardState: this.getCurrentBoard().signMap,
-      stats: { ...this.stats }
+      stats: { ...this.stats },
+      oneColorMode: this.oneColorMode
     }
   }
 
@@ -130,17 +142,6 @@ export default class GameManager {
       return { atEnd: true, position: this.studyPosition }
     }
 
-    if (this.studyPosition === this.boardHistory.length - 1) {
-      const move = this.moves[this.studyPosition]
-      if (move.isPass) {
-        this.boardHistory.push(this.getCurrentBoard())
-      } else {
-        const sign = colorToSign(move.color)
-        const newBoard = this.getCurrentBoard().makeMove(sign, [move.x, move.y])
-        this.boardHistory.push(newBoard)
-      }
-    }
-
     this.studyPosition++
 
     return {
@@ -163,11 +164,12 @@ export default class GameManager {
     }
   }
 
-  startReplay(startMove = 0, endMove = this.moves.length - 1, side = null) {
+  startReplay(startMove = 0, endMove = this.moves.length - 1, side = null, oneColorMode = false) {
     this.phase = PHASES.REPLAY
     this.replayStartMove = startMove
     this.replayEndMove = endMove
     this.replaySide = side
+    this.oneColorMode = oneColorMode
     this.replayPosition = startMove
     this.studyPosition = startMove
     this.wrongAttemptsCurrentMove = 0
@@ -194,6 +196,7 @@ export default class GameManager {
     this.replayStartMove = 0
     this.replayEndMove = this.moves.length - 1
     this.wrongAttemptsByMove = []
+    this.oneColorMode = false
 
     this.stats = {
       wrongMoveCount: 0,
