@@ -110,12 +110,12 @@ describe('getBoardSize', () => {
     expect(getBoardSize(sgf)).toBe(19)
   })
 
-  it('defaults to 19 for invalid SGF', () => {
+  it('defaults to 19 for invalid SGF text', () => {
     expect(getBoardSize('invalid')).toBe(19)
   })
 
-  it('defaults to 19 for empty string', () => {
-    expect(getBoardSize('')).toBe(19)
+  it('throws on empty string', () => {
+    expect(() => getBoardSize('')).toThrow('Invalid SGF')
   })
 })
 
@@ -155,15 +155,14 @@ describe('getGameInfo', () => {
     expect(info.rules).toBeNull()
   })
 
-  it('returns object with null values for invalid SGF', () => {
+  it('returns object with null values for invalid SGF text', () => {
     const info = getGameInfo('invalid')
     expect(info.blackPlayer).toBeNull()
     expect(info.whitePlayer).toBeNull()
   })
 
-  it('returns empty object for empty string', () => {
-    const info = getGameInfo('')
-    expect(info).toEqual({})
+  it('throws on empty string', () => {
+    expect(() => getGameInfo('')).toThrow('Invalid SGF')
   })
 
   it('handles result formats', () => {
@@ -252,14 +251,13 @@ describe('getSetupStones', () => {
     expect(stones.every((s) => s.color === 'B')).toBe(true)
   })
 
-  it('returns empty array for invalid SGF', () => {
+  it('returns empty array for invalid SGF text', () => {
     const stones = getSetupStones('invalid')
     expect(stones).toEqual([])
   })
 
-  it('returns empty array for empty string', () => {
-    const stones = getSetupStones('')
-    expect(stones).toEqual([])
+  it('throws on empty string', () => {
+    expect(() => getSetupStones('')).toThrow('Invalid SGF')
   })
 })
 
@@ -323,5 +321,19 @@ describe('pass moves', () => {
 
     expect(moves).toHaveLength(3)
     expect(moves[1].isPass).toBe(true)
+  })
+})
+
+describe('error handling consistency', () => {
+  it('getBoardSize throws on empty string', () => {
+    expect(() => getBoardSize('')).toThrow('Invalid SGF')
+  })
+
+  it('getSetupStones throws on empty string', () => {
+    expect(() => getSetupStones('')).toThrow('Invalid SGF')
+  })
+
+  it('getGameInfo throws on empty string', () => {
+    expect(() => getGameInfo('')).toThrow('Invalid SGF')
   })
 })

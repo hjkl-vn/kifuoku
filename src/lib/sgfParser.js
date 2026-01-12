@@ -138,33 +138,31 @@ export function parseSGFToMoves(sgfContent) {
 }
 
 export function getBoardSize(sgfContent) {
-  try {
-    const gameTree = parse(sgfContent)
-    return extractBoardSize(gameTree[0])
-  } catch (_error) {
-    return 19
+  const gameTree = parse(sgfContent)
+
+  if (!gameTree || gameTree.length === 0) {
+    throw new Error('Invalid SGF: no game tree found')
   }
+
+  return extractBoardSize(gameTree[0])
 }
 
 export function getSetupStones(sgfContent) {
-  try {
-    const gameTree = parse(sgfContent)
+  const gameTree = parse(sgfContent)
 
-    if (!gameTree || gameTree.length === 0) {
-      return []
-    }
-
-    return extractSetupStones(gameTree[0])
-  } catch (_error) {
-    return []
+  if (!gameTree || gameTree.length === 0) {
+    throw new Error('Invalid SGF: no game tree found')
   }
+
+  return extractSetupStones(gameTree[0])
 }
 
 export function getGameInfo(sgfContent) {
-  try {
-    const gameTree = parse(sgfContent)
-    return extractGameInfo(gameTree[0])
-  } catch (_error) {
-    return {}
+  const gameTree = parse(sgfContent)
+
+  if (!gameTree || gameTree.length === 0) {
+    throw new Error('Invalid SGF: no game tree found')
   }
+
+  return extractGameInfo(gameTree[0])
 }
