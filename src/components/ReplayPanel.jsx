@@ -1,6 +1,7 @@
 import React, { memo } from 'react'
+import PropTypes from 'prop-types'
 
-export default memo(function ReplayPanel({ replaySide, stats, onPass, isUserTurn }) {
+const ReplayPanel = memo(function ReplayPanel({ replaySide, stats, onPass, isUserTurn }) {
   return (
     <>
       {replaySide && (
@@ -31,3 +32,15 @@ export default memo(function ReplayPanel({ replaySide, stats, onPass, isUserTurn
     </>
   )
 })
+
+ReplayPanel.propTypes = {
+  replaySide: PropTypes.oneOf(['B', 'W', null]),
+  stats: PropTypes.shape({
+    correctFirstTry: PropTypes.number.isRequired,
+    wrongMoveCount: PropTypes.number.isRequired
+  }).isRequired,
+  onPass: PropTypes.func.isRequired,
+  isUserTurn: PropTypes.bool.isRequired
+}
+
+export default ReplayPanel

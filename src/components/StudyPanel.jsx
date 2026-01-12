@@ -1,7 +1,8 @@
 import React, { memo } from 'react'
+import PropTypes from 'prop-types'
 import RangeSlider from './RangeSlider'
 
-export default memo(function StudyPanel({
+const StudyPanel = memo(function StudyPanel({
   canGoPrev,
   canGoNext,
   onPrev,
@@ -71,3 +72,23 @@ export default memo(function StudyPanel({
     </>
   )
 })
+
+StudyPanel.propTypes = {
+  canGoPrev: PropTypes.bool.isRequired,
+  canGoNext: PropTypes.bool.isRequired,
+  onPrev: PropTypes.func.isRequired,
+  onNext: PropTypes.func.isRequired,
+  rangeStart: PropTypes.number.isRequired,
+  rangeEnd: PropTypes.number.isRequired,
+  totalMoves: PropTypes.number.isRequired,
+  onRangeChange: PropTypes.func.isRequired,
+  onStartReplay: PropTypes.func.isRequired,
+  gameInfo: PropTypes.shape({
+    blackPlayer: PropTypes.string,
+    whitePlayer: PropTypes.string
+  }),
+  oneColorMode: PropTypes.bool.isRequired,
+  onOneColorModeChange: PropTypes.func.isRequired
+}
+
+export default StudyPanel

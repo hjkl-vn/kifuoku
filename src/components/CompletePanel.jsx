@@ -1,6 +1,7 @@
 import React, { memo } from 'react'
+import PropTypes from 'prop-types'
 
-export default memo(function CompletePanel({
+const CompletePanel = memo(function CompletePanel({
   stats,
   difficultMoves,
   onSelectDifficultMove,
@@ -70,3 +71,23 @@ export default memo(function CompletePanel({
     </>
   )
 })
+
+CompletePanel.propTypes = {
+  stats: PropTypes.shape({
+    accuracy: PropTypes.number,
+    totalTimeFormatted: PropTypes.string,
+    avgTimeFormatted: PropTypes.string
+  }),
+  difficultMoves: PropTypes.arrayOf(
+    PropTypes.shape({
+      moveIndex: PropTypes.number.isRequired,
+      attemptCount: PropTypes.number.isRequired
+    })
+  ),
+  onSelectDifficultMove: PropTypes.func.isRequired,
+  selectedMoveIndex: PropTypes.number,
+  onRestart: PropTypes.func.isRequired,
+  onGoHome: PropTypes.func.isRequired
+}
+
+export default CompletePanel
