@@ -276,4 +276,18 @@ describe('StudyPanel', () => {
       expect(screen.getByText('10 moves selected (6-15)')).toBeTruthy()
     })
   })
+
+  describe('Annotation Toolbar', () => {
+    it('renders annotation toolbar when selectedTool and onSelectTool are provided', () => {
+      render(<StudyPanel {...defaultProps} selectedTool={null} onSelectTool={vi.fn()} />)
+
+      expect(screen.getByText('Annotate')).toBeTruthy()
+    })
+
+    it('does not render annotation toolbar when onSelectTool is not provided', () => {
+      render(<StudyPanel {...defaultProps} />)
+
+      expect(screen.queryByText('Annotate')).toBeNull()
+    })
+  })
 })

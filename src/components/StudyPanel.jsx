@@ -1,6 +1,7 @@
 import React, { memo } from 'react'
 import PropTypes from 'prop-types'
 import RangeSlider from './RangeSlider'
+import AnnotationToolbar from './AnnotationToolbar'
 
 const StudyPanel = memo(function StudyPanel({
   canGoPrev,
@@ -14,13 +15,18 @@ const StudyPanel = memo(function StudyPanel({
   onStartReplay,
   gameInfo,
   oneColorMode,
-  onOneColorModeChange
+  onOneColorModeChange,
+  selectedTool,
+  onSelectTool
 }) {
   const buttonBase =
     'py-3 px-5 text-base font-bold bg-primary text-white border-none rounded cursor-pointer disabled:bg-gray-300 disabled:cursor-not-allowed'
 
+  const hasAnnotationTools = onSelectTool !== undefined
+
   return (
     <>
+      {/* Study Tools Section */}
       <div className="flex flex-col gap-3">
         <div className="flex gap-2.5">
           <button className={`${buttonBase} flex-1`} onClick={onPrev} disabled={!canGoPrev}>
@@ -30,8 +36,13 @@ const StudyPanel = memo(function StudyPanel({
             Next
           </button>
         </div>
+        {hasAnnotationTools && (
+          <AnnotationToolbar selectedTool={selectedTool} onSelectTool={onSelectTool} />
+        )}
       </div>
-      <div className="flex flex-col gap-3">
+
+      {/* Replay Setup Section */}
+      <div className="flex flex-col gap-3 pt-4 border-t border-gray-200">
         <RangeSlider
           min={0}
           max={totalMoves - 1}
@@ -88,7 +99,9 @@ StudyPanel.propTypes = {
     whitePlayer: PropTypes.string
   }),
   oneColorMode: PropTypes.bool.isRequired,
-  onOneColorModeChange: PropTypes.func.isRequired
+  onOneColorModeChange: PropTypes.func.isRequired,
+  selectedTool: PropTypes.string,
+  onSelectTool: PropTypes.func
 }
 
 export default StudyPanel
