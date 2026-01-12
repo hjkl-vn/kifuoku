@@ -753,16 +753,17 @@ describe('Pass Move Validation', () => {
     expect(gm.replayPosition).toBe(2)
   })
 
-  it('game completes when final move is pass', () => {
+  it('trailing pass moves are stripped from game', () => {
     const movesEndingInPass = [
       { x: 3, y: 3, color: 'B', isPass: false },
-      { color: 'W', isPass: true }
+      { color: 'W', isPass: true },
+      { color: 'B', isPass: true }
     ]
     const gm = new GameManager(movesEndingInPass)
-    gm.startReplay()
-    gm.validateMove(3, 3)
 
-    const result = gm.validatePass()
+    expect(gm.getState().totalMoves).toBe(1)
+    gm.startReplay()
+    const result = gm.validateMove(3, 3)
 
     expect(result.correct).toBe(true)
     expect(result.gameComplete).toBe(true)

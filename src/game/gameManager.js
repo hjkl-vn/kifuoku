@@ -36,7 +36,13 @@ export default class GameManager {
     if (!Array.isArray(moves)) {
       throw new Error('moves must be an array')
     }
+
     this.moves = [...moves]
+    while (this.moves.length > 0 && this.moves[this.moves.length - 1].isPass) {
+      // Strip trailing pass moves
+      this.moves.pop()
+    }
+
     this.boardSize = boardSize
     this.phase = PHASES.STUDY
     this.studyPosition = 0

@@ -203,7 +203,7 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
       const { x, y } = selectedDifficultMove.correctPosition
       marker[y][x] = { type: 'circle' }
     } else {
-      if (lastMove) {
+      if (lastMove && !lastMove.isPass) {
         marker[lastMove.y][lastMove.x] = { type: 'circle' }
       }
 
