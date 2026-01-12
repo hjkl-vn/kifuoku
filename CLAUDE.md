@@ -90,7 +90,7 @@ docker compose --profile prod up    # Port 9090
 
 **Responsive Layout (768px breakpoint):**
 - Desktop (md+): Left sidebar (280px) + board area + right panel (max-w-320px)
-- Mobile: Collapsible header (overlay) + board + fixed bottom bar + BottomSheet for completion stats
+- Mobile: CollapsiblePanel (top/bottom positions) + board + fixed bottom bar
 
 **Logging (`src/lib/logger.js`):**
 - `createLogger('ModuleName')` returns `{ info, warn, error }` methods
