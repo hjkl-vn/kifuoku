@@ -56,7 +56,7 @@ export default function RangeSlider({ min, max, start, end, onChange }) {
   const movesSelected = end - start + 1
 
   return (
-    <div className="w-full py-2.5">
+    <div className="w-full py-2.5 px-2.5">
       <div className="relative h-3 bg-gray-300 rounded-md cursor-pointer" ref={trackRef}>
         <div
           className="absolute h-full bg-primary rounded-md"

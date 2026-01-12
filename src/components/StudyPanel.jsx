@@ -50,12 +50,12 @@ const StudyPanel = memo(function StudyPanel({
           end={rangeEnd}
           onChange={onRangeChange}
         />
-        <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+        <label className="flex items-center justify-center gap-3 text-sm font-medium text-gray-700 cursor-pointer bg-gray-50 py-2 px-3 rounded border border-gray-200">
           <input
             type="checkbox"
             checked={oneColorMode}
             onChange={(e) => onOneColorModeChange(e.target.checked)}
-            className="w-4 h-4 accent-primary cursor-pointer"
+            className="w-5 h-5 accent-primary cursor-pointer"
           />
           One colour Go
         </label>
