@@ -70,7 +70,7 @@ export default function CollapsiblePanel({
     <div
       className={[
         'fixed left-0 right-0 bg-white transition-transform duration-300',
-        raised ? 'z-30' : 'z-20',
+        isTop ? (raised ? 'z-30' : 'z-20') : 'z-30',
         positionClasses,
         transformClasses
       ].join(' ')}
