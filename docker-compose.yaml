@@ -4,15 +4,12 @@ services:
       context: .
       target: dev
     image: kifuoku-dev
-    container_name: kifuoku
+    container_name: kifuoku-dev
     ports:
       - "8181:3000"
     volumes:
       - .:/app
       - /app/node_modules
-    environment:
-      - NODE_ENV=development
-      - DEV=true
     profiles:
       - dev
 
@@ -24,11 +21,14 @@ services:
         - VITE_POSTHOG_KEY=${VITE_POSTHOG_KEY}
         - VITE_POSTHOG_HOST=${VITE_POSTHOG_HOST}
     image: kifuoku-prod
-    container_name: kifuoku
+    container_name: kifuoku-prod
     ports:
       - "9090:80"
-    environment:
-      - NODE_ENV=production
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     profiles:
       - prod

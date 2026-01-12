@@ -15,3 +15,9 @@ sgf/
 tests/
 **/__tests__/
 **/*.test.js
+
+coverage/
+.vscode/
+.idea/
+.eslintcache
+*.log
