@@ -163,7 +163,7 @@ export default function StudyPhase({ gameManager, gameInfo }) {
       <div
         className={[
           'flex-[2] flex flex-col items-center min-h-0 min-w-0',
-          isMobile ? 'p-px flex-1' : ''
+          isMobile ? 'p-px flex-1 pb-[120px]' : ''
         ]
           .filter(Boolean)
           .join(' ')}
