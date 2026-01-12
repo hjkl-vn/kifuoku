@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 
+// Space reserved for Shudan coordinate labels (A-T, 1-19) on each edge (~24px per side)
 const COORDINATE_LABEL_SPACE = 48
 
 export function useBoardSize({ boardSize, maxVertexSize = 38 }) {

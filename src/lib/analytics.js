@@ -13,7 +13,6 @@ export function initAnalytics() {
     autocapture: true,
     capture_dead_clicks: false,
     capture_pageview: true,
-    defaults: '2025-05-24',
     enable_heatmaps: true,
     rate_limiting: {
       events_per_second: 10,
