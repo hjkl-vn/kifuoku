@@ -4,7 +4,7 @@ import GameInfo from './GameInfo'
 
 export default function Sidebar({ gameInfo, currentTurn }) {
   return (
-    <aside className="flex flex-col gap-5 flex-1 min-w-[200px] max-w-[280px]">
+    <aside className="flex flex-col gap-5 flex-1 min-h-0 overflow-y-auto min-w-[200px] max-w-[280px]">
       <GameInfo gameInfo={gameInfo} currentTurn={currentTurn} />
     </aside>
   )

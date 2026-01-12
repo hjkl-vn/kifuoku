@@ -74,7 +74,7 @@ describe('RightPanel', () => {
     it('renders replay buttons with default player names', () => {
       render(<RightPanel {...defaultProps} />)
 
-      expect(screen.getByRole('button', { name: 'Replay All' })).toBeTruthy()
+      expect(screen.getByRole('button', { name: 'Replay' })).toBeTruthy()
       expect(screen.getByRole('button', { name: 'Replay as Black' })).toBeTruthy()
       expect(screen.getByRole('button', { name: 'Replay as White' })).toBeTruthy()
     })
@@ -90,12 +90,12 @@ describe('RightPanel', () => {
       expect(screen.getByRole('button', { name: 'Replay as Bob' })).toBeTruthy()
     })
 
-    it('calls onStartReplay with no args for Replay All button', async () => {
+    it('calls onStartReplay with no args for Replay button', async () => {
       const onStartReplay = vi.fn()
       const user = userEvent.setup()
       render(<RightPanel {...defaultProps} onStartReplay={onStartReplay} />)
 
-      await user.click(screen.getByRole('button', { name: 'Replay All' }))
+      await user.click(screen.getByRole('button', { name: 'Replay' }))
 
       expect(onStartReplay).toHaveBeenCalledTimes(1)
       expect(onStartReplay).toHaveBeenCalledWith()
@@ -127,7 +127,7 @@ describe('RightPanel', () => {
       render(<RightPanel {...defaultProps} />)
 
       expect(screen.getByRole('checkbox')).toBeTruthy()
-      expect(screen.getByText('One-color go')).toBeTruthy()
+      expect(screen.getByText('One color Go')).toBeTruthy()
     })
 
     it('checkbox reflects oneColorMode prop when false', () => {

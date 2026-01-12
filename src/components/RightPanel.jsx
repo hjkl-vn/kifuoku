@@ -34,7 +34,7 @@ const RightPanel = memo(function RightPanel({
   onSelectTool
 }) {
   return (
-    <aside className="flex flex-col gap-5 flex-1 min-w-[200px] max-w-full md:max-w-[320px]">
+    <aside className="flex flex-col gap-5 flex-1 min-h-0 overflow-y-auto min-w-[200px] max-w-full md:max-w-[320px]">
       <div className="flex flex-col gap-3">
         <ProgressBar current={current} total={total} />
       </div>
