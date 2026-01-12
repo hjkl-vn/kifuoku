@@ -2,8 +2,8 @@ import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import Board from './Board'
 import Sidebar from './Sidebar'
 import RightPanel from './RightPanel'
-import CollapsibleHeader from './CollapsibleHeader'
-import BottomSheet from './BottomSheet'
+import CollapsiblePanel from './CollapsiblePanel'
+import GameInfo from './GameInfo'
 import BottomBar from './BottomBar'
 import { createEmptyBoardMap } from '../game/boardUtils'
 import { PHASES } from '../game/constants'
@@ -11,6 +11,11 @@ import { useBoardSize } from '../hooks/useBoardSize'
 import { useIsMobile } from '../hooks/useIsMobile'
 import { useBorderFlash } from '../hooks/useBorderFlash'
 import { trackReplayCompleted, trackGameReset } from '../lib/analytics.js'
+
+function getPlayerSummary(gameInfo) {
+  if (!gameInfo) return 'Game'
+  return `${gameInfo.blackPlayer || 'Black'} ⚫ vs ${gameInfo.whitePlayer || 'White'} ⚪`
+}
 
 function createGhostStoneMap(pendingMove, currentTurn, boardSize) {
   if (!pendingMove) return null
@@ -278,14 +283,25 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
       ].join(' ')}
     >
       {isMobile && (
-        <CollapsibleHeader
-          gameInfo={gameInfo}
-          phase="replay"
-          current={state.replayPosition}
-          total={state.totalMoves}
-          stats={stats}
-          currentTurn={currentTurn}
-        />
+        <CollapsiblePanel
+          position="top"
+          title={getPlayerSummary(gameInfo)}
+          expandedTitle="Game Info"
+        >
+          <div className="flex flex-col gap-4">
+            <GameInfo gameInfo={gameInfo} currentTurn={currentTurn} />
+            <div className="bg-gray-100 rounded-lg p-3">
+              <div className="flex justify-between py-1.5 text-sm">
+                <span>Correct (1st try)</span>
+                <span>{stats.correctFirstTry}</span>
+              </div>
+              <div className="flex justify-between py-1.5 text-sm">
+                <span>Wrong attempts</span>
+                <span>{stats.wrongMoveCount}</span>
+              </div>
+            </div>
+          </div>
+        </CollapsiblePanel>
       )}
 
       {!isMobile && <Sidebar gameInfo={gameInfo} currentTurn={currentTurn} />}
@@ -334,14 +350,15 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
       )}
 
       {isMobile && isComplete && (
-        <BottomSheet
+        <CollapsiblePanel
+          position="bottom"
           isExpanded={bottomPanelExpanded}
           onToggle={setBottomPanelExpanded}
           title="Show Stats"
           expandedTitle="Hide Stats"
         >
           {rightPanelContent}
-        </BottomSheet>
+        </CollapsiblePanel>
       )}
     </div>
   )
