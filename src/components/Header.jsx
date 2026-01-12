@@ -10,7 +10,7 @@ export default function Header() {
       .join(' ')
 
   return (
-    <header className="flex items-center gap-8 px-6 py-2.5 border-b border-gray-200">
+    <header className="flex items-center gap-8 px-6 h-11 border-b border-gray-200 bg-white sticky top-0 z-30">
       <Link to="/" className="text-2xl no-underline cursor-pointer">
         ⚫⚪
       </Link>

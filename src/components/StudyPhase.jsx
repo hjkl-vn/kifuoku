@@ -9,13 +9,9 @@ import RangeSlider from './RangeSlider'
 import BottomBar from './BottomBar'
 import { createEmptyBoardMap } from '../game/boardUtils'
 import { trackReplayStarted, trackAnnotationUsed } from '../lib/analytics.js'
+import { getPlayerSummary } from '../lib/formatters.js'
 import { useBoardSize } from '../hooks/useBoardSize'
 import { useIsMobile } from '../hooks/useIsMobile'
-
-function getPlayerSummary(gameInfo) {
-  if (!gameInfo) return 'Game'
-  return `${gameInfo.blackPlayer || 'Black'} ⚫ vs ${gameInfo.whitePlayer || 'White'} ⚪`
-}
 
 export default function StudyPhase({ gameManager, gameInfo }) {
   const state = gameManager.getState()
@@ -155,7 +151,7 @@ export default function StudyPhase({ gameManager, gameInfo }) {
         <CollapsiblePanel
           position="top"
           title={getPlayerSummary(gameInfo)}
-          expandedTitle="Game Info"
+          expandedTitle="Hide Game Info"
         >
           <div className="flex flex-col gap-4">
             <GameInfo gameInfo={gameInfo} currentTurn={currentTurn} />
