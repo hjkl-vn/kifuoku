@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Project Overview
+
+Kifu-oku (棋譜憶) - A Go game memory trainer. Users upload SGF files or paste online-go.com URLs, study the game, then replay moves from memory with progressive hints.
+
 ## Code Style
 
 - DO NOT use inline comments to describe code. Only use comments to explain WHY code exists.
@@ -104,6 +108,15 @@ docker compose --profile prod up    # Port 9090
 
 **Test Data:**
 - SGF test files in `public/test-files/` for manual testing scenarios
+
+## Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `VITE_POSTHOG_KEY` | PostHog project API key (analytics disabled when unset) |
+| `VITE_POSTHOG_HOST` | PostHog instance URL (defaults to US cloud) |
+
+For local development, copy `.env.example` to `.env.local`.
 
 ## CI/CD
 
