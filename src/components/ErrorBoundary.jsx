@@ -18,17 +18,23 @@ export default class ErrorBoundary extends Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div style={styles.container}>
-          <div style={styles.content}>
-            <h1 style={styles.title}>Something went wrong</h1>
-            <p style={styles.message}>
+        <div className="flex items-center justify-center min-h-screen bg-neutral-900 text-white p-5">
+          <div className="text-center max-w-md">
+            <h1 className="text-2xl mb-4">Something went wrong</h1>
+            <p className="text-neutral-500 mb-6">
               An unexpected error occurred. Please try reloading the page.
             </p>
-            <div style={styles.buttons}>
-              <button onClick={this.handleReset} style={styles.button}>
+            <div className="flex gap-2.5 justify-center">
+              <button
+                onClick={this.handleReset}
+                className="px-5 py-2.5 border border-neutral-700 rounded bg-transparent text-white cursor-pointer hover:bg-neutral-800"
+              >
                 Try Again
               </button>
-              <button onClick={this.handleReload} style={styles.buttonPrimary}>
+              <button
+                onClick={this.handleReload}
+                className="px-5 py-2.5 border-none rounded bg-success text-white cursor-pointer hover:bg-success/90"
+              >
                 Reload Page
               </button>
             </div>
@@ -38,50 +44,5 @@ export default class ErrorBoundary extends Component {
     }
 
     return this.props.children
-  }
-}
-
-const styles = {
-  container: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: '100vh',
-    backgroundColor: '#1a1a1a',
-    color: '#fff',
-    padding: '20px'
-  },
-  content: {
-    textAlign: 'center',
-    maxWidth: '400px'
-  },
-  title: {
-    fontSize: '1.5rem',
-    marginBottom: '1rem'
-  },
-  message: {
-    color: '#888',
-    marginBottom: '1.5rem'
-  },
-  buttons: {
-    display: 'flex',
-    gap: '10px',
-    justifyContent: 'center'
-  },
-  button: {
-    padding: '10px 20px',
-    border: '1px solid #444',
-    borderRadius: '4px',
-    backgroundColor: 'transparent',
-    color: '#fff',
-    cursor: 'pointer'
-  },
-  buttonPrimary: {
-    padding: '10px 20px',
-    border: 'none',
-    borderRadius: '4px',
-    backgroundColor: '#2e7d32',
-    color: '#fff',
-    cursor: 'pointer'
   }
 }

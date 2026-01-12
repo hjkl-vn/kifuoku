@@ -63,7 +63,3 @@ export function colorToSign(color) {
   if (color === 'W') return -1
   return 0
 }
-
-export function randomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min
-}
