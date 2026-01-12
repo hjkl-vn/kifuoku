@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 export default function CollapsiblePanel({
@@ -8,10 +8,21 @@ export default function CollapsiblePanel({
   defaultExpanded = false,
   title = 'Show Details',
   expandedTitle,
+  bottomOffset = 0,
   children
 }) {
   const [internalExpanded, setInternalExpanded] = useState(defaultExpanded)
   const isExpanded = controlledExpanded !== undefined ? controlledExpanded : internalExpanded
+  const [raised, setRaised] = useState(isExpanded)
+
+  useEffect(() => {
+    if (isExpanded) {
+      const timer = setTimeout(() => setRaised(true), 300)
+      return () => clearTimeout(timer)
+    } else {
+      setRaised(false)
+    }
+  }, [isExpanded])
 
   const handleToggle = () => {
     const newValue = !isExpanded
@@ -28,7 +39,8 @@ export default function CollapsiblePanel({
   const expandedArrow = isTop ? '▲' : '▼'
 
   // top-11 matches Header's h-11 height
-  const positionClasses = isTop ? 'top-11' : 'bottom-0 border-t border-gray-300'
+  const positionClasses = isTop ? 'top-11' : 'border-t border-gray-300'
+  const bottomStyle = !isTop && bottomOffset > 0 ? { bottom: `${bottomOffset}px` } : { bottom: 0 }
 
   const transformClasses = isTop
     ? isExpanded
@@ -57,10 +69,12 @@ export default function CollapsiblePanel({
   return (
     <div
       className={[
-        'fixed left-0 right-0 bg-white z-20 transition-transform duration-300',
+        'fixed left-0 right-0 bg-white transition-transform duration-300',
+        isTop ? (raised ? 'z-30' : 'z-20') : 'z-30',
         positionClasses,
         transformClasses
       ].join(' ')}
+      style={!isTop ? bottomStyle : undefined}
     >
       {isTop ? (
         <>
@@ -84,5 +98,6 @@ CollapsiblePanel.propTypes = {
   isExpanded: PropTypes.bool,
   onToggle: PropTypes.func,
   defaultExpanded: PropTypes.bool,
+  bottomOffset: PropTypes.number,
   children: PropTypes.node.isRequired
 }

@@ -28,7 +28,7 @@ const BottomBar = memo(function BottomBar({
     'flex-1 py-3.5 px-5 text-base font-bold bg-primary text-white border-none rounded-lg cursor-pointer disabled:bg-gray-300 disabled:cursor-not-allowed active:not-disabled:bg-blue-700'
 
   return (
-    <div className="flex flex-col fixed bottom-0 left-0 right-0 px-4 py-3 bg-white border-t border-gray-300 gap-3 z-[5]">
+    <div className="flex flex-col fixed bottom-[50px] left-0 right-0 px-4 py-3 bg-white border-t border-gray-300 gap-3 z-[25]">
       <div className="w-full">
         <ProgressBar current={current} total={total} replaySide={replaySide} />
       </div>

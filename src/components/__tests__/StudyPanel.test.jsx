@@ -93,10 +93,10 @@ describe('StudyPanel', () => {
   })
 
   describe('Replay Buttons', () => {
-    it('renders Replay All button', () => {
+    it('renders Replay button', () => {
       render(<StudyPanel {...defaultProps} />)
 
-      expect(screen.getByRole('button', { name: 'Replay All' })).toBeTruthy()
+      expect(screen.getByRole('button', { name: 'Replay' })).toBeTruthy()
     })
 
     it('renders replay buttons with default player names when gameInfo is null', () => {
@@ -133,12 +133,12 @@ describe('StudyPanel', () => {
       expect(screen.getByRole('button', { name: 'Replay as White' })).toBeTruthy()
     })
 
-    it('calls onStartReplay with no args for Replay All button', async () => {
+    it('calls onStartReplay with no args for Replay button', async () => {
       const onStartReplay = vi.fn()
       const user = userEvent.setup()
       render(<StudyPanel {...defaultProps} onStartReplay={onStartReplay} />)
 
-      await user.click(screen.getByRole('button', { name: 'Replay All' }))
+      await user.click(screen.getByRole('button', { name: 'Replay' }))
 
       expect(onStartReplay).toHaveBeenCalledTimes(1)
       expect(onStartReplay).toHaveBeenCalledWith()
@@ -196,7 +196,7 @@ describe('StudyPanel', () => {
       render(<StudyPanel {...defaultProps} />)
 
       expect(screen.getByRole('checkbox')).toBeTruthy()
-      expect(screen.getByText('One-color go')).toBeTruthy()
+      expect(screen.getByText('One colour Go')).toBeTruthy()
     })
 
     it('checkbox is unchecked when oneColorMode is false', () => {
@@ -256,7 +256,7 @@ describe('StudyPanel', () => {
         />
       )
 
-      await user.click(screen.getByText('One-color go'))
+      await user.click(screen.getByText('One colour Go'))
 
       expect(onOneColorModeChange).toHaveBeenCalledTimes(1)
       expect(onOneColorModeChange).toHaveBeenCalledWith(true)
@@ -274,6 +274,20 @@ describe('StudyPanel', () => {
       render(<StudyPanel {...defaultProps} totalMoves={20} rangeStart={5} rangeEnd={14} />)
 
       expect(screen.getByText('10 moves selected (6-15)')).toBeTruthy()
+    })
+  })
+
+  describe('Annotation Toolbar', () => {
+    it('renders annotation toolbar when selectedTool and onSelectTool are provided', () => {
+      render(<StudyPanel {...defaultProps} selectedTool={null} onSelectTool={vi.fn()} />)
+
+      expect(screen.getByText('Annotate')).toBeTruthy()
+    })
+
+    it('does not render annotation toolbar when onSelectTool is not provided', () => {
+      render(<StudyPanel {...defaultProps} />)
+
+      expect(screen.queryByText('Annotate')).toBeNull()
     })
   })
 })
