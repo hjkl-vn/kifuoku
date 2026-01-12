@@ -8,6 +8,7 @@ export default function CollapsiblePanel({
   defaultExpanded = false,
   title = 'Show Details',
   expandedTitle,
+  bottomOffset = 0,
   children
 }) {
   const [internalExpanded, setInternalExpanded] = useState(defaultExpanded)
@@ -28,7 +29,8 @@ export default function CollapsiblePanel({
   const expandedArrow = isTop ? '▲' : '▼'
 
   // top-11 matches Header's h-11 height
-  const positionClasses = isTop ? 'top-11' : 'bottom-0 border-t border-gray-300'
+  const positionClasses = isTop ? 'top-11' : 'border-t border-gray-300'
+  const bottomStyle = !isTop && bottomOffset > 0 ? { bottom: `${bottomOffset}px` } : { bottom: 0 }
 
   const transformClasses = isTop
     ? isExpanded
@@ -57,10 +59,12 @@ export default function CollapsiblePanel({
   return (
     <div
       className={[
-        'fixed left-0 right-0 bg-white z-20 transition-transform duration-300',
+        'fixed left-0 right-0 bg-white transition-transform duration-300',
+        isExpanded ? 'z-30' : 'z-20',
         positionClasses,
         transformClasses
       ].join(' ')}
+      style={!isTop ? bottomStyle : undefined}
     >
       {isTop ? (
         <>
@@ -84,5 +88,6 @@ CollapsiblePanel.propTypes = {
   isExpanded: PropTypes.bool,
   onToggle: PropTypes.func,
   defaultExpanded: PropTypes.bool,
+  bottomOffset: PropTypes.number,
   children: PropTypes.node.isRequired
 }
