@@ -228,7 +228,7 @@ export default function StudyPhase({ gameManager, gameInfo }) {
                 onChange={(e) => setOneColorMode(e.target.checked)}
                 className="w-4 h-4 accent-primary cursor-pointer"
               />
-              One color Go
+              One colour Go
             </label>
             <div className="flex flex-col gap-2">
               <button

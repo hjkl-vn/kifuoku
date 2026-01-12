@@ -127,7 +127,7 @@ describe('RightPanel', () => {
       render(<RightPanel {...defaultProps} />)
 
       expect(screen.getByRole('checkbox')).toBeTruthy()
-      expect(screen.getByText('One color Go')).toBeTruthy()
+      expect(screen.getByText('One colour Go')).toBeTruthy()
     })
 
     it('checkbox reflects oneColorMode prop when false', () => {

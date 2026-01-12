@@ -196,7 +196,7 @@ describe('StudyPanel', () => {
       render(<StudyPanel {...defaultProps} />)
 
       expect(screen.getByRole('checkbox')).toBeTruthy()
-      expect(screen.getByText('One color Go')).toBeTruthy()
+      expect(screen.getByText('One colour Go')).toBeTruthy()
     })
 
     it('checkbox is unchecked when oneColorMode is false', () => {
@@ -256,7 +256,7 @@ describe('StudyPanel', () => {
         />
       )
 
-      await user.click(screen.getByText('One color Go'))
+      await user.click(screen.getByText('One colour Go'))
 
       expect(onOneColorModeChange).toHaveBeenCalledTimes(1)
       expect(onOneColorModeChange).toHaveBeenCalledWith(true)
