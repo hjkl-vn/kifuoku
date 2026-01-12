@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 export default function CollapsiblePanel({
@@ -13,6 +13,16 @@ export default function CollapsiblePanel({
 }) {
   const [internalExpanded, setInternalExpanded] = useState(defaultExpanded)
   const isExpanded = controlledExpanded !== undefined ? controlledExpanded : internalExpanded
+  const [raised, setRaised] = useState(isExpanded)
+
+  useEffect(() => {
+    if (isExpanded) {
+      const timer = setTimeout(() => setRaised(true), 300)
+      return () => clearTimeout(timer)
+    } else {
+      setRaised(false)
+    }
+  }, [isExpanded])
 
   const handleToggle = () => {
     const newValue = !isExpanded
@@ -60,7 +70,7 @@ export default function CollapsiblePanel({
     <div
       className={[
         'fixed left-0 right-0 bg-white transition-transform duration-300',
-        isExpanded ? 'z-30' : 'z-20',
+        raised ? 'z-30' : 'z-20',
         positionClasses,
         transformClasses
       ].join(' ')}
