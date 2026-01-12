@@ -55,6 +55,7 @@ export default class GameManager {
     this.replayEndMove = this.moves.length - 1
     this.replaySide = null
     this.wrongAttemptsByMove = []
+    this.oneColorMode = false
 
     this.stats = {
       wrongMoveCount: 0,
@@ -89,7 +90,8 @@ export default class GameManager {
       totalMoves: this.moves.length,
       boardSize: this.boardSize,
       boardState: this.getCurrentBoard().signMap,
-      stats: { ...this.stats }
+      stats: { ...this.stats },
+      oneColorMode: this.oneColorMode
     }
   }
 
@@ -163,11 +165,12 @@ export default class GameManager {
     }
   }
 
-  startReplay(startMove = 0, endMove = this.moves.length - 1, side = null) {
+  startReplay(startMove = 0, endMove = this.moves.length - 1, side = null, oneColorMode = false) {
     this.phase = PHASES.REPLAY
     this.replayStartMove = startMove
     this.replayEndMove = endMove
     this.replaySide = side
+    this.oneColorMode = oneColorMode
     this.replayPosition = startMove
     this.studyPosition = startMove
     this.wrongAttemptsCurrentMove = 0
@@ -194,6 +197,7 @@ export default class GameManager {
     this.replayStartMove = 0
     this.replayEndMove = this.moves.length - 1
     this.wrongAttemptsByMove = []
+    this.oneColorMode = false
 
     this.stats = {
       wrongMoveCount: 0,
