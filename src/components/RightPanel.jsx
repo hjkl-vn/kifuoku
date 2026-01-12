@@ -29,7 +29,9 @@ const RightPanel = memo(function RightPanel({
   onPass,
   isUserTurn,
   oneColorMode,
-  onOneColorModeChange
+  onOneColorModeChange,
+  selectedTool,
+  onSelectTool
 }) {
   return (
     <aside className="flex flex-col gap-5 flex-1 min-w-[200px] max-w-full md:max-w-[320px]">
@@ -51,6 +53,8 @@ const RightPanel = memo(function RightPanel({
           gameInfo={gameInfo}
           oneColorMode={oneColorMode}
           onOneColorModeChange={onOneColorModeChange}
+          selectedTool={selectedTool}
+          onSelectTool={onSelectTool}
         />
       )}
 
@@ -101,7 +105,9 @@ RightPanel.propTypes = {
   onPass: PropTypes.func,
   isUserTurn: PropTypes.bool,
   oneColorMode: PropTypes.bool,
-  onOneColorModeChange: PropTypes.func
+  onOneColorModeChange: PropTypes.func,
+  selectedTool: PropTypes.string,
+  onSelectTool: PropTypes.func
 }
 
 export default RightPanel

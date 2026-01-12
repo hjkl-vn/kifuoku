@@ -158,6 +158,20 @@ describe('RightPanel', () => {
       expect(onOneColorModeChange).toHaveBeenCalledTimes(1)
       expect(onOneColorModeChange).toHaveBeenCalledWith(true)
     })
+
+    it('passes annotation props to StudyPanel', () => {
+      const onSelectTool = vi.fn()
+      render(
+        <RightPanel
+          {...defaultProps}
+          phase="study"
+          selectedTool="triangle"
+          onSelectTool={onSelectTool}
+        />
+      )
+
+      expect(screen.getByText('Annotate')).toBeTruthy()
+    })
   })
 
   describe('Replay Phase', () => {
