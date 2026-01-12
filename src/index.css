@@ -58,3 +58,12 @@ body {
   background: url('../node_modules/@sabaki/shudan/css/stone_-1.svg');
   background-size: 100% 100%;
 }
+
+.one-color-mode .shudan-stone-image.shudan-sign_1 {
+  background-image: url('../node_modules/@sabaki/shudan/css/stone_-1.svg');
+}
+
+.one-color-mode .shudan-vertex.shudan-ghost_1 .shudan-ghost::before {
+  background: url('../node_modules/@sabaki/shudan/css/stone_-1.svg');
+  background-size: 100% 100%;
+}
