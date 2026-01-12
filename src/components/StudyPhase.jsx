@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import Board from './Board'
 import Sidebar from './Sidebar'
 import RightPanel from './RightPanel'
-import AnnotationToolbar from './AnnotationToolbar'
 import CollapsiblePanel from './CollapsiblePanel'
 import GameInfo from './GameInfo'
 import RangeSlider from './RangeSlider'
@@ -199,11 +198,7 @@ export default function StudyPhase({ gameManager, gameInfo }) {
         </CollapsiblePanel>
       )}
 
-      {!isMobile && (
-        <Sidebar gameInfo={gameInfo} currentTurn={currentTurn}>
-          <AnnotationToolbar selectedTool={selectedTool} onSelectTool={setSelectedTool} />
-        </Sidebar>
-      )}
+      {!isMobile && <Sidebar gameInfo={gameInfo} currentTurn={currentTurn} />}
 
       <div
         className={[
@@ -247,6 +242,8 @@ export default function StudyPhase({ gameManager, gameInfo }) {
           gameInfo={gameInfo}
           oneColorMode={oneColorMode}
           onOneColorModeChange={setOneColorMode}
+          selectedTool={selectedTool}
+          onSelectTool={setSelectedTool}
         />
       )}
 
