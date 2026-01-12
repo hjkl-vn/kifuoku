@@ -11,11 +11,7 @@ import { useBoardSize } from '../hooks/useBoardSize'
 import { useIsMobile } from '../hooks/useIsMobile'
 import { useBorderFlash } from '../hooks/useBorderFlash'
 import { trackReplayCompleted, trackGameReset } from '../lib/analytics.js'
-
-function getPlayerSummary(gameInfo) {
-  if (!gameInfo) return 'Game'
-  return `${gameInfo.blackPlayer || 'Black'} ⚫ vs ${gameInfo.whitePlayer || 'White'} ⚪`
-}
+import { getPlayerSummary } from '../lib/formatters.js'
 
 function createGhostStoneMap(pendingMove, currentTurn, boardSize) {
   if (!pendingMove) return null
@@ -286,7 +282,7 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
         <CollapsiblePanel
           position="top"
           title={getPlayerSummary(gameInfo)}
-          expandedTitle="Game Info"
+          expandedTitle="Hide Game Info"
         >
           <div className="flex flex-col gap-4">
             <GameInfo gameInfo={gameInfo} currentTurn={currentTurn} />
