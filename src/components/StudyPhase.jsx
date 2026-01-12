@@ -154,47 +154,7 @@ export default function StudyPhase({ gameManager, gameInfo }) {
           title={getPlayerSummary(gameInfo)}
           expandedTitle="Hide Game Info"
         >
-          <div className="flex flex-col gap-4">
-            <GameInfo gameInfo={gameInfo} currentTurn={currentTurn} />
-            <div className="flex flex-col gap-3">
-              <RangeSlider
-                min={0}
-                max={state.totalMoves - 1}
-                start={rangeStart}
-                end={rangeEnd}
-                onChange={handleRangeChange}
-              />
-              <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={oneColorMode}
-                  onChange={(e) => setOneColorMode(e.target.checked)}
-                  className="w-4 h-4 accent-primary cursor-pointer"
-                />
-                One-color go
-              </label>
-              <div className="flex flex-col gap-2">
-                <button
-                  className="py-4 px-8 text-lg font-bold bg-success text-white border-none rounded cursor-pointer"
-                  onClick={() => handleStartReplay()}
-                >
-                  Replay All
-                </button>
-                <button
-                  className="py-3 px-5 text-base font-bold bg-stone-black text-white border-none rounded cursor-pointer hover:bg-gray-800"
-                  onClick={() => handleStartReplay('B')}
-                >
-                  Replay as {gameInfo?.blackPlayer || 'Black'}
-                </button>
-                <button
-                  className="py-3 px-5 text-base font-bold bg-stone-white text-stone-black border-2 border-stone-black rounded cursor-pointer hover:bg-gray-200"
-                  onClick={() => handleStartReplay('W')}
-                >
-                  Replay as {gameInfo?.whitePlayer || 'White'}
-                </button>
-              </div>
-            </div>
-          </div>
+          <GameInfo gameInfo={gameInfo} currentTurn={currentTurn} />
         </CollapsiblePanel>
       )}
 
@@ -245,6 +205,53 @@ export default function StudyPhase({ gameManager, gameInfo }) {
           selectedTool={selectedTool}
           onSelectTool={setSelectedTool}
         />
+      )}
+
+      {isMobile && (
+        <CollapsiblePanel
+          position="bottom"
+          title="Start Replay"
+          expandedTitle="Hide Replay Options"
+        >
+          <div className="flex flex-col gap-3">
+            <RangeSlider
+              min={0}
+              max={state.totalMoves - 1}
+              start={rangeStart}
+              end={rangeEnd}
+              onChange={handleRangeChange}
+            />
+            <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={oneColorMode}
+                onChange={(e) => setOneColorMode(e.target.checked)}
+                className="w-4 h-4 accent-primary cursor-pointer"
+              />
+              One-color go
+            </label>
+            <div className="flex flex-col gap-2">
+              <button
+                className="py-4 px-8 text-lg font-bold bg-success text-white border-none rounded cursor-pointer"
+                onClick={() => handleStartReplay()}
+              >
+                Replay All
+              </button>
+              <button
+                className="py-3 px-5 text-base font-bold bg-stone-black text-white border-none rounded cursor-pointer hover:bg-gray-800"
+                onClick={() => handleStartReplay('B')}
+              >
+                Replay as {gameInfo?.blackPlayer || 'Black'}
+              </button>
+              <button
+                className="py-3 px-5 text-base font-bold bg-stone-white text-stone-black border-2 border-stone-black rounded cursor-pointer hover:bg-gray-200"
+                onClick={() => handleStartReplay('W')}
+              >
+                Replay as {gameInfo?.whitePlayer || 'White'}
+              </button>
+            </div>
+          </div>
+        </CollapsiblePanel>
       )}
 
       {isMobile && (
