@@ -3,12 +3,19 @@ import Board from './Board'
 import Sidebar from './Sidebar'
 import RightPanel from './RightPanel'
 import AnnotationToolbar from './AnnotationToolbar'
-import CollapsibleHeader from './CollapsibleHeader'
+import CollapsiblePanel from './CollapsiblePanel'
+import GameInfo from './GameInfo'
+import RangeSlider from './RangeSlider'
 import BottomBar from './BottomBar'
 import { createEmptyBoardMap } from '../game/boardUtils'
 import { trackReplayStarted, trackAnnotationUsed } from '../lib/analytics.js'
 import { useBoardSize } from '../hooks/useBoardSize'
 import { useIsMobile } from '../hooks/useIsMobile'
+
+function getPlayerSummary(gameInfo) {
+  if (!gameInfo) return 'Game'
+  return `${gameInfo.blackPlayer || 'Black'} ⚫ vs ${gameInfo.whitePlayer || 'White'} ⚪`
+}
 
 export default function StudyPhase({ gameManager, gameInfo }) {
   const state = gameManager.getState()
@@ -145,16 +152,44 @@ export default function StudyPhase({ gameManager, gameInfo }) {
       ].join(' ')}
     >
       {isMobile && (
-        <CollapsibleHeader
-          gameInfo={gameInfo}
-          phase="study"
-          totalMoves={state.totalMoves}
-          rangeStart={rangeStart}
-          rangeEnd={rangeEnd}
-          onRangeChange={handleRangeChange}
-          onStartReplay={handleStartReplay}
-          currentTurn={currentTurn}
-        />
+        <CollapsiblePanel
+          position="top"
+          title={getPlayerSummary(gameInfo)}
+          expandedTitle="Game Info"
+        >
+          <div className="flex flex-col gap-4">
+            <GameInfo gameInfo={gameInfo} currentTurn={currentTurn} />
+            <div className="flex flex-col gap-3">
+              <RangeSlider
+                min={0}
+                max={state.totalMoves - 1}
+                start={rangeStart}
+                end={rangeEnd}
+                onChange={handleRangeChange}
+              />
+              <div className="flex flex-col gap-2">
+                <button
+                  className="py-4 px-8 text-lg font-bold bg-success text-white border-none rounded cursor-pointer"
+                  onClick={() => handleStartReplay()}
+                >
+                  Replay All
+                </button>
+                <button
+                  className="py-3 px-5 text-base font-bold bg-stone-black text-white border-none rounded cursor-pointer hover:bg-gray-800"
+                  onClick={() => handleStartReplay('B')}
+                >
+                  Replay as {gameInfo?.blackPlayer || 'Black'}
+                </button>
+                <button
+                  className="py-3 px-5 text-base font-bold bg-stone-white text-stone-black border-2 border-stone-black rounded cursor-pointer hover:bg-gray-200"
+                  onClick={() => handleStartReplay('W')}
+                >
+                  Replay as {gameInfo?.whitePlayer || 'White'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </CollapsiblePanel>
       )}
 
       {!isMobile && (
