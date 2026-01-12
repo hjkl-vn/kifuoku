@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 
 export default function CollapsiblePanel({
   position = 'bottom',
@@ -74,4 +75,14 @@ export default function CollapsiblePanel({
       )}
     </div>
   )
+}
+
+CollapsiblePanel.propTypes = {
+  position: PropTypes.oneOf(['top', 'bottom']).isRequired,
+  title: PropTypes.string.isRequired,
+  expandedTitle: PropTypes.string,
+  isExpanded: PropTypes.bool,
+  onToggle: PropTypes.func,
+  defaultExpanded: PropTypes.bool,
+  children: PropTypes.node.isRequired
 }

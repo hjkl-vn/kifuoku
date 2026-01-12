@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { ANNOTATION_TOOLS } from '../game/constants'
 
 export default function AnnotationToolbar({ selectedTool, onSelectTool }) {
@@ -27,4 +28,9 @@ export default function AnnotationToolbar({ selectedTool, onSelectTool }) {
       </div>
     </div>
   )
+}
+
+AnnotationToolbar.propTypes = {
+  selectedTool: PropTypes.string,
+  onSelectTool: PropTypes.func.isRequired
 }

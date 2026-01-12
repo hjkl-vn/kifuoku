@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import GameInfo from './GameInfo'
 
 export default function Sidebar({ gameInfo, currentTurn, children }) {
@@ -8,4 +9,10 @@ export default function Sidebar({ gameInfo, currentTurn, children }) {
       {children}
     </aside>
   )
+}
+
+Sidebar.propTypes = {
+  gameInfo: PropTypes.object,
+  currentTurn: PropTypes.oneOf(['B', 'W']),
+  children: PropTypes.node
 }

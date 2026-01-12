@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 import { isValidOgsUrl, extractGameId, fetchOgsSgf } from '../lib/ogs.js'
 
 export default function UploadPhase({ onFileLoaded }) {
@@ -126,4 +127,8 @@ export default function UploadPhase({ onFileLoaded }) {
       </div>
     </div>
   )
+}
+
+UploadPhase.propTypes = {
+  onFileLoaded: PropTypes.func.isRequired
 }

@@ -1,8 +1,9 @@
 import React, { memo } from 'react'
+import PropTypes from 'prop-types'
 import { ANNOTATION_TOOLS } from '../game/constants'
 import ProgressBar from './ProgressBar'
 
-export default memo(function BottomBar({
+const BottomBar = memo(function BottomBar({
   canGoPrev,
   canGoNext,
   onPrev,
@@ -87,3 +88,21 @@ export default memo(function BottomBar({
     </div>
   )
 })
+
+BottomBar.propTypes = {
+  canGoPrev: PropTypes.bool,
+  canGoNext: PropTypes.bool,
+  onPrev: PropTypes.func,
+  onNext: PropTypes.func,
+  current: PropTypes.number,
+  total: PropTypes.number,
+  selectedTool: PropTypes.string,
+  onSelectTool: PropTypes.func,
+  replaySide: PropTypes.oneOf(['B', 'W', null]),
+  pendingMove: PropTypes.object,
+  onConfirm: PropTypes.func,
+  onPass: PropTypes.func,
+  isUserTurn: PropTypes.bool
+}
+
+export default BottomBar

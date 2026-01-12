@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 export default function ProgressBar({ current, total, replaySide }) {
   const percentage = total > 0 ? (current / total) * 100 : 0
@@ -18,4 +19,10 @@ export default function ProgressBar({ current, total, replaySide }) {
       </div>
     </div>
   )
+}
+
+ProgressBar.propTypes = {
+  current: PropTypes.number.isRequired,
+  total: PropTypes.number.isRequired,
+  replaySide: PropTypes.oneOf(['B', 'W', null])
 }

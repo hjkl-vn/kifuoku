@@ -1,4 +1,5 @@
 import React, { useRef, useCallback } from 'react'
+import PropTypes from 'prop-types'
 
 export default function RangeSlider({ min, max, start, end, onChange }) {
   const trackRef = useRef(null)
@@ -86,4 +87,12 @@ export default function RangeSlider({ min, max, start, end, onChange }) {
       </div>
     </div>
   )
+}
+
+RangeSlider.propTypes = {
+  min: PropTypes.number.isRequired,
+  max: PropTypes.number.isRequired,
+  start: PropTypes.number.isRequired,
+  end: PropTypes.number.isRequired,
+  onChange: PropTypes.func.isRequired
 }

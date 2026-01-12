@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 export default function GameInfo({ gameInfo, currentTurn }) {
   if (!gameInfo) return null
@@ -104,4 +105,9 @@ export default function GameInfo({ gameInfo, currentTurn }) {
       </div>
     </div>
   )
+}
+
+GameInfo.propTypes = {
+  gameInfo: PropTypes.object,
+  currentTurn: PropTypes.oneOf(['B', 'W'])
 }
