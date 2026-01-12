@@ -50,8 +50,8 @@ export default function useGameController(
         return result
       },
 
-      startReplay(startMove, endMove, side = null) {
-        const result = manager.startReplay(startMove, endMove, side)
+      startReplay(startMove, endMove, side = null, oneColorMode = false) {
+        const result = manager.startReplay(startMove, endMove, side, oneColorMode)
         forceUpdate()
         return result
       },

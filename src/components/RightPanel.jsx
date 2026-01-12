@@ -24,7 +24,9 @@ export default memo(function RightPanel({
   onRestart,
   onGoHome,
   onPass,
-  isUserTurn
+  isUserTurn,
+  oneColorMode,
+  onOneColorModeChange
 }) {
   const buttonBase =
     'py-3 px-5 text-base font-bold bg-primary text-white border-none rounded cursor-pointer disabled:bg-gray-300 disabled:cursor-not-allowed'
@@ -55,6 +57,15 @@ export default memo(function RightPanel({
               end={rangeEnd}
               onChange={onRangeChange}
             />
+            <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={oneColorMode}
+                onChange={(e) => onOneColorModeChange(e.target.checked)}
+                className="w-4 h-4 accent-primary cursor-pointer"
+              />
+              One-color go
+            </label>
             <div className="flex flex-col gap-2">
               <button
                 className="py-4 px-8 text-lg font-bold bg-success text-white border-none rounded cursor-pointer"

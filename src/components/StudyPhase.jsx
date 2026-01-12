@@ -23,6 +23,7 @@ export default function StudyPhase({ gameManager, gameInfo }) {
   const [selectedTool, setSelectedTool] = useState(null)
   const [annotations, setAnnotations] = useState({})
   const [hoverVertex, setHoverVertex] = useState(null)
+  const [oneColorMode, setOneColorMode] = useState(false)
 
   const { containerRef, vertexSize } = useBoardSize({
     boardSize: state.boardSize
@@ -137,7 +138,7 @@ export default function StudyPhase({ gameManager, gameInfo }) {
       side: side || 'both',
       rangeLength: rangeEnd - rangeStart + 1
     })
-    gameManager.startReplay(rangeStart, rangeEnd, side)
+    gameManager.startReplay(rangeStart, rangeEnd, side, oneColorMode)
   }
 
   return (
@@ -163,6 +164,15 @@ export default function StudyPhase({ gameManager, gameInfo }) {
                 end={rangeEnd}
                 onChange={handleRangeChange}
               />
+              <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={oneColorMode}
+                  onChange={(e) => setOneColorMode(e.target.checked)}
+                  className="w-4 h-4 accent-primary cursor-pointer"
+                />
+                One-color go
+              </label>
               <div className="flex flex-col gap-2">
                 <button
                   className="py-4 px-8 text-lg font-bold bg-success text-white border-none rounded cursor-pointer"
@@ -234,6 +244,8 @@ export default function StudyPhase({ gameManager, gameInfo }) {
           onRangeChange={handleRangeChange}
           onStartReplay={handleStartReplay}
           gameInfo={gameInfo}
+          oneColorMode={oneColorMode}
+          onOneColorModeChange={setOneColorMode}
         />
       )}
 
