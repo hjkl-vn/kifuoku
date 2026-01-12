@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
+import PropTypes from 'prop-types'
 import Board from './Board'
 import Sidebar from './Sidebar'
 import RightPanel from './RightPanel'
@@ -359,4 +360,10 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
       )}
     </div>
   )
+}
+
+ReplayPhase.propTypes = {
+  gameManager: PropTypes.object.isRequired,
+  gameInfo: PropTypes.object,
+  onGoHome: PropTypes.func.isRequired
 }

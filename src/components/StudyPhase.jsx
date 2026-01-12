@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
 import Board from './Board'
 import Sidebar from './Sidebar'
 import RightPanel from './RightPanel'
@@ -263,4 +264,9 @@ export default function StudyPhase({ gameManager, gameInfo }) {
       )}
     </div>
   )
+}
+
+StudyPhase.propTypes = {
+  gameManager: PropTypes.object.isRequired,
+  gameInfo: PropTypes.object
 }

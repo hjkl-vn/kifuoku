@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Goban } from '@sabaki/shudan'
 
 export default function Board({
@@ -34,4 +35,16 @@ export default function Board({
       />
     </div>
   )
+}
+
+Board.propTypes = {
+  signMap: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
+  markerMap: PropTypes.arrayOf(PropTypes.array),
+  paintMap: PropTypes.arrayOf(PropTypes.array),
+  ghostStoneMap: PropTypes.arrayOf(PropTypes.array),
+  onVertexClick: PropTypes.func,
+  onVertexMouseEnter: PropTypes.func,
+  onVertexMouseLeave: PropTypes.func,
+  vertexSize: PropTypes.number,
+  oneColorMode: PropTypes.bool
 }
