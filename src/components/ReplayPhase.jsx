@@ -325,6 +325,7 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
                 onVertexMouseEnter={handleVertexMouseEnter}
                 onVertexMouseLeave={handleVertexMouseLeave}
                 vertexSize={vertexSize}
+                oneColorMode={state.oneColorMode}
               />
             </div>
           </div>
