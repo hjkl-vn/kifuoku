@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import { PANEL_Z_INDEX_DELAY_MS } from '../game/constants'
 
 export default function CollapsiblePanel({
   position = 'bottom',
@@ -17,7 +18,7 @@ export default function CollapsiblePanel({
 
   useEffect(() => {
     if (isExpanded) {
-      const timer = setTimeout(() => setRaised(true), 300)
+      const timer = setTimeout(() => setRaised(true), PANEL_Z_INDEX_DELAY_MS)
       return () => clearTimeout(timer)
     } else {
       setRaised(false)
