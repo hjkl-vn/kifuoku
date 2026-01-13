@@ -85,7 +85,12 @@ docker compose --profile prod up    # Port 9090
 - `useBoardSize` - Responsive board sizing based on container dimensions (ResizeObserver)
 - `useIsMobile` - Media query hook for JS-level mobile detection (< 768px)
 - `useBorderFlash` - Timed visual feedback with automatic cleanup
-- `useHoldToRepeat` - Hold-to-fast-forward for mobile nav buttons (300ms delay, 200ms interval)
+- `useHoldToRepeat` - Hold-to-fast-forward for mobile nav buttons
+
+**Constants (`src/game/constants.js`):**
+- Timing values: `HOLD_TO_REPEAT_DELAY_MS`, `OPPONENT_MOVE_BASE_DELAY_MS`, `PANEL_Z_INDEX_DELAY_MS`, etc.
+- Game phases: `PHASES.UPLOAD`, `PHASES.STUDY`, `PHASES.REPLAY`, `PHASES.COMPLETE`
+- Hint types: `HINT_TYPES.QUADRANT`, `HINT_TYPES.EXACT`
 
 **Styling (Tailwind CSS v4):**
 - Uses `@tailwindcss/vite` plugin (no tailwind.config.js needed)

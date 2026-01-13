@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { renderHook, act } from '@testing-library/preact'
 import { useHoldToRepeat } from '../useHoldToRepeat'
+import { HOLD_TO_REPEAT_DELAY_MS, HOLD_TO_REPEAT_INTERVAL_MS } from '../../game/constants'
 
 describe('useHoldToRepeat', () => {
   beforeEach(() => {
@@ -35,7 +36,12 @@ describe('useHoldToRepeat', () => {
 
   it('starts continuous firing after delay', () => {
     const callback = vi.fn()
-    const { result } = renderHook(() => useHoldToRepeat(callback, { delay: 300, interval: 200 }))
+    const { result } = renderHook(() =>
+      useHoldToRepeat(callback, {
+        delay: HOLD_TO_REPEAT_DELAY_MS,
+        interval: HOLD_TO_REPEAT_INTERVAL_MS
+      })
+    )
 
     act(() => {
       result.current.onTouchStart()
@@ -43,31 +49,36 @@ describe('useHoldToRepeat', () => {
     expect(callback).toHaveBeenCalledTimes(1)
 
     act(() => {
-      vi.advanceTimersByTime(300)
+      vi.advanceTimersByTime(HOLD_TO_REPEAT_DELAY_MS)
     })
     expect(callback).toHaveBeenCalledTimes(1)
 
     act(() => {
-      vi.advanceTimersByTime(200)
+      vi.advanceTimersByTime(HOLD_TO_REPEAT_INTERVAL_MS)
     })
     expect(callback).toHaveBeenCalledTimes(2)
 
     act(() => {
-      vi.advanceTimersByTime(200)
+      vi.advanceTimersByTime(HOLD_TO_REPEAT_INTERVAL_MS)
     })
     expect(callback).toHaveBeenCalledTimes(3)
   })
 
   it('stops firing on touch end', () => {
     const callback = vi.fn()
-    const { result } = renderHook(() => useHoldToRepeat(callback, { delay: 300, interval: 200 }))
+    const { result } = renderHook(() =>
+      useHoldToRepeat(callback, {
+        delay: HOLD_TO_REPEAT_DELAY_MS,
+        interval: HOLD_TO_REPEAT_INTERVAL_MS
+      })
+    )
 
     act(() => {
       result.current.onTouchStart()
     })
 
     act(() => {
-      vi.advanceTimersByTime(500)
+      vi.advanceTimersByTime(HOLD_TO_REPEAT_DELAY_MS + HOLD_TO_REPEAT_INTERVAL_MS)
     })
     expect(callback).toHaveBeenCalledTimes(2)
 
@@ -83,14 +94,19 @@ describe('useHoldToRepeat', () => {
 
   it('stops firing on mouse up', () => {
     const callback = vi.fn()
-    const { result } = renderHook(() => useHoldToRepeat(callback, { delay: 300, interval: 200 }))
+    const { result } = renderHook(() =>
+      useHoldToRepeat(callback, {
+        delay: HOLD_TO_REPEAT_DELAY_MS,
+        interval: HOLD_TO_REPEAT_INTERVAL_MS
+      })
+    )
 
     act(() => {
       result.current.onMouseDown()
     })
 
     act(() => {
-      vi.advanceTimersByTime(500)
+      vi.advanceTimersByTime(HOLD_TO_REPEAT_DELAY_MS + HOLD_TO_REPEAT_INTERVAL_MS)
     })
 
     act(() => {
@@ -107,14 +123,19 @@ describe('useHoldToRepeat', () => {
 
   it('stops firing on mouse leave', () => {
     const callback = vi.fn()
-    const { result } = renderHook(() => useHoldToRepeat(callback, { delay: 300, interval: 200 }))
+    const { result } = renderHook(() =>
+      useHoldToRepeat(callback, {
+        delay: HOLD_TO_REPEAT_DELAY_MS,
+        interval: HOLD_TO_REPEAT_INTERVAL_MS
+      })
+    )
 
     act(() => {
       result.current.onMouseDown()
     })
 
     act(() => {
-      vi.advanceTimersByTime(500)
+      vi.advanceTimersByTime(HOLD_TO_REPEAT_DELAY_MS + HOLD_TO_REPEAT_INTERVAL_MS)
     })
 
     act(() => {
@@ -131,14 +152,19 @@ describe('useHoldToRepeat', () => {
 
   it('stops firing on touch cancel', () => {
     const callback = vi.fn()
-    const { result } = renderHook(() => useHoldToRepeat(callback, { delay: 300, interval: 200 }))
+    const { result } = renderHook(() =>
+      useHoldToRepeat(callback, {
+        delay: HOLD_TO_REPEAT_DELAY_MS,
+        interval: HOLD_TO_REPEAT_INTERVAL_MS
+      })
+    )
 
     act(() => {
       result.current.onTouchStart()
     })
 
     act(() => {
-      vi.advanceTimersByTime(500)
+      vi.advanceTimersByTime(HOLD_TO_REPEAT_DELAY_MS + HOLD_TO_REPEAT_INTERVAL_MS)
     })
 
     act(() => {
@@ -216,7 +242,10 @@ describe('useHoldToRepeat', () => {
   it('cleans up on unmount', () => {
     const callback = vi.fn()
     const { result, unmount } = renderHook(() =>
-      useHoldToRepeat(callback, { delay: 300, interval: 200 })
+      useHoldToRepeat(callback, {
+        delay: HOLD_TO_REPEAT_DELAY_MS,
+        interval: HOLD_TO_REPEAT_INTERVAL_MS
+      })
     )
 
     act(() => {
@@ -224,7 +253,7 @@ describe('useHoldToRepeat', () => {
     })
 
     act(() => {
-      vi.advanceTimersByTime(500)
+      vi.advanceTimersByTime(HOLD_TO_REPEAT_DELAY_MS + HOLD_TO_REPEAT_INTERVAL_MS)
     })
     const countBeforeUnmount = callback.mock.calls.length
 
@@ -246,7 +275,7 @@ describe('useHoldToRepeat', () => {
     expect(callback).toHaveBeenCalledTimes(1)
 
     act(() => {
-      vi.advanceTimersByTime(299)
+      vi.advanceTimersByTime(HOLD_TO_REPEAT_DELAY_MS - 1)
     })
     expect(callback).toHaveBeenCalledTimes(1)
 
@@ -256,7 +285,7 @@ describe('useHoldToRepeat', () => {
     expect(callback).toHaveBeenCalledTimes(1)
 
     act(() => {
-      vi.advanceTimersByTime(200)
+      vi.advanceTimersByTime(HOLD_TO_REPEAT_INTERVAL_MS)
     })
     expect(callback).toHaveBeenCalledTimes(2)
   })

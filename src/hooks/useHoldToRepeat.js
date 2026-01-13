@@ -1,6 +1,10 @@
 import { useRef, useCallback, useEffect } from 'react'
+import { HOLD_TO_REPEAT_DELAY_MS, HOLD_TO_REPEAT_INTERVAL_MS } from '../game/constants'
 
-export function useHoldToRepeat(callback, { delay = 300, interval = 200 } = {}) {
+export function useHoldToRepeat(
+  callback,
+  { delay = HOLD_TO_REPEAT_DELAY_MS, interval = HOLD_TO_REPEAT_INTERVAL_MS } = {}
+) {
   const timeoutRef = useRef(null)
   const intervalRef = useRef(null)
   const activeRef = useRef(false)

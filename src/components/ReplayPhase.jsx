@@ -7,7 +7,11 @@ import CollapsiblePanel from './CollapsiblePanel'
 import GameInfo from './GameInfo'
 import BottomBar from './BottomBar'
 import { createEmptyBoardMap } from '../game/boardUtils'
-import { PHASES } from '../game/constants'
+import {
+  PHASES,
+  OPPONENT_MOVE_BASE_DELAY_MS,
+  OPPONENT_MOVE_RANDOM_DELAY_MS
+} from '../game/constants'
 import { useBoardSize } from '../hooks/useBoardSize'
 import { useIsMobile } from '../hooks/useIsMobile'
 import { useBorderFlash } from '../hooks/useBorderFlash'
@@ -66,7 +70,7 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
       clearTimeout(autoPlayTimeoutRef.current)
     }
 
-    const delay = 500 + Math.random() * 500
+    const delay = OPPONENT_MOVE_BASE_DELAY_MS + Math.random() * OPPONENT_MOVE_RANDOM_DELAY_MS
     autoPlayTimeoutRef.current = setTimeout(() => {
       const result = gameManager.playOpponentMove()
       if (result.success && !result.gameComplete) {

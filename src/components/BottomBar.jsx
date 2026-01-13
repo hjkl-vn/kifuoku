@@ -23,8 +23,8 @@ const BottomBar = memo(function BottomBar({
   const hasAnnotationTools = onSelectTool !== undefined
   const hasReplayControls = onPass !== undefined
 
-  const prevHandlers = useHoldToRepeat(onPrev || (() => {}), { delay: 300, interval: 200 })
-  const nextHandlers = useHoldToRepeat(onNext || (() => {}), { delay: 300, interval: 200 })
+  const prevHandlers = useHoldToRepeat(onPrev || (() => {}))
+  const nextHandlers = useHoldToRepeat(onNext || (() => {}))
 
   const toolButtonBase =
     'w-11 h-11 flex items-center justify-center text-xl bg-gray-100 border-2 border-gray-300 rounded-lg cursor-pointer transition-all duration-150 active:bg-blue-50 active:border-primary'
