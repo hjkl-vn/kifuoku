@@ -67,6 +67,18 @@ export default function HomePage() {
   const [setupStones, setSetupStones] = useState(null)
   const [error, setError] = useState(null)
 
+  useEffect(() => {
+    const handleReset = () => {
+      setMoves(null)
+      setBoardSize(null)
+      setGameInfo(null)
+      setSetupStones(null)
+      setError(null)
+    }
+    window.addEventListener('reset-game', handleReset)
+    return () => window.removeEventListener('reset-game', handleReset)
+  }, [])
+
   const handleFileLoaded = (sgfContent, sourceUrl = null) => {
     try {
       const {

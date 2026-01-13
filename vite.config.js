@@ -11,6 +11,7 @@ export default defineConfig({
     }
   },
   server: {
-    port: 3000
+    port: 3000,
+    allowedHosts: ['flashingly-protoplasmatic-talon.ngrok-free.dev']
   }
 })
