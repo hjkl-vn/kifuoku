@@ -85,6 +85,7 @@ docker compose --profile prod up    # Port 9090
 - `useBoardSize` - Responsive board sizing based on container dimensions (ResizeObserver)
 - `useIsMobile` - Media query hook for JS-level mobile detection (< 768px)
 - `useBorderFlash` - Timed visual feedback with automatic cleanup
+- `useHoldToRepeat` - Hold-to-fast-forward for mobile nav buttons (300ms delay, 200ms interval)
 
 **Styling (Tailwind CSS v4):**
 - Uses `@tailwindcss/vite` plugin (no tailwind.config.js needed)
@@ -99,7 +100,12 @@ docker compose --profile prod up    # Port 9090
 **Mobile Touch Handling:**
 - `touch-action: pan-x pan-y` on html/body disables pinch-to-zoom and double-tap zoom
 - `overscroll-behavior: none` prevents rubber-band/bounce scrolling
+- `select-none` + `WebkitTouchCallout: 'none'` on holdable buttons prevents text selection popup
 - For mobile testing via ngrok, add host to `server.allowedHosts` in `vite.config.js`
+
+**Testing:**
+- Uses Vitest with `@testing-library/preact` (not React)
+- Use `vi.useFakeTimers()` for testing timer-based hooks
 
 **Cross-Component Events:**
 - `reset-game` custom event: Header dispatches, HomePage listens to reset game state

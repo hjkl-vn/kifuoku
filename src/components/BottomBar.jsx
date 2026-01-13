@@ -2,6 +2,7 @@ import React, { memo } from 'react'
 import PropTypes from 'prop-types'
 import { ANNOTATION_TOOLS } from '../game/constants'
 import ProgressBar from './ProgressBar'
+import { useHoldToRepeat } from '../hooks/useHoldToRepeat'
 
 const BottomBar = memo(function BottomBar({
   canGoPrev,
@@ -22,10 +23,13 @@ const BottomBar = memo(function BottomBar({
   const hasAnnotationTools = onSelectTool !== undefined
   const hasReplayControls = onPass !== undefined
 
+  const prevHandlers = useHoldToRepeat(onPrev || (() => {}), { delay: 300, interval: 200 })
+  const nextHandlers = useHoldToRepeat(onNext || (() => {}), { delay: 300, interval: 200 })
+
   const toolButtonBase =
     'w-11 h-11 flex items-center justify-center text-xl bg-gray-100 border-2 border-gray-300 rounded-lg cursor-pointer transition-all duration-150 active:bg-blue-50 active:border-primary'
   const navButtonBase =
-    'flex-1 py-3.5 px-5 text-base font-bold bg-primary text-white border-none rounded-lg cursor-pointer disabled:bg-gray-300 disabled:cursor-not-allowed active:not-disabled:bg-blue-700'
+    'flex-1 py-3.5 px-5 text-base font-bold bg-primary text-white border-none rounded-lg cursor-pointer disabled:bg-gray-300 disabled:cursor-not-allowed active:not-disabled:bg-blue-700 select-none'
 
   return (
     <div className="flex flex-col fixed bottom-[50px] left-0 right-0 px-4 py-3 bg-white border-t border-gray-300 gap-3 z-[25]">
@@ -55,10 +59,20 @@ const BottomBar = memo(function BottomBar({
         ) : (
           hasNavButtons && (
             <div className="flex gap-3 flex-1">
-              <button className={navButtonBase} onClick={onPrev} disabled={!canGoPrev}>
+              <button
+                className={navButtonBase}
+                style={{ WebkitTouchCallout: 'none' }}
+                disabled={!canGoPrev}
+                {...prevHandlers}
+              >
                 ◀ Prev
               </button>
-              <button className={navButtonBase} onClick={onNext} disabled={!canGoNext}>
+              <button
+                className={navButtonBase}
+                style={{ WebkitTouchCallout: 'none' }}
+                disabled={!canGoNext}
+                {...nextHandlers}
+              >
                 Next ▶
               </button>
             </div>
