@@ -18,7 +18,7 @@ Kifu-oku (棋譜憶) - A Go game memory trainer. Users upload SGF files or paste
 
 ```bash
 npm install
-npm run dev              # Vite dev server
+npm run dev              # Vite dev server (port 3000)
 npm run build
 npm test                 # Watch mode
 npm test -- --run        # Run once
@@ -95,6 +95,15 @@ docker compose --profile prod up    # Port 9090
 **Responsive Layout (768px breakpoint):**
 - Desktop (md+): Left sidebar (280px) + board area + right panel (max-w-320px)
 - Mobile: CollapsiblePanel (top/bottom positions) + board + fixed bottom bar
+
+**Mobile Touch Handling:**
+- `touch-action: pan-x pan-y` on html/body disables pinch-to-zoom and double-tap zoom
+- `overscroll-behavior: none` prevents rubber-band/bounce scrolling
+- For mobile testing via ngrok, add host to `server.allowedHosts` in `vite.config.js`
+
+**Cross-Component Events:**
+- `reset-game` custom event: Header dispatches, HomePage listens to reset game state
+- Pattern: `window.dispatchEvent(new window.CustomEvent('event-name'))`
 
 **Logging (`src/lib/logger.js`):**
 - `createLogger('ModuleName')` returns `{ info, warn, error }` methods
