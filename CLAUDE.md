@@ -130,3 +130,10 @@ For local development, copy `.env.example` to `.env.local`.
 ## CI/CD
 
 PRs to `main` run GitHub Actions: tests, ESLint, Prettier format check. All must pass before merging.
+
+## Deployment
+
+Hosted on Cloudflare Pages. Cache headers configured in `public/_headers`:
+- `/assets/*` - 1 year, immutable (Vite hashed bundles)
+- `/`, `/*.html` - no-cache (always fresh)
+- `/sounds/*`, `/favicon/*` - 1 week
