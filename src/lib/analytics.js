@@ -31,11 +31,12 @@ export function trackGameLoaded({ source, boardSize, moveCount }) {
   })
 }
 
-export function trackReplayStarted({ side, rangeLength }) {
+export function trackReplayStarted({ side, rangeLength, oneColorMode }) {
   if (!analyticsEnabled) return
   posthog.capture('replay_started', {
     side: side || 'both',
-    range_length: rangeLength
+    range_length: rangeLength,
+    one_color_mode: oneColorMode || false
   })
 }
 

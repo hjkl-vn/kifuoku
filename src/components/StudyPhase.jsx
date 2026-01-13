@@ -136,7 +136,8 @@ export default function StudyPhase({ gameManager, gameInfo }) {
   const handleStartReplay = (side = null) => {
     trackReplayStarted({
       side: side || 'both',
-      rangeLength: rangeEnd - rangeStart + 1
+      rangeLength: rangeEnd - rangeStart + 1,
+      oneColorMode
     })
     gameManager.startReplay(rangeStart, rangeEnd, side, oneColorMode)
   }
