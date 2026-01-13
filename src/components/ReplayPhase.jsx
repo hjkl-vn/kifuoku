@@ -164,11 +164,11 @@ export default function ReplayPhase({ gameManager, gameInfo, onGoHome }) {
 
   const handleVertexMouseEnter = useCallback(
     (evt, [x, y]) => {
-      if (isComplete || !isUserTurn || isMobile) return
+      if (isComplete || !isUserTurn) return
       if (!gameManager.isValidPosition(x, y)) return
       setHoverVertex({ x, y })
     },
-    [gameManager, isComplete, isUserTurn, isMobile]
+    [gameManager, isComplete, isUserTurn]
   )
 
   const handleVertexMouseLeave = useCallback(() => {

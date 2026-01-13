@@ -104,8 +104,11 @@ docker compose --profile prod up    # Port 9090
 - For mobile testing via ngrok, add host to `server.allowedHosts` in `vite.config.js`
 
 **Testing:**
-- Uses Vitest with `@testing-library/preact` (not React)
+- Uses Vitest with `@testing-library/preact` (React aliased to Preact via vite.config.js)
 - Use `vi.useFakeTimers()` for testing timer-based hooks
+
+**Pre-commit Hooks:**
+- Husky + lint-staged runs ESLint and Prettier on staged files before each commit
 
 **Cross-Component Events:**
 - `reset-game` custom event: Header dispatches, HomePage listens to reset game state
