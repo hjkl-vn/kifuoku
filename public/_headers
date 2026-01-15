@@ -7,6 +7,12 @@
 /
   Cache-Control: no-cache
 
+/sw.js
+  Cache-Control: no-cache
+
+/workbox-*.js
+  Cache-Control: no-cache
+
 /sounds/*
   Cache-Control: public, max-age=604800
 
